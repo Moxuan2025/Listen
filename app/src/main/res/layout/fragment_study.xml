@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".Layout.StudyFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/study"
+        android:textSize="20sp"
+    />
+
+    <Button
+        android:id="@+id/btn_speech_assessment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="言语评估"
+        android:textSize="18sp"
+        android:padding="16dp"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/btn_language_learning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="语言学习"
+        android:textSize="18sp"
+        android:padding="16dp"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/btn_situation_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="情景对话"
+        android:textSize="18sp"
+        android:padding="16dp"
+        android:layout_marginBottom="24dp" />
+
+</LinearLayout>

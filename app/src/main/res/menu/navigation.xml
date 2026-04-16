@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/study_pg"
+        android:title="study"
+        android:icon="@drawable/study_icon"></item>
+    <item android:id="@+id/test_pg"
+        android:title="test"
+        android:icon="@drawable/alarm_icon"></item>
+    <item android:id="@+id/user_pg"
+        android:title="user"
+        android:icon="@drawable/user_icon"></item>
+    <item android:id="@+id/setting_pg"
+        android:title="setting"
+        android:icon="@drawable/setting_icon"></item>
+</menu>

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Listen</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="study">You can study here</string>
+    <string name="test">You can test here</string>
+    <string name="user">Here\'s your home</string>
+    <string name="setting">Change settings here</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

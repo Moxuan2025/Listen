@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Listen">
         <activity
+            android:name=".Layout.LoginRegister.Login"
+            android:exported="false" />
+        <activity
+            android:name=".Layout.LoginRegister.LoginOrRegister"
+            android:exported="true" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
