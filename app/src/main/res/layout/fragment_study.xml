@@ -1,45 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/study_page"
     tools:context=".Layout.StudyFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <Button
+        android:id="@+id/btn_pre_month"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:background="@drawable/arrow_left"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.09"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"/>
+
+    <Button
+        android:id="@+id/btn_nxt_month"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:background="@drawable/arrow_right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.09"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.8"/>
+
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/study"
-        android:textSize="20sp"
+        android:id="@+id/tv_month"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_40sdp"
+        android:text="四月"
+        android:textColor="#111111"
+        android:textSize="@dimen/_20sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.098"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
     />
+
+    <GridLayout
+        android:id="@+id/gl_calendar"
+        android:layout_width="@dimen/_260sdp"
+        android:layout_height="@dimen/_180sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.26"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <Button
         android:id="@+id/btn_speech_assessment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:backgroundTint="@color/bt_gree"
+        android:layout_width="@dimen/_260sdp"
+        android:layout_height="@dimen/_50sdp"
         android:text="言语评估"
-        android:textSize="18sp"
-        android:padding="16dp"
-        android:layout_marginBottom="24dp" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/_20sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.56"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
     <Button
         android:id="@+id/btn_language_learning"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:backgroundTint="@color/bt_gree"
+        android:layout_width="@dimen/_260sdp"
+        android:layout_height="@dimen/_50sdp"
         android:text="语言学习"
-        android:textSize="18sp"
-        android:padding="16dp"
-        android:layout_marginBottom="24dp" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/_20sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.68"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
     <Button
         android:id="@+id/btn_situation_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:backgroundTint="@color/bt_gree"
+        android:layout_width="@dimen/_260sdp"
+        android:layout_height="@dimen/_50sdp"
         android:text="情景对话"
-        android:textSize="18sp"
-        android:padding="16dp"
-        android:layout_marginBottom="24dp" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/_20sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

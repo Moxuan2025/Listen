@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Listen">
         <activity
             android:name=".Layout.LoginRegister.Login"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Layout.LoginRegister.LoginOrRegister"
             android:exported="true" />
