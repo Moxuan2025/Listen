@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="bt_gree">#13bf9e</color>
+    <color name="border_gray">#A2A2A2</color>
 </resources>

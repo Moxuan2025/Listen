@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Listen">
         <activity
+            android:name=".Layout.CompleteInfo"
+            android:exported="true" />
+        <activity
             android:name=".Layout.LoginRegister.Login"
             android:exported="true" />
         <activity

@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    tools:context=".Layout.InfoChildFragment">
+
+    <TextView
+        android:id="@+id/lb_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="小朋友，为了给你更好的体验，需要填写一个关于你的个人信息："
+        android:textSize="@dimen/_14sdp"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/lb_tip"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="@dimen/_24sdp"
+                        android:layout_height="@dimen/_24sdp"
+                        android:background="@drawable/circle_background"
+                        android:backgroundTint="@color/bt_gree"
+                        android:gravity="right"
+                        android:text="01"
+                        android:textSize="@dimen/_18sdp"
+                        android:textColor="@color/black"/>
+                    <View
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_20sdp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_30sdp"
+                        android:text="你是男孩子还是女孩子？"
+                        android:gravity="center"
+                        android:textSize="@dimen/_13sdp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_4sdp" />
+                <Spinner
+                    android:id="@+id/sp_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:background="@drawable/spinner_background"
+                    android:paddingLeft="@dimen/_10sdp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_10sdp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="@dimen/_24sdp"
+                        android:layout_height="@dimen/_24sdp"
+                        android:background="@drawable/circle_background"
+                        android:backgroundTint="@color/bt_gree"
+                        android:gravity="right"
+                        android:text="02"
+                        android:textSize="@dimen/_18sdp"
+                        android:textColor="@color/black"/>
+                    <View
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_20sdp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_30sdp"
+                        android:text="你耳朵听声音有没有觉得不清楚啊？"
+                        android:gravity="center"
+                        android:textSize="@dimen/_13sdp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_4sdp" />
+                <Spinner
+                    android:id="@+id/sp_ear"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:background="@drawable/spinner_background"
+                    android:paddingLeft="@dimen/_10sdp" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_10sdp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="@dimen/_24sdp"
+                        android:layout_height="@dimen/_24sdp"
+                        android:background="@drawable/circle_background"
+                        android:backgroundTint="@color/bt_gree"
+                        android:gravity="right"
+                        android:text="03"
+                        android:textSize="@dimen/_18sdp"
+                        android:textColor="@color/black"/>
+                    <View
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_20sdp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_30sdp"
+                        android:text="你有没有戴过小耳朵（助听设备）？"
+                        android:gravity="center"
+                        android:textSize="@dimen/_13sdp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_4sdp" />
+                <Spinner
+                    android:id="@+id/sp_device"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:background="@drawable/spinner_background"
+                    android:paddingLeft="@dimen/_10sdp" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_10sdp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="@dimen/_24sdp"
+                        android:layout_height="@dimen/_24sdp"
+                        android:background="@drawable/circle_background"
+                        android:backgroundTint="@color/bt_gree"
+                        android:gravity="right"
+                        android:text="04"
+                        android:textSize="@dimen/_18sdp"
+                        android:textColor="@color/black"/>
+                    <View
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_20sdp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_30sdp"
+                        android:text="你的小耳朵跟着你多久了？"
+                        android:gravity="center"
+                        android:textSize="@dimen/_13sdp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_4sdp" />
+                <Spinner
+                    android:id="@+id/sp_device_ime"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:background="@drawable/spinner_background"
+                    android:paddingLeft="@dimen/_10sdp" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_10sdp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="@dimen/_24sdp"
+                        android:layout_height="@dimen/_24sdp"
+                        android:background="@drawable/circle_background"
+                        android:backgroundTint="@color/bt_gree"
+                        android:gravity="right"
+                        android:text="05"
+                        android:textSize="@dimen/_18sdp"
+                        android:textColor="@color/black"/>
+                    <View
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_20sdp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_30sdp"
+                        android:text="你是从什么时候开始听声音困难的？"
+                        android:gravity="center"
+                        android:textSize="@dimen/_13sdp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_4sdp" />
+                <Spinner
+                    android:id="@+id/sp_start_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:background="@drawable/spinner_background"
+                    android:paddingLeft="@dimen/_10sdp" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_10sdp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="@dimen/_24sdp"
+                        android:layout_height="@dimen/_24sdp"
+                        android:background="@drawable/circle_background"
+                        android:backgroundTint="@color/bt_gree"
+                        android:gravity="right"
+                        android:text="06"
+                        android:textSize="@dimen/_18sdp"
+                        android:textColor="@color/black"/>
+                    <View
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_20sdp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_30sdp"
+                        android:text="你听到的声音大概是什么样的？"
+                        android:gravity="center"
+                        android:textSize="@dimen/_13sdp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_4sdp" />
+                <Spinner
+                    android:id="@+id/sp_sound_like"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:background="@drawable/spinner_background"
+                    android:paddingLeft="@dimen/_10sdp"
+                    />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_10sdp" />
+            </LinearLayout>
+
+            <Button
+                android:layout_width="@dimen/_160sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:backgroundTint="@color/bt_gree"
+                android:text="下一步"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_20sdp"
+                android:onClick="goNext" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
