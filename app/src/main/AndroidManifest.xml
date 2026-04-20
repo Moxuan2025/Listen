@@ -12,6 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Listen">
         <activity
+            android:name=".Layout.SyllablePractise"
+            android:exported="true" />
+        <activity
+            android:name=".Layout.Enjoyment"
+            android:exported="true" />
+        <activity
+            android:name=".Layout.SoundTest"
+            android:exported="true" />
+        <activity
+            android:name=".Layout.SoundEvaluate"
+            android:exported="true" />
+        <activity
             android:name=".Layout.CompleteInfo"
             android:exported="true" />
         <activity

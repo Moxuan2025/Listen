@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.demo.listen.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -21,6 +22,11 @@ class ChooseIdentityFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    private var chooseChild: Boolean? = null
+
+    private var llParent: LinearLayout? = null
+    private var llChild: LinearLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +46,13 @@ class ChooseIdentityFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireView().findViewById<LinearLayout>(R.id.ll_parent).setOnClickListener {
+            if (chooseChild == true) {
+                it.setBackgroundResource(R.drawable.light_gray__opacity_bg)
+                chooseChild = false
+
+            }
+         }
     }
 
     companion object {
@@ -62,6 +75,4 @@ class ChooseIdentityFragment : Fragment() {
             }
     }
 
-    fun btClicked(view: View) {}
-    fun goNext(view: View) {}
 }

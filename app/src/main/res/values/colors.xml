@@ -2,6 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="bt_gree">#13bf9e</color>
+    <color name="bt_green">#13bf9e</color>
+    <color name="bt_green_lt">#99E3D5</color>
     <color name="border_gray">#A2A2A2</color>
+    <color name="gray_opacity">#80999999</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="yellow_lt">#FFED9D</color>
 </resources>

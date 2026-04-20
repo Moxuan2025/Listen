@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <corners android:radius="@dimen/_20sdp"/>
+            <solid android:color="@color/bt_green" />
+        </shape>
+    </item>
+    <item
+        android:right="@dimen/_80sdp"
+        android:gravity="right |center_vertical"
+        android:height="@dimen/_100sdp"
+        android:width="@dimen/_100sdp"
+        android:drawable="@drawable/half_circle">
+    </item>
+    <item
+        android:right="@dimen/_30sdp"
+        android:gravity="right |bottom"
+        android:height="@dimen/_70sdp"
+        android:width="@dimen/_70sdp"
+        android:drawable="@drawable/dog">
+    </item>
+</layer-list>

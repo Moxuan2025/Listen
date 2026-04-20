@@ -34,6 +34,8 @@ class Login : AppCompatActivity() {
             // TODO: 用户存在且密码匹配
             if (findViewById<CheckBox>(R.id.newRegister).isChecked()) {
                 // TODO: 比较用户名是否重复
+                // 完善信息
+
             }
             startActivity(Intent(this, MainActivity::class.java).apply {
                 putExtra("uname", findViewById<EditText>(R.id.uname).text)

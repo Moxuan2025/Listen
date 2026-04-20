@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:backgroundTint="@color/white"
+    tools:context=".Layout.SoundTest">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:gravity="center"
+        android:text="听能评估"
+        android:textSize="@dimen/_20sdp"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginVertical="@dimen/_10sdp" />
+
+    <TextView
+        android:id="@+id/target"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_90sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintVertical_bias="0.14"
+        android:gravity="center"
+        android:text="b"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_70sdp" />
+
+    <LinearLayout
+        android:id="@+id/play_audio"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        app:layout_constraintTop_toBottomOf="@id/target"
+        android:orientation="horizontal"
+        android:gravity="center" >
+        <TextView
+            android:id="@+id/play"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:background="@drawable/play" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/choice"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_120sdp"
+        app:layout_constraintTop_toBottomOf="@+id/play_audio"
+        android:layout_marginHorizontal="@dimen/_30sdp"
+        android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/choice_a"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_weight="1"
+            android:background="@drawable/char_bg"
+            android:layout_margin="@dimen/_10sdp"
+            android:gravity="center"
+            android:text="b"
+            android:textSize="@dimen/_70sdp"
+            android:textColor="@color/black" />
+        <TextView
+            android:id="@+id/choice_b"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_weight="1"
+            android:background="@drawable/char_bg"
+            android:layout_margin="@dimen/_10sdp"
+            android:gravity="center"
+            android:text="p"
+            android:textSize="@dimen/_70sdp"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_120sdp"
+        app:layout_constraintTop_toBottomOf="@+id/choice"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp" >
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_80sdp"
+            android:layout_weight="5"
+            android:background="@drawable/chat_bubble"
+            android:gravity="top |center_horizontal"
+            android:text="小朋友请你根据刚刚\n听到的声音来判断\n是哪一个声音呢？"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/black"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="@drawable/dog" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

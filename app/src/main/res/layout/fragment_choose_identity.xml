@@ -33,6 +33,7 @@
         app:layout_constraintVertical_bias="0.3" >
 
         <LinearLayout
+            android:id="@+id/ll_parent"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="9"
@@ -49,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:gravity="center_horizontal"
-                android:text="父亲"
+                android:text="父母"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_16sdp"
                 android:layout_weight="2" />
@@ -61,11 +62,11 @@
             android:layout_weight="2" />
 
         <LinearLayout
+            android:id="@+id/ll_child"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="9"
-            android:orientation="vertical"
-            android:onClick="btClicked" >
+            android:orientation="vertical" >
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -85,9 +86,10 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/bt_identity_next"
         android:layout_width="@dimen/_160sdp"
         android:layout_height="@dimen/_40sdp"
-        android:backgroundTint="@color/bt_gree"
+        android:backgroundTint="@color/bt_green"
         android:text="下一步"
         android:textColor="@color/white"
         android:textSize="@dimen/_20sdp"
@@ -96,7 +98,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintVertical_bias="0.6"
-        app:layout_constraintHorizontal_bias="0.5"
-        android:onClick="goNext"/>
+        app:layout_constraintHorizontal_bias="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

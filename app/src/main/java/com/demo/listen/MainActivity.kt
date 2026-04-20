@@ -69,9 +69,4 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.content, fragment)
             .commit()
     }
-
-    fun goLogin(view: View) {
-        Toast.makeText(this, "Login", Toast.LENGTH_SHORT).show()
-        startActivity(Intent(this, Login::class.java))
-    }
 }

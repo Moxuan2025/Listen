@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:backgroundTint="@color/white"
+    tools:context=".Layout.Enjoyment">
+
+    <View
+        android:id="@+id/blank_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_140sdp"
+        android:background = "@drawable/light_green_bg"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginVertical="@dimen/_16sdp"
+        android:layout_marginHorizontal="@dimen/_16sdp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/blank_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginVertical="@dimen/_16sdp"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:orientation="vertical" >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_66sdp"
+            android:background="@drawable/green_bg"
+            android:gravity="center_vertical|left"
+            android:layout_marginVertical="@dimen/_8sdp"
+            android:text="趣味拼音"
+            android:textSize="@dimen/_26sdp"
+            android:paddingLeft="@dimen/_60sdp"
+            android:textColor="@color/white" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_66sdp"
+            android:background="@drawable/green_bg"
+            android:gravity="center_vertical|right"
+            android:layout_marginVertical="@dimen/_8sdp"
+            android:text="趣味词汇"
+            android:textSize="@dimen/_26sdp"
+            android:paddingRight="@dimen/_60sdp"
+            android:textColor="@color/white" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_66sdp"
+            android:background="@drawable/green_bg"
+            android:gravity="center_vertical|left"
+            android:layout_marginVertical="@dimen/_8sdp"
+            android:text="趣味句子"
+            android:textSize="@dimen/_26sdp"
+            android:paddingLeft="@dimen/_60sdp"
+            android:textColor="@color/white" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_66sdp"
+            android:background="@drawable/green_bg"
+            android:gravity="center_vertical|right"
+            android:layout_marginVertical="@dimen/_8sdp"
+            android:text="趣味段落"
+            android:textSize="@dimen/_26sdp"
+            android:paddingRight="@dimen/_60sdp"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -145,7 +145,7 @@
         android:id="@+id/bt_go"
         android:layout_width="@dimen/_120sdp"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/bt_gree"
+        android:backgroundTint="@color/bt_green"
         android:text="GO >"
         android:textColor="@color/white"
         android:textSize="@dimen/_36sdp"

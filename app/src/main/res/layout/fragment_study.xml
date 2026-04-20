@@ -58,7 +58,7 @@
 
     <Button
         android:id="@+id/btn_speech_assessment"
-        android:backgroundTint="@color/bt_gree"
+        android:backgroundTint="@color/bt_green"
         android:layout_width="@dimen/_260sdp"
         android:layout_height="@dimen/_50sdp"
         android:text="言语评估"
@@ -72,7 +72,7 @@
 
     <Button
         android:id="@+id/btn_language_learning"
-        android:backgroundTint="@color/bt_gree"
+        android:backgroundTint="@color/bt_green"
         android:layout_width="@dimen/_260sdp"
         android:layout_height="@dimen/_50sdp"
         android:text="语言学习"
@@ -86,7 +86,7 @@
 
     <Button
         android:id="@+id/btn_situation_dialog"
-        android:backgroundTint="@color/bt_gree"
+        android:backgroundTint="@color/bt_green"
         android:layout_width="@dimen/_260sdp"
         android:layout_height="@dimen/_50sdp"
         android:text="情景对话"

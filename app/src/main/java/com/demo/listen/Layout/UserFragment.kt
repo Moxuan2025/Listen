@@ -1,10 +1,14 @@
 package com.demo.listen.Layout
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.Toast
+import com.demo.listen.Layout.LoginRegister.Login
 import com.demo.listen.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -38,6 +42,12 @@ class UserFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_user, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireView().findViewById<Button>(R.id.bt_user_login).setOnClickListener {
+            goLogin(requireView()) }
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -56,5 +66,10 @@ class UserFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    fun goLogin(view: View) {
+        Toast.makeText(requireContext(), "Login", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(requireContext(), Login::class.java))
     }
 }
