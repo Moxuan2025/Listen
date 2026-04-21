@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.GridLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -32,12 +33,16 @@ class StudyFragment : Fragment() {
     private var param2: String? = null
 
     private lateinit var gridLayout: GridLayout
-    private lateinit var tvmonth: TextView
+    private lateinit var tvMonth: TextView
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private var curYear = LocalDate.now().year
+    private val today = LocalDate.now()
     @RequiresApi(Build.VERSION_CODES.O)
-    private var curMonth: Int = LocalDate.now().monthValue
+    private var curYear = today.year
+    @RequiresApi(Build.VERSION_CODES.O)
+    private var curMonth: Int = today.monthValue
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val curDay: String = today.dayOfMonth.toString()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +60,7 @@ class StudyFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_study, container, false)
     }
+
 
     companion object {
         /**
@@ -81,9 +87,38 @@ class StudyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         gridLayout = requireView().findViewById<GridLayout>(R.id.gl_calendar)
-        tvmonth = requireView().findViewById<TextView>(R.id.tv_month)
+        tvMonth = requireView().findViewById<TextView>(R.id.tv_month)
 
+        handleClick()
         setCalender(curYear, curMonth)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun handleClick() {
+        val  v = requireView()
+        v.findViewById<Button>(R.id.btn_pre_month).setOnClickListener { // 上个月
+            if (--curMonth < 1) {
+                curMonth = 12
+                setCalender(--curYear, curMonth)
+            } else
+                setCalender(curYear, curMonth)
+        }
+        v.findViewById<Button>(R.id.btn_nxt_month).setOnClickListener { // 下个月
+            if (++curMonth > 12) {
+                curMonth = 1
+                setCalender(++curYear, curMonth)
+            } else
+                setCalender(curYear, curMonth)
+        }
+        v.findViewById<Button>(R.id.btn_assessment).setOnClickListener { // 言语/听力评估
+            // TODO: 跳转到评估页面
+        }
+        v.findViewById<Button>(R.id.btn_language_learning).setOnClickListener { // 言语/听力学习
+            // TODO: 跳转到学习页面
+        }
+        v.findViewById<Button>(R.id.btn_situation_dialog).setOnClickListener { // 情景对话
+            // TODO: 跳转到情景对话页面
+        }
     }
 
     data class MonthCalendar(
@@ -93,6 +128,7 @@ class StudyFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setCalender(year: Int, month: Int) {
+        setMonthTitle()
         var calendar = getMonthCalendarWithHeaders(year, month)
 
         gridLayout.columnCount = 7
@@ -100,7 +136,7 @@ class StudyFragment : Fragment() {
 
         // 1. 先添加星期标题行
         calendar.weekDays.forEach { dayName ->
-            val textView = createTextView(gridLayout.context, dayName, isHeader = false)
+            val textView = createTextView(gridLayout.context, dayName)
             gridLayout.addView(textView)
         }
         // 2. 添加日期行
@@ -109,8 +145,6 @@ class StudyFragment : Fragment() {
                 val textView = createTextView(
                     gridLayout.context,
                     date?.toString() ?: "",
-                    isHeader = false,
-                    isCurrentMonth = date != null
                 )
                 // 设置点击事件
 
@@ -164,33 +198,27 @@ class StudyFragment : Fragment() {
         return MonthCalendar(weeks, weekDays)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun createTextView(
         context: Context,
         text: String,
-        isHeader: Boolean = false,
-        isCurrentMonth: Boolean = true
     ): TextView {
         return TextView(context).apply {
             this.text = text
             gravity = android.view.Gravity.CENTER
             setPadding(8, 12, 8, 12)
 
-            // 设置样式
-            if (isHeader) {
-                setTextColor(ContextCompat.getColor(context, android.R.color.black))
-                setBackgroundColor(ContextCompat.getColor(context, android.R.color.darker_gray))
-                textSize = 14f
-                typeface = android.graphics.Typeface.DEFAULT_BOLD
+            if (text.isEmpty()) {
+                // 非当前月的日期（空白）
+                setTextColor(ContextCompat.getColor(context, android.R.color.transparent))
+                isEnabled = false
             } else {
-                if (text.isEmpty()) {
-                    // 非当前月的日期（空白）
-                    setTextColor(ContextCompat.getColor(context, android.R.color.transparent))
-                    isEnabled = false
-                } else {
-                    setTextColor(ContextCompat.getColor(context, android.R.color.black))
-                    textSize = 16f
-                }
+                setTextColor(ContextCompat.getColor(context, android.R.color.black))
+                textSize = 16f
             }
+
+            if (text == curDay)
+                setBackgroundResource(R.drawable.orange_circle_bg)
 
             // 设置布局参数
             layoutParams = GridLayout.LayoutParams().apply {
@@ -201,4 +229,12 @@ class StudyFragment : Fragment() {
             }
         }
     }
+
+    private var monthList: Array<String> = arrayOf("一月", "二月", "三月", "四月", "五月", "六月",
+                                        "七月", "八月", "九月", "十月", "十一月", "十二月", )
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setMonthTitle() {
+        tvMonth.text = monthList[curMonth-1]
+    }
+
 }

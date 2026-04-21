@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/study_pg"
-        android:title="study"
+        android:title="主页"
         android:icon="@drawable/study_ic"></item>
     <item android:id="@+id/user_pg"
-        android:title="user"
+        android:title="用户"
         android:icon="@drawable/user_gray_ic"></item>
     <item android:id="@+id/rank_pg"
-        android:title="setting"
+        android:title="排名"
         android:icon="@drawable/rank_gray_ic"></item>
 </menu>

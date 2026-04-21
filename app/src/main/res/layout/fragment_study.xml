@@ -57,7 +57,7 @@
     </GridLayout>
 
     <Button
-        android:id="@+id/btn_speech_assessment"
+        android:id="@+id/btn_assessment"
         android:backgroundTint="@color/bt_green"
         android:layout_width="@dimen/_260sdp"
         android:layout_height="@dimen/_50sdp"

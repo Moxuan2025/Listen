@@ -8,4 +8,8 @@
     <color name="gray_opacity">#80999999</color>
     <color name="yellow">#FFFF00</color>
     <color name="yellow_lt">#FFED9D</color>
+    <color name="orange">#FF9641</color>
+    <color name="gold">#FFD700</color>
+    <color name="sliver">#C0C0C0</color>
+    <color name="bronze">#B87333</color>
 </resources>

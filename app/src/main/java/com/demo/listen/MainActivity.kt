@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.demo.listen.Layout.DoTestFragment
 import com.demo.listen.Layout.LoginRegister.Login
+import com.demo.listen.Layout.RankFragment
 import com.demo.listen.Layout.SettingFragment
 import com.demo.listen.Layout.StudyFragment
 import com.demo.listen.Layout.UserFragment
@@ -21,11 +22,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bmv: BottomNavigationView  // 导航栏
     // 主要界面
     private val studyFragment = StudyFragment()
-    private val doTestFragment = DoTestFragment()
     private val userFragment = UserFragment()
-    private val settingFragment = SettingFragment()
+    private val rankFragment = RankFragment()
 
     private var loged = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.rank_pg -> {
-                    loadFragment(settingFragment)
+                    loadFragment(rankFragment)
                     true
                 }
                 else -> false

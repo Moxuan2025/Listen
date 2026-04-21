@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Layout.RankFragment">
+
+    <LinearLayout
+        android:id="@+id/frank_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical" >
+        <View
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:background="@drawable/badge" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:gravity="center_vertical"
+            android:text="社 区 排 名 榜"
+            android:textSize="@dimen/_26sdp"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/frank_section"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        app:layout_constraintTop_toBottomOf="@id/frank_title"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_14sdp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_frank_navi_green"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="打卡能手"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16sdp"
+            android:paddingBottom="@dimen/_10sdp" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_frank_navi_yellow"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="读音标兵"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16sdp"
+            android:paddingBottom="@dimen/_10sdp" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_frank_navi_yellow"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="进步标兵"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16sdp"
+            android:paddingBottom="@dimen/_10sdp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rank_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/frank_section"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/_minus16sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:background="@color/bt_green" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

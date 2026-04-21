@@ -15,7 +15,7 @@
     </item>
     <item
         android:right="@dimen/_30sdp"
-        android:gravity="right |bottom"
+        android:gravity="right|bottom"
         android:height="@dimen/_70sdp"
         android:width="@dimen/_70sdp"
         android:drawable="@drawable/dog">

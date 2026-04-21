@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_100sdp"
         android:background="@drawable/sound_evaluate_ai_consultant_bg"
-        android:gravity="left |center_vertical"
+        android:gravity="left|center_vertical"
         android:padding="@dimen/_10sdp"
         android:text="小智客服服务\n小智为你全面服务\n可联系热线：666-666-6666"
         android:textSize="@dimen/_14sdp"
