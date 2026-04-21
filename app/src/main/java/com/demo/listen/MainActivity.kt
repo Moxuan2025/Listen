@@ -2,19 +2,19 @@ package com.demo.listen
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import com.demo.listen.Layout.DoTestFragment
-import com.demo.listen.Layout.LoginRegister.Login
-import com.demo.listen.Layout.RankFragment
-import com.demo.listen.Layout.SettingFragment
-import com.demo.listen.Layout.StudyFragment
-import com.demo.listen.Layout.UserFragment
+import com.demo.listen.Layout.Assessment.FragmentPersonalAssessment
+import com.demo.listen.Layout.Assessment.FragmentSoundAssess
+import com.demo.listen.Layout.MainPages.RankFragment
+import com.demo.listen.Layout.MainPages.StudyFragment
+import com.demo.listen.Layout.MainPages.UserFragment
+import com.demo.listen.Layout.Assessment.SoundAssessPractice
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -24,6 +24,10 @@ class MainActivity : AppCompatActivity() {
     private val studyFragment = StudyFragment()
     private val userFragment = UserFragment()
     private val rankFragment = RankFragment()
+
+    // 评估选项界面
+    private val personalAssessment = FragmentPersonalAssessment()
+    private val soundAssess = FragmentSoundAssess()
 
     private var loged = false
 
@@ -53,6 +57,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        handleFragmentResult()
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -65,5 +71,39 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.content, fragment)
             .commit()
+    }
+
+    private fun handleFragmentResult() {
+        // 学习主界面
+        supportFragmentManager.setFragmentResultListener("Study", this) {
+                _, bundle ->
+            val ret = bundle.getString("event")
+            when (ret) {
+                "PersonalAssessment" -> loadFragment(personalAssessment)
+            }
+        }
+
+        // 个人评估
+        supportFragmentManager.setFragmentResultListener("PersonalAssessment", this) {
+                _, bundle ->
+            val ret = bundle.getString("event")
+            when (ret) {
+                "Back" -> loadFragment(studyFragment)
+                "SoundAssess" -> loadFragment(soundAssess)
+            }
+        }
+        supportFragmentManager.setFragmentResultListener("SoundAssess", this) {
+                _, bundle ->
+            val ret = bundle.getString("event")
+            when (ret) {
+                "Back" -> loadFragment(personalAssessment)
+                "SoundPractice" -> startActivity(Intent(this@MainActivity,
+                    SoundAssessPractice::class.java).apply {
+                    putExtra("feature", "Practice") })
+                "ProfessionalAssess"-> startActivity(Intent(this@MainActivity,
+                    SoundAssessPractice::class.java).apply {
+                    putExtra("feature", "Assess") })
+            }
+        }
     }
 }

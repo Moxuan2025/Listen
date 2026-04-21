@@ -10,7 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.demo.listen.Layout.CompleteInfo
+import com.demo.listen.Layout.LoginRegister.CompleteInfo
 import com.demo.listen.MainActivity
 import com.demo.listen.R
 

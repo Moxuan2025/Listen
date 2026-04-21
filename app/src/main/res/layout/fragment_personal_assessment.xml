@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Layout.Assessment.FragmentPersonalAssessment">
+
+    <ImageButton
+        android:id="@+id/bt_personal_assessment_back"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:background="@drawable/back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.02" />
+
+    <TextView
+        android:id="@+id/lb_personal_assessment_title"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:gravity="center"
+        android:text="个人评估"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_20sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.5" />
+
+    <LinearLayout
+        android:id="@+id/ll_pa_sound_assess"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_80sdp"
+        app:layout_constraintTop_toBottomOf="@+id/lb_personal_assessment_title"
+        android:orientation="vertical"
+        android:background="@color/bt_green" >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:text="听能评估"
+            android:textSize="@dimen/_24sdp"
+            android:textColor="@color/black" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:text="您听得好吗"
+            android:textSize="@dimen/_18sdp"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_pa_device"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_80sdp"
+        app:layout_constraintTop_toBottomOf="@+id/ll_pa_sound_assess"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:background="@color/bt_green">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:text="助听设备"
+            android:textSize="@dimen/_24sdp"
+            android:textColor="@color/black" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:text="效果调查"
+            android:textSize="@dimen/_18sdp"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_pa_say_assess"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_80sdp"
+        app:layout_constraintTop_toBottomOf="@+id/ll_pa_device"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:background="@color/bt_green" >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:text="言语评估"
+            android:textSize="@dimen/_24sdp"
+            android:textColor="@color/black" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:text="您说得怎么样"
+            android:textSize="@dimen/_18sdp"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

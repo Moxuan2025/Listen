@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/study_page"
-    tools:context=".Layout.StudyFragment">
+    tools:context=".Layout.MainPages.StudyFragment">
 
     <Button
         android:id="@+id/btn_pre_month"
@@ -57,11 +57,11 @@
     </GridLayout>
 
     <Button
-        android:id="@+id/btn_assessment"
-        android:backgroundTint="@color/bt_green"
+        android:id="@+id/btn_clockin"
+        android:backgroundTint="@color/yellow_lt"
         android:layout_width="@dimen/_260sdp"
         android:layout_height="@dimen/_50sdp"
-        android:text="言语评估"
+        android:text="今日打卡"
         android:textColor="@color/white"
         android:textSize="@dimen/_20sdp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -71,11 +71,11 @@
         app:layout_constraintRight_toRightOf="parent"/>
 
     <Button
-        android:id="@+id/btn_language_learning"
+        android:id="@+id/btn_personal_assessment"
         android:backgroundTint="@color/bt_green"
         android:layout_width="@dimen/_260sdp"
         android:layout_height="@dimen/_50sdp"
-        android:text="语言学习"
+        android:text="个人评估"
         android:textColor="@color/white"
         android:textSize="@dimen/_20sdp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -85,11 +85,11 @@
         app:layout_constraintRight_toRightOf="parent"/>
 
     <Button
-        android:id="@+id/btn_situation_dialog"
+        android:id="@+id/btn_speak_learn"
         android:backgroundTint="@color/bt_green"
         android:layout_width="@dimen/_260sdp"
         android:layout_height="@dimen/_50sdp"
-        android:text="情景对话"
+        android:text="言语学习"
         android:textColor="@color/white"
         android:textSize="@dimen/_20sdp"
         app:layout_constraintBottom_toBottomOf="parent"

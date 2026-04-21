@@ -1,8 +1,9 @@
-package com.demo.listen.Layout
+package com.demo.listen.Layout.MainPages
 
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -110,14 +111,23 @@ class StudyFragment : Fragment() {
             } else
                 setCalender(curYear, curMonth)
         }
-        v.findViewById<Button>(R.id.btn_assessment).setOnClickListener { // 言语/听力评估
-            // TODO: 跳转到评估页面
+        v.findViewById<Button>(R.id.btn_clockin).setOnClickListener { // 言语/听力评估
+            val result = Bundle().apply {
+                putString("event", "ClockIn")
+            }
+            parentFragmentManager.setFragmentResult("Study", result)
         }
-        v.findViewById<Button>(R.id.btn_language_learning).setOnClickListener { // 言语/听力学习
-            // TODO: 跳转到学习页面
+        v.findViewById<Button>(R.id.btn_personal_assessment).setOnClickListener { // 言语/听力学习
+            val result = Bundle().apply {
+                putString("event", "PersonalAssessment")
+            }
+            parentFragmentManager.setFragmentResult("Study", result)
         }
-        v.findViewById<Button>(R.id.btn_situation_dialog).setOnClickListener { // 情景对话
-            // TODO: 跳转到情景对话页面
+        v.findViewById<Button>(R.id.btn_speak_learn).setOnClickListener { // 情景对话
+            val result = Bundle().apply {
+                putString("event", "SpeakStudy")
+            }
+            parentFragmentManager.setFragmentResult("Study", result)
         }
     }
 
@@ -205,7 +215,7 @@ class StudyFragment : Fragment() {
     ): TextView {
         return TextView(context).apply {
             this.text = text
-            gravity = android.view.Gravity.CENTER
+            gravity = Gravity.CENTER
             setPadding(8, 12, 8, 12)
 
             if (text.isEmpty()) {

@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Layout.SoundEvaluate">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Layout.Assessment.FragmentSoundAssess">
+
+    <ImageButton
+        android:id="@+id/bt_sound_assessment_back"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:background="@drawable/back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.02" />
 
     <TextView
-        android:id="@+id/title"
-        android:layout_width="@dimen/_100sdp"
+        android:id="@+id/lb_sound_assessment_title"
+        android:layout_width="@dimen/_200sdp"
         android:layout_height="@dimen/_30sdp"
         android:gravity="center"
-        android:text="听能评估"
-        android:textSize="@dimen/_20sdp"
+        android:text="听力评估"
         android:textColor="@color/black"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:textSize="@dimen/_20sdp"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginVertical="@dimen/_10sdp"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.5" />
 
     <TextView
         android:id="@+id/ai_consultant"
@@ -39,7 +49,7 @@
         android:layout_height="0dp"
         android:columnCount="2"
         android:rowCount="2"
-        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@id/lb_sound_assessment_title"
         app:layout_constraintBottom_toTopOf="@id/ai_consultant"
         android:padding="@dimen/_16sdp" >
         <TextView
@@ -48,13 +58,13 @@
             android:layout_rowWeight="1"
             android:layout_margin="@dimen/_6sdp"
             android:background="@drawable/sound_evaluate_bg"
-            android:gravity="left | top"
+            android:gravity="left|top"
             android:padding="@dimen/_10sdp"
             android:text="设备调听\n评估设备效果"
             android:textSize="@dimen/_14sdp"
             android:textColor="@color/white"/>
         <TextView
-            android:id="@+id/can_hear"
+            android:id="@+id/tv_sound_practice"
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
             android:layout_margin="@dimen/_6sdp"
@@ -76,7 +86,7 @@
             android:textSize="@dimen/_14sdp"
             android:textColor="@color/white"/>
         <TextView
-            android:id="@+id/professional_test"
+            android:id="@+id/tv_professional_assess"
             android:layout_columnWeight="1"
             android:layout_rowWeight="1"
             android:layout_margin="@dimen/_6sdp"

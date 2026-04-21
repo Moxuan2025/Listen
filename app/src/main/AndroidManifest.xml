@@ -12,19 +12,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Listen">
         <activity
+            android:name=".Layout.Assessment.PersonalAssessment"
+            android:exported="false" />
+        <activity
             android:name=".Layout.SyllablePractise"
             android:exported="true" />
         <activity
             android:name=".Layout.Enjoyment"
             android:exported="true" />
         <activity
-            android:name=".Layout.SoundTest"
+            android:name=".Layout.Assessment.SoundAssessPractice"
             android:exported="true" />
         <activity
-            android:name=".Layout.SoundEvaluate"
+            android:name=".Layout.SoundAssess"
             android:exported="true" />
         <activity
-            android:name=".Layout.CompleteInfo"
+            android:name=".Layout.LoginRegister.CompleteInfo"
             android:exported="true" />
         <activity
             android:name=".Layout.LoginRegister.Login"

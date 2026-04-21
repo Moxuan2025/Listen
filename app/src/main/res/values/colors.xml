@@ -12,4 +12,5 @@
     <color name="gold">#FFD700</color>
     <color name="sliver">#C0C0C0</color>
     <color name="bronze">#B87333</color>
+    <color name="red_false">#ED1515</color>
 </resources>

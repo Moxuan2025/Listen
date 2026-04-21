@@ -1,10 +1,13 @@
-package com.demo.listen.Layout
+package com.demo.listen.Layout.Assessment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.demo.listen.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -14,10 +17,10 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [DoTestFragment.newInstance] factory method to
+ * Use the [FragmentPersonalAssessment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class DoTestFragment : Fragment() {
+class FragmentPersonalAssessment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -35,7 +38,12 @@ class DoTestFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_do_test, container, false)
+        return inflater.inflate(R.layout.fragment_personal_assessment, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        handleClick()
     }
 
     companion object {
@@ -45,16 +53,32 @@ class DoTestFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment DoTestFragment.
+         * @return A new instance of fragment FragmentPersonalAssessment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            DoTestFragment().apply {
+            FragmentPersonalAssessment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    fun handleClick() {
+        val v = requireView()
+        v.findViewById<ImageButton>(R.id.bt_personal_assessment_back).setOnClickListener {
+            val result = Bundle().apply {
+                putString("event", "Back")
+            }
+            parentFragmentManager.setFragmentResult("PersonalAssessment", result)
+        }
+        v.findViewById<LinearLayout>(R.id.ll_pa_sound_assess).setOnClickListener {
+            val result = Bundle().apply {
+                putString("event", "SoundAssess")
+            }
+            parentFragmentManager.setFragmentResult("PersonalAssessment", result)
+        }
     }
 }

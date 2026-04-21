@@ -5,10 +5,11 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="@color/white"
-    tools:context=".Layout.SoundTest">
+    android:background="@color/white"
+    tools:context=".Layout.Assessment.SoundAssessPractice">
 
     <TextView
+        android:id="@+id/tv_assess_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
         android:gravity="center"
@@ -19,7 +20,18 @@
         android:layout_marginVertical="@dimen/_10sdp" />
 
     <TextView
-        android:id="@+id/target"
+        android:id="@+id/tv_assess_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1/1"
+        android:textSize="@dimen/_18sdp"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/tv_assess_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="@dimen/_20sdp" />
+
+    <TextView
+        android:id="@+id/tv_assess_target"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/_90sdp"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,10 +45,10 @@
         android:textSize="@dimen/_70sdp" />
 
     <LinearLayout
-        android:id="@+id/play_audio"
+        android:id="@+id/ll_play_audio"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
-        app:layout_constraintTop_toBottomOf="@id/target"
+        app:layout_constraintTop_toBottomOf="@id/tv_assess_target"
         android:orientation="horizontal"
         android:gravity="center" >
         <TextView
@@ -50,7 +62,7 @@
         android:id="@+id/choice"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_120sdp"
-        app:layout_constraintTop_toBottomOf="@+id/play_audio"
+        app:layout_constraintTop_toBottomOf="@+id/ll_play_audio"
         android:layout_marginHorizontal="@dimen/_30sdp"
         android:orientation="horizontal" >
         <TextView
@@ -98,6 +110,18 @@
             android:layout_weight="2"
             android:background="@drawable/dog" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_assess_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginBottom="@dimen/_40sdp"
+        android:backgroundTint="@color/bt_green"
+        android:text="下一个" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

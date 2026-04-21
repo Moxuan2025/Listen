@@ -1,4 +1,4 @@
-package com.demo.listen.Layout
+package com.demo.listen.Layout.LoginRegister
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
