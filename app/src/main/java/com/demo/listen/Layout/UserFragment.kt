@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import com.demo.listen.Layout.LoginRegister.Login
 import com.demo.listen.R
@@ -44,7 +45,7 @@ class UserFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireView().findViewById<Button>(R.id.bt_user_login).setOnClickListener {
+        requireView().findViewById<TextView>(R.id.tv_fuser_uname).setOnClickListener {
             goLogin(requireView()) }
     }
 

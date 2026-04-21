@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.demo.listen.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -46,13 +48,36 @@ class ChooseIdentityFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // 选择父母身份的点击事件
         requireView().findViewById<LinearLayout>(R.id.ll_parent).setOnClickListener {
-            if (chooseChild == true) {
+            if (chooseChild == true || chooseChild == null) {
                 it.setBackgroundResource(R.drawable.light_gray__opacity_bg)
                 chooseChild = false
-
+                requireView().findViewById<LinearLayout>(R.id.ll_child).setBackgroundResource(
+                    R.drawable.white_bg)
             }
          }
+        // 选择孩子身份的点击事件
+        requireView().findViewById<LinearLayout>(R.id.ll_child).setOnClickListener {
+            if (chooseChild == false || chooseChild == null) {
+                it.setBackgroundResource(R.drawable.light_gray__opacity_bg)
+                chooseChild = true
+                requireView().findViewById<LinearLayout>(R.id.ll_parent).setBackgroundResource(
+                    R.drawable.white_bg)
+            }
+        }
+        // 下一个
+        requireView().findViewById<Button>(R.id.bt_identity_next).setOnClickListener {
+            if (chooseChild == null) {
+                Toast.makeText(requireContext(), "请选择您的角色", Toast.LENGTH_SHORT).show()
+            } else {
+                var choice: String = if (chooseChild == true) "child" else "parent"
+                val result = Bundle().apply {
+                    putString("choice", choice)
+                }
+                parentFragmentManager.setFragmentResult("identity", result)
+            }
+        }
     }
 
     companion object {

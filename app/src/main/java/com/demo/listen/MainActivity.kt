@@ -40,15 +40,11 @@ class MainActivity : AppCompatActivity() {
                     loadFragment(studyFragment)
                     true
                 }
-                R.id.test_pg -> {
-                    loadFragment(doTestFragment)
-                    true
-                }
                 R.id.user_pg -> {
                     loadFragment(userFragment)
                     true
                 }
-                R.id.setting_pg -> {
+                R.id.rank_pg -> {
                     loadFragment(settingFragment)
                     true
                 }

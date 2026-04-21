@@ -89,7 +89,7 @@
                         android:layout_width="@dimen/_24sdp"
                         android:layout_height="@dimen/_24sdp"
                         android:background="@drawable/circle_background"
-                        android:backgroundTint="@color/bt_green"
+                        android:backgroundTint="@color/yellow"
                         android:gravity="right"
                         android:text="02"
                         android:textSize="@dimen/_18sdp"
@@ -175,7 +175,7 @@
                         android:layout_width="@dimen/_24sdp"
                         android:layout_height="@dimen/_24sdp"
                         android:background="@drawable/circle_background"
-                        android:backgroundTint="@color/bt_green"
+                        android:backgroundTint="@color/yellow"
                         android:gravity="right"
                         android:text="04"
                         android:textSize="@dimen/_18sdp"
@@ -261,7 +261,7 @@
                         android:layout_width="@dimen/_24sdp"
                         android:layout_height="@dimen/_24sdp"
                         android:background="@drawable/circle_background"
-                        android:backgroundTint="@color/bt_green"
+                        android:backgroundTint="@color/yellow"
                         android:gravity="right"
                         android:text="06"
                         android:textSize="@dimen/_18sdp"
@@ -293,13 +293,13 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/bt_info_child_next"
                 android:layout_width="@dimen/_160sdp"
                 android:layout_height="@dimen/_40sdp"
                 android:backgroundTint="@color/bt_green"
                 android:text="下一步"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_20sdp"
-                android:onClick="goNext" />
+                android:textSize="@dimen/_20sdp" />
 
         </LinearLayout>
     </ScrollView>

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.Spinner
 import com.demo.listen.R
 
@@ -24,11 +25,13 @@ class InfoChildFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    private var spGender: Spinner? =null
-    private var spEar: Spinner? =null
-    private var spDevice: Spinner? =null
-    private var spDeviceTime: Spinner? =null
-    private var spStartTime: Spinner? =null
+    private lateinit var spGender: Spinner
+    private lateinit var spEar: Spinner
+    private lateinit var spDevice: Spinner
+    private lateinit var spDeviceTime: Spinner
+    private lateinit var spStartTime: Spinner
+
+    private var choices: Array<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +52,9 @@ class InfoChildFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupSpinners()
+        requireView().findViewById<Button>(R.id.bt_info_child_next).setOnClickListener {
+            goNext()
+        }
     }
 
     companion object {
@@ -71,15 +77,20 @@ class InfoChildFragment : Fragment() {
             }
     }
 
-    fun setupSpinners() {
-        var spinner = requireView().findViewById<Spinner>(R.id.sp_gender)
+    private fun setupSpinners() {
+        spGender = requireView().findViewById<Spinner>(R.id.sp_gender)
         var genderAd = ArrayAdapter.createFromResource(requireContext(),
             R.array.sa_gender,
             android.R.layout.simple_spinner_item)
         genderAd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.setAdapter(genderAd)
-
+        spGender.setAdapter(genderAd)
+        // TODO: rest spinners
     }
 
-    fun goNext(view: View) {}
+    private fun goNext() {
+        val result = Bundle().apply {
+            putStringArray("choices", choices)
+        }
+        parentFragmentManager.setFragmentResult("infoChild", result)
+    }
 }

@@ -6,22 +6,182 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Layout.UserFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:id="@+id/fuser_anl"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/user" />
-
-    <Button
-        android:id="@+id/bt_user_login"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"
-        android:backgroundTint="@color/bt_green"
+        android:layout_height="@dimen/_60sdp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="Login"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_18sdp"
-        android:onClick="goLogin"/>
+        android:layout_marginVertical="@dimen/_20sdp"
+        android:layout_marginHorizontal="@dimen/_30sdp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <View
+            android:id="@+id/v_avatar"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_60sdp"
+            android:background="@drawable/avatar_girl1" />
+        <TextView
+            android:id="@+id/tv_fuser_uname"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:text="点击登录"
+            android:textSize="@dimen/_18sdp"
+            android:textColor="@color/black" />
+        <TextView
+            android:id="@+id/tv_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_6sdp"
+            android:background="@drawable/green_bg"
+            android:paddingVertical="@dimen/_2sdp"
+            android:paddingHorizontal="@dimen/_5sdp"
+            android:text="Lv.0"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fuser_lcc"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60sdp"
+        app:layout_constraintTop_toBottomOf="@+id/fuser_anl"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:background="@drawable/light_green_bg"
+        android:orientation="horizontal"
+        android:gravity="center" >
+        <TextView
+            android:id="@+id/tv_likes"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="0\n点赞数"
+            android:gravity="center"
+            android:textSize="@dimen/_16sdp"
+            android:textColor="@color/black" />
+        <View
+            android:layout_width="@dimen/_3sdp"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="@dimen/_4sdp"
+            android:background="@drawable/green_bar_bg" />
+        <TextView
+            android:id="@+id/tv_complete"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="0\n完成数"
+            android:gravity="center"
+            android:textSize="@dimen/_16sdp"
+            android:textColor="@color/black" />
+        <View
+            android:layout_width="@dimen/_3sdp"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="@dimen/_4sdp"
+            android:background="@drawable/green_bar_bg" />
+        <TextView
+            android:id="@+id/tv_collect"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="0\n收藏数"
+            android:gravity="center"
+            android:textSize="@dimen/_16sdp"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/fuser_lcc"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:orientation="vertical"
+        android:gravity="top" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <View
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:background="@drawable/envelope_ic" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:text="我的消息"
+                android:textSize="@dimen/_18sdp"
+                android:textColor="@color/black" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+            <View
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:background="@drawable/right_arraw_green"
+                android:layout_marginRight="0dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/_10sdp" >
+            <View
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:background="@drawable/consultant_ic" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:text="联系客服"
+                android:textSize="@dimen/_18sdp"
+                android:textColor="@color/black" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+            <View
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:background="@drawable/right_arraw_green"
+                android:layout_marginRight="0dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/_10sdp" >
+            <View
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:background="@drawable/setting_ic" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:text="设置"
+                android:textSize="@dimen/_18sdp"
+                android:textColor="@color/black" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+            <View
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:background="@drawable/right_arraw_green"
+                android:layout_marginRight="0dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,14 +3,11 @@
 
     <item android:id="@+id/study_pg"
         android:title="study"
-        android:icon="@drawable/study_icon"></item>
-    <item android:id="@+id/test_pg"
-        android:title="test"
-        android:icon="@drawable/alarm_icon"></item>
+        android:icon="@drawable/study_ic"></item>
     <item android:id="@+id/user_pg"
         android:title="user"
-        android:icon="@drawable/user_icon"></item>
-    <item android:id="@+id/setting_pg"
+        android:icon="@drawable/user_gray_ic"></item>
+    <item android:id="@+id/rank_pg"
         android:title="setting"
-        android:icon="@drawable/setting_icon"></item>
+        android:icon="@drawable/rank_gray_ic"></item>
 </menu>

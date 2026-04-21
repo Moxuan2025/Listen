@@ -10,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.demo.listen.Layout.CompleteInfo
 import com.demo.listen.MainActivity
 import com.demo.listen.R
 
@@ -32,18 +33,23 @@ class Login : AppCompatActivity() {
             Toast.makeText(this, "密码不能为空", Toast.LENGTH_SHORT).show()
         else {
             // TODO: 用户存在且密码匹配
+
+            // 注册
             if (findViewById<CheckBox>(R.id.newRegister).isChecked()) {
                 // TODO: 比较用户名是否重复
                 // 完善信息
+                startActivity(Intent(this, CompleteInfo::class.java).apply {
+                    putExtra("uname", findViewById<EditText>(R.id.uname).text)
+                })
 
-            }
-            startActivity(Intent(this, MainActivity::class.java).apply {
-                putExtra("uname", findViewById<EditText>(R.id.uname).text)
-            })
+            } else // 主界面
+                startActivity(Intent(this, MainActivity::class.java).apply {
+                    putExtra("uname", findViewById<EditText>(R.id.uname).text)
+                })
         }
     }
 
-    fun findPasswd(view: View) {
+    private fun findPasswd() {
         // TODO: 找回密码
     }
 }
