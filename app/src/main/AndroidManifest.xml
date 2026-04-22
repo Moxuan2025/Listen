@@ -12,7 +12,7 @@
         android:supportsRtl="true"
 
         android:usesCleartextTraffic="true"
-        
+
         android:theme="@style/Theme.Listen">
         <activity
             android:name=".Layout.Assessment.SceneSelect"

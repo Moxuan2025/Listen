@@ -11,8 +11,8 @@
     <color name="yellow_lt">#FFED9D</color>
     <color name="yellow_dk">#DCA589</color>
     <color name="orange">#FF9641</color>
-    <color name="gold">#FFD700</color>
-    <color name="sliver">#C0C0C0</color>
-    <color name="bronze">#B87333</color>
+    <color name="gold">#FFD54F</color>
+    <color name="sliver">#DBDBDB</color>
+    <color name="bronze">#CEA47D</color>
     <color name="red_false">#ED1515</color>
 </resources>

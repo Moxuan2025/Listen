@@ -26,9 +26,10 @@
         android:layout_marginHorizontal="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_14sdp">
         <TextView
+            android:id="@+id/tv_scene_school"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_frank_navi_green"
+            android:background="@drawable/bg_frank_navi_yellow"
             android:layout_weight="1"
             android:gravity="center"
             android:text="校园情景"
@@ -36,9 +37,10 @@
             android:textSize="@dimen/_16sdp"
             android:paddingBottom="@dimen/_10sdp" />
         <TextView
+            android:id="@+id/tv_scene_life"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_frank_navi_yellow"
+            android:background="@drawable/bg_frank_navi_green"
             android:layout_weight="1"
             android:gravity="center"
             android:text="日常情景"
