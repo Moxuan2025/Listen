@@ -2,6 +2,7 @@ package com.demo.listen.Layout.LoginRegister
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -33,7 +34,7 @@ class CompleteInfo : AppCompatActivity() {
         if (savedInstanceState == null)
             loadFragment(chooseIdentityFragment)
 
-        findViewById<TextView>(R.id.bt_complete_back).setOnClickListener {
+        findViewById<ImageButton>(R.id.bt_complete_back).setOnClickListener {
             switchPage(false)
         }
         handleFragmentResult() //处理fragment的返回信息

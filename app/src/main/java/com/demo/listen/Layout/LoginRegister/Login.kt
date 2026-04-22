@@ -38,12 +38,13 @@ class Login : AppCompatActivity() {
             if (findViewById<CheckBox>(R.id.newRegister).isChecked()) {
                 // TODO: 比较用户名是否重复
                 // 完善信息
-                startActivity(Intent(this, CompleteInfo::class.java).apply {
+                Toast.makeText(this, "注册", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this@Login, CompleteInfo::class.java).apply {
                     putExtra("uname", findViewById<EditText>(R.id.uname).text)
                 })
 
             } else // 主界面
-                startActivity(Intent(this, MainActivity::class.java).apply {
+                startActivity(Intent(this@Login, MainActivity::class.java).apply {
                     putExtra("uname", findViewById<EditText>(R.id.uname).text)
                 })
         }

@@ -136,7 +136,6 @@
             android:id="@+id/forgetpd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="findPasswd"
             android:text="忘记密码？"
             android:textColor="#444444"></TextView>
     </LinearLayout>

@@ -10,21 +10,27 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+
+        android:usesCleartextTraffic="true"
+        
         android:theme="@style/Theme.Listen">
         <activity
-            android:name=".Layout.Assessment.PersonalAssessment"
-            android:exported="false" />
-        <activity
-            android:name=".Layout.SyllablePractise"
+            android:name=".Layout.Assessment.SceneSelect"
             android:exported="true" />
         <activity
-            android:name=".Layout.Enjoyment"
+            android:name=".Layout.Assessment.PracticeFeedback"
+            android:exported="true" />
+        <activity
+            android:name=".Layout.Assessment.SyllablePractice"
+            android:exported="true" />
+        <activity
+            android:name=".Layout.Assessment.SyllableList"
+            android:exported="true" />
+        <activity
+            android:name=".Layout.EnjoyStudy.Enjoyment"
             android:exported="true" />
         <activity
             android:name=".Layout.Assessment.SoundAssessPractice"
-            android:exported="true" />
-        <activity
-            android:name=".Layout.SoundAssess"
             android:exported="true" />
         <activity
             android:name=".Layout.LoginRegister.CompleteInfo"

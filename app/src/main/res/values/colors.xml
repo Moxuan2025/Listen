@@ -4,10 +4,12 @@
     <color name="white">#FFFFFFFF</color>
     <color name="bt_green">#13bf9e</color>
     <color name="bt_green_lt">#99E3D5</color>
+    <color name="green_op">#AA13bf9e</color>
     <color name="border_gray">#A2A2A2</color>
     <color name="gray_opacity">#80999999</color>
     <color name="yellow">#FFFF00</color>
     <color name="yellow_lt">#FFED9D</color>
+    <color name="yellow_dk">#DCA589</color>
     <color name="orange">#FF9641</color>
     <color name="gold">#FFD700</color>
     <color name="sliver">#C0C0C0</color>
