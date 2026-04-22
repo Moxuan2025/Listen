@@ -16,6 +16,7 @@ import com.demo.listen.Layout.MainPages.StudyFragment
 import com.demo.listen.Layout.MainPages.UserFragment
 import com.demo.listen.Layout.Assessment.SoundAssessPractice
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.demo.listen.net.SessionStore
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,25 +36,45 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        val currentRole = intent.getStringExtra("role").takeIf { !it.isNullOrBlank() }
+            ?: SessionStore.role(this)
 
         bmv = findViewById<BottomNavigationView>(R.id.navigator)
-        if (savedInstanceState == null)
-            loadFragment(studyFragment)
+        if (savedInstanceState == null) {
+            if (currentRole == "child") {
+                loadFragment(studyFragment)
+            } else {
+                loadFragment(userFragment)
+            }
+        }
         bmv.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.study_pg -> {
-                    loadFragment(studyFragment)
-                    true
+            if (currentRole != "child") {
+                when (item.itemId) {
+                    R.id.user_pg -> {
+                        loadFragment(userFragment)
+                        true
+                    }
+                    else -> {
+                        Toast.makeText(this, "当前账号不是 child，不能进入该页面", Toast.LENGTH_SHORT).show()
+                        false
+                    }
                 }
-                R.id.user_pg -> {
-                    loadFragment(userFragment)
-                    true
+            } else {
+                when (item.itemId) {
+                    R.id.study_pg -> {
+                        loadFragment(studyFragment)
+                        true
+                    }
+                    R.id.user_pg -> {
+                        loadFragment(userFragment)
+                        true
+                    }
+                    R.id.rank_pg -> {
+                        loadFragment(rankFragment)
+                        true
+                    }
+                    else -> false
                 }
-                R.id.rank_pg -> {
-                    loadFragment(rankFragment)
-                    true
-                }
-                else -> false
             }
         }
 

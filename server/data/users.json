@@ -1,0 +1,75 @@
+[
+  {
+    "id": "ceadd275750249dbb66466cc3f817d57",
+    "username": "admin",
+    "password": "admin",
+    "role": "admin",
+    "children": [],
+    "created_at": "2026-04-22T15:00:07.389Z",
+    "updated_at": "2026-04-22T15:00:07.389Z"
+  },
+  {
+    "id": "9ed25417bcfc4a218ae5f1abd2412f0c",
+    "username": "guardian1",
+    "password": "guardian1",
+    "role": "guardian",
+    "children": [],
+    "created_at": "2026-04-22T15:00:07.389Z",
+    "updated_at": "2026-04-22T15:00:07.389Z"
+  },
+  {
+    "id": "b111332889e54f5480b64b444fa1127f",
+    "username": "child1",
+    "password": "child1",
+    "role": "child",
+    "guardian": "guardian1",
+    "created_at": "2026-04-22T15:00:07.389Z",
+    "updated_at": "2026-04-22T15:00:07.389Z"
+  },
+  {
+    "id": "945fe6bf8d224905b3067156e3313f4d",
+    "username": "xiaomei",
+    "password": "123456",
+    "role": "guardian",
+    "children": [],
+    "created_at": "2026-04-22T15:01:27.862Z",
+    "updated_at": "2026-04-22T15:01:27.862Z"
+  },
+  {
+    "id": "eaf04451db8c497097e7a65096c6d016",
+    "username": "小美",
+    "password": "123456",
+    "name": "小美",
+    "role": "guardian",
+    "children": [],
+    "created_at": "2026-04-22T15:11:04.140Z",
+    "updated_at": "2026-04-22T15:11:04.140Z"
+  },
+  {
+    "id": "0dc31f471fc0441f832bcdd4b119a1a1",
+    "username": "n",
+    "password": "s",
+    "name": "n",
+    "role": "child",
+    "created_at": "2026-04-22T15:13:02.494Z",
+    "updated_at": "2026-04-22T15:13:02.494Z"
+  },
+  {
+    "id": "b0aec8301111485a8681bfe05291c72c",
+    "username": "行",
+    "password": "x",
+    "name": "行",
+    "role": "child",
+    "created_at": "2026-04-22T15:18:26.693Z",
+    "updated_at": "2026-04-22T15:18:26.693Z"
+  },
+  {
+    "id": "2c5ff5a08e644919809ff5ba2c894db3",
+    "username": "d",
+    "password": "k",
+    "name": "d",
+    "role": "child",
+    "created_at": "2026-04-22T15:23:29.280Z",
+    "updated_at": "2026-04-22T15:23:29.280Z"
+  }
+]

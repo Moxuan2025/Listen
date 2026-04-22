@@ -10,9 +10,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.demo.listen.Layout.LoginRegister.CompleteInfo
+import androidx.lifecycle.lifecycleScope
 import com.demo.listen.MainActivity
 import com.demo.listen.R
+import com.demo.listen.net.ServerApi
+import com.demo.listen.net.SessionStore
+import kotlinx.coroutines.launch
 
 class Login : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,29 +29,57 @@ class Login : AppCompatActivity() {
         }
     }
 
+
+
     fun login(view: View) {
-        if (findViewById<EditText>(R.id.uname).text.isEmpty())
+        val unameEt = findViewById<EditText>(R.id.uname)
+        val passwdEt = findViewById<EditText>(R.id.passwd)
+        val registerBox = findViewById<CheckBox>(R.id.newRegister)
+
+        val uname = unameEt.text.toString().trim()
+        val passwd = passwdEt.text.toString()
+        val isRegister = registerBox.isChecked
+
+        if (uname.isEmpty()) {
             Toast.makeText(this, "名字不能为空", Toast.LENGTH_SHORT).show()
-        else if (findViewById<EditText>(R.id.passwd).text.isEmpty())
+            return
+        } else if (passwd.isEmpty()) {
             Toast.makeText(this, "密码不能为空", Toast.LENGTH_SHORT).show()
-        else {
-            // TODO: 用户存在且密码匹配
+            return
+        }
 
-            // 注册
-            if (findViewById<CheckBox>(R.id.newRegister).isChecked()) {
-                // TODO: 比较用户名是否重复
-                // 完善信息
-                Toast.makeText(this, "注册", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this@Login, CompleteInfo::class.java).apply {
-                    putExtra("uname", findViewById<EditText>(R.id.uname).text)
-                })
+        lifecycleScope.launch {
+            try {
+                if (isRegister) {
+                    val exists = ServerApi.checkUsername(uname)
+                    if (exists) {
+                        Toast.makeText(this@Login, "用户名已存在", Toast.LENGTH_SHORT).show()
+                        return@launch
+                    }
 
-            } else // 主界面
-                startActivity(Intent(this@Login, MainActivity::class.java).apply {
-                    putExtra("uname", findViewById<EditText>(R.id.uname).text)
-                })
+                    Toast.makeText(this@Login, "用户名可用，继续完善信息", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this@Login, CompleteInfo::class.java).apply {
+                        putExtra("uname", uname)
+                        putExtra("passwd", passwd)
+                    })
+                } else {
+                    val result = ServerApi.login(uname, passwd)
+                    SessionStore.save(this@Login, uname, result.role ?: "child", result.token)
+
+                    Toast.makeText(this@Login, "登录成功", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this@Login, MainActivity::class.java).apply {
+                        putExtra("uname", uname)
+                        putExtra("token", result.token)
+                        putExtra("role", result.role ?: "child")
+                    })
+                    finish()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@Login, e.message ?: "网络异常", Toast.LENGTH_SHORT).show()
+            }
         }
     }
+
 
     private fun findPasswd() {
         // TODO: 找回密码
