@@ -1,5 +1,6 @@
 package com.demo.listen.Layout.EnjoyStudy
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -115,6 +116,12 @@ class SpellPractise : AppCompatActivity() {
                 }
             }
         }
+
+        btSeeReport.setOnClickListener {
+            startActivity(Intent(this@SpellPractise,
+                PracticeFeedback::class.java))
+            finish()
+        }
     }
 
     private fun updateContent() {
@@ -144,9 +151,10 @@ class SpellPractise : AppCompatActivity() {
             btTry.text = "再次尝试"
             state = "spelled"
             tvScore.text = "${scoreList[currentIndex]}"
-            if (currentIndex == pinyinList.size && !scoreList.contains(0))
-                btSeeReport.visibility = View.VISIBLE   // 练习完，一直显示
         }
+
+        if (!scoreList.contains(0))
+            btSeeReport.visibility = View.VISIBLE   // 练习完，一直显示
     }
 
     // pos: 请求获取分数的拼音
@@ -170,12 +178,4 @@ class SpellPractise : AppCompatActivity() {
         state = "spelled"
         btTry.text = "再次尝试"
     }
-
-    fun allAssessed(array: Array<Int>): Boolean {
-        for (num in array) {
-            if (num == 0) return false
-        }
-        return true
-    }
-
 }

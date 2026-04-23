@@ -29,7 +29,7 @@
             android:name=".Layout.EnjoyStudy.SceneSelect"
             android:exported="true" />
         <activity
-            android:name=".Layout.Assessment.PracticeFeedback"
+            android:name=".Layout.EnjoyStudy.PracticeFeedback"
             android:exported="true" />
         <activity
             android:name=".Layout.EnjoyStudy.SyllablePractice"

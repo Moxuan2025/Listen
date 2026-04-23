@@ -20,7 +20,7 @@
         android:gravity="center"
         android:text="bang"
         android:textColor="@color/black"
-        android:textSize="@dimen/_60sdp" />
+        android:textSize="@dimen/_54sdp" />
 
     <TextView
         android:id="@+id/tv_spell_practise_counter"
