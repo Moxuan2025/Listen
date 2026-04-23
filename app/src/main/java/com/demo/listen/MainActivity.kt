@@ -18,7 +18,7 @@ import com.demo.listen.Layout.Assessment.SoundAssessPractice
 import com.demo.listen.Layout.EnjoyStudy.Enjoyment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.demo.listen.net.SessionStore
-
+import com.demo.listen.Layout.Assessment.AssessmentActivity
 class MainActivity : AppCompatActivity() {
 
     private lateinit var bmv: BottomNavigationView  // 导航栏
@@ -101,7 +101,11 @@ class MainActivity : AppCompatActivity() {
                 _, bundle ->
             val ret = bundle.getString("event")
             when (ret) {
-                "PersonalAssessment" -> loadFragment(personalAssessment)
+//                "PersonalAssessment" -> loadFragment(personalAssessment)
+                "PersonalAssessment" -> {
+                    startActivity(Intent(this@MainActivity, AssessmentActivity::class.java)
+                        .putExtra("child_username", SessionStore.name(this))) // 或从 UI 获取当前孩子
+                }
                 "SpeakLearn" -> {
                     startActivity(Intent(this@MainActivity, Enjoyment::class.java))
                 }

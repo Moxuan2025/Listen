@@ -42,5 +42,15 @@
     ],
     "created_at": "2026-04-23T15:08:17.349Z",
     "updated_at": "2026-04-23T15:08:17.349Z"
+  },
+  {
+    "id": "620e87d3744f44e385778149c45f8b63",
+    "username": "moxuan",
+    "password": "123456",
+    "name": "moxuan",
+    "role": "child",
+    "guardians": [],
+    "created_at": "2026-04-23T15:10:02.502Z",
+    "updated_at": "2026-04-23T15:10:02.502Z"
   }
 ]

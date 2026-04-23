@@ -9,6 +9,8 @@ import java.net.URL
 import java.net.URLEncoder
 
 import android.content.Context
+import com.demo.listen.Layout.Assessment.AssessmentResult
+import com.demo.listen.Layout.Assessment.AssessmentQuestion
 
 object SessionStore {
     private const val PREF = "session"
@@ -63,6 +65,23 @@ object ServerApi {
         val userName: String?,
         val role: String?
     )
+
+    // 开始评估会话（返回 sessionId）
+    suspend fun startAssessment(childUsername: String, level: Int): String {
+        // TODO: 调用 POST /api/v1/assessments/start，返回 { sessionId: "xxx" }
+        return "mock-session-id"
+    }
+
+    // 提交单题答案（可批量，也可每道题提交）
+    suspend fun submitAnswer(sessionId: String, questionIndex: Int, answer: String) {
+        // TODO: POST /api/v1/assessments/answer
+    }
+
+    // 完成评估，返回评估结果
+    suspend fun finishAssessment(sessionId: String): AssessmentResult {
+        // TODO: POST /api/v1/assessments/finish，返回评分
+        return AssessmentResult(80f, 75f, 82f, 79f)
+    }
 
     private suspend fun request(
         method: String,

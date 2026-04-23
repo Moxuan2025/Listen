@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="评估完成！"
+        android:textSize="24sp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:id="@+id/tvListeningScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="听力能力：80"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvExpressionScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="表达能力：75"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvComprehensionScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="理解能力：82"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvOverallScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="综合评分：79"
+        android:textSize="18sp"
+        android:layout_marginBottom="32dp" />
+
+    <Button
+        android:id="@+id/btnFinish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="返回主页"
+        android:textSize="16sp" />
+</LinearLayout>
