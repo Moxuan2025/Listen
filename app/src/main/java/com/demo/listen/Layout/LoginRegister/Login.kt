@@ -16,6 +16,7 @@ import com.demo.listen.R
 import com.demo.listen.net.ServerApi
 import com.demo.listen.net.SessionStore
 import kotlinx.coroutines.launch
+import com.demo.listen.Layout.guardian.GuardianActivity
 
 class Login : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,15 +64,38 @@ class Login : AppCompatActivity() {
                         putExtra("passwd", passwd)
                     })
                 } else {
+//                    val result = ServerApi.login(uname, passwd)
+//                    SessionStore.save(this@Login, uname, result.role ?: "child", result.token)
+//
+//                    Toast.makeText(this@Login, "登录成功", Toast.LENGTH_SHORT).show()
+//                    startActivity(Intent(this@Login, MainActivity::class.java).apply {
+//                        putExtra("uname", uname)
+//                        putExtra("token", result.token)
+//                        putExtra("role", result.role ?: "child")
+//                    })
+//                    finish()
                     val result = ServerApi.login(uname, passwd)
                     SessionStore.save(this@Login, uname, result.role ?: "child", result.token)
 
                     Toast.makeText(this@Login, "登录成功", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this@Login, MainActivity::class.java).apply {
-                        putExtra("uname", uname)
-                        putExtra("token", result.token)
-                        putExtra("role", result.role ?: "child")
-                    })
+
+                    // ✅ 根据角色跳转不同页面
+                    when (result.role) {
+                        "guardian" -> {
+                            startActivity(Intent(this@Login, GuardianActivity::class.java).apply {
+                                putExtra("uname", uname)
+                                putExtra("token", result.token)
+                                putExtra("role", result.role)
+                            })
+                        }
+                        else -> {
+                            startActivity(Intent(this@Login, MainActivity::class.java).apply {
+                                putExtra("uname", uname)
+                                putExtra("token", result.token)
+                                putExtra("role", result.role ?: "child")
+                            })
+                        }
+                    }
                     finish()
                 }
             } catch (e: Exception) {

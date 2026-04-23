@@ -14,6 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Listen"
         android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".Layout.guardian.GuardianActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Layout.Assessment.AssessReport"
             android:exported="true" />

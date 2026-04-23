@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_children"
+        android:title="我的孩子"
+        android:icon="@drawable/ic_children" />
+    <item
+        android:id="@+id/nav_assistant"
+        android:title="AI助手"
+        android:icon="@drawable/ic_ai" />
+    <item
+        android:id="@+id/nav_profile"
+        android:title="个人"
+        android:icon="@drawable/user_gray_ic" />
+</menu>
