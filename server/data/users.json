@@ -1,132 +1,46 @@
 [
   {
-    "id": "ceadd275750249dbb66466cc3f817d57",
+    "id": "1671eb52b1cd419892ab3afae7257064",
     "username": "admin",
     "password": "admin",
     "role": "admin",
     "children": [],
-    "created_at": "2026-04-22T15:00:07.389Z",
-    "updated_at": "2026-04-22T15:00:07.389Z"
+    "created_at": "2026-04-23T15:08:08.345Z",
+    "updated_at": "2026-04-23T15:08:08.345Z"
   },
   {
-    "id": "9ed25417bcfc4a218ae5f1abd2412f0c",
+    "id": "f33a4bda52f14251b6772ecdda319edd",
     "username": "guardian1",
     "password": "guardian1",
     "role": "guardian",
-    "children": [],
-    "created_at": "2026-04-22T15:00:07.389Z",
-    "updated_at": "2026-04-22T15:00:07.389Z"
+    "children": [
+      "child1"
+    ],
+    "created_at": "2026-04-23T15:08:08.345Z",
+    "updated_at": "2026-04-23T15:08:08.345Z"
   },
   {
-    "id": "b111332889e54f5480b64b444fa1127f",
+    "id": "b4ed7267306e436cad07e15eaead603c",
     "username": "child1",
     "password": "child1",
     "role": "child",
-    "guardian": "guardian1",
-    "created_at": "2026-04-22T15:00:07.389Z",
-    "updated_at": "2026-04-22T15:00:07.389Z"
+    "guardians": [
+      "guardian1",
+      "1"
+    ],
+    "created_at": "2026-04-23T15:08:08.345Z",
+    "updated_at": "2026-04-23T15:08:17.350Z"
   },
   {
-    "id": "945fe6bf8d224905b3067156e3313f4d",
-    "username": "xiaomei",
-    "password": "123456",
-    "role": "guardian",
-    "children": [],
-    "created_at": "2026-04-22T15:01:27.862Z",
-    "updated_at": "2026-04-22T15:01:27.862Z"
-  },
-  {
-    "id": "eaf04451db8c497097e7a65096c6d016",
-    "username": "小美",
-    "password": "123456",
-    "name": "小美",
-    "role": "guardian",
-    "children": [],
-    "created_at": "2026-04-22T15:11:04.140Z",
-    "updated_at": "2026-04-22T15:11:04.140Z"
-  },
-  {
-    "id": "0dc31f471fc0441f832bcdd4b119a1a1",
-    "username": "n",
-    "password": "s",
-    "name": "n",
-    "role": "child",
-    "created_at": "2026-04-22T15:13:02.494Z",
-    "updated_at": "2026-04-22T15:13:02.494Z"
-  },
-  {
-    "id": "b0aec8301111485a8681bfe05291c72c",
-    "username": "行",
-    "password": "x",
-    "name": "行",
-    "role": "child",
-    "created_at": "2026-04-22T15:18:26.693Z",
-    "updated_at": "2026-04-22T15:18:26.693Z"
-  },
-  {
-    "id": "2c5ff5a08e644919809ff5ba2c894db3",
-    "username": "d",
-    "password": "k",
-    "name": "d",
-    "role": "child",
-    "created_at": "2026-04-22T15:23:29.280Z",
-    "updated_at": "2026-04-22T15:23:29.280Z"
-  },
-  {
-    "id": "dec657ba9f494cf5a1c165eb757aaf49",
-    "username": "2233",
-    "password": "2233",
-    "name": "2233",
-    "role": "child",
-    "created_at": "2026-04-22T16:04:27.541Z",
-    "updated_at": "2026-04-22T16:04:27.541Z"
-  },
-  {
-    "id": "421bc1e5b2054288b02f0bef9d7817b1",
-    "username": "Null",
-    "password": "null",
-    "name": "Null",
-    "role": "child",
-    "created_at": "2026-04-22T16:31:20.642Z",
-    "updated_at": "2026-04-22T16:31:20.642Z"
-  },
-  {
-    "id": "cd040fdb2afb4908b22fbe110cbab017",
-    "username": "5555",
-    "password": "2223",
-    "name": "5555",
-    "role": "guardian",
-    "children": [],
-    "created_at": "2026-04-22T16:33:20.450Z",
-    "updated_at": "2026-04-22T16:33:20.450Z"
-  },
-  {
-    "id": "e6bd0de2a3594750bf5703cb8cfd9d0b",
-    "username": "333",
-    "password": "3333",
-    "name": "333",
-    "role": "guardian",
-    "children": [],
-    "created_at": "2026-04-22T16:37:09.026Z",
-    "updated_at": "2026-04-22T16:37:09.026Z"
-  },
-  {
-    "id": "5e70721a173e45f19df726c59d6c369c",
-    "username": "moxuan",
-    "password": "123456",
-    "name": "moxuan",
-    "role": "child",
-    "created_at": "2026-04-23T08:53:55.755Z",
-    "updated_at": "2026-04-23T08:53:55.755Z"
-  },
-  {
-    "id": "418b32dc415e47d3802f854a9913ad9c",
+    "id": "f7971bafc22f4e96bc06f68187e3d394",
     "username": "1",
     "password": "1",
     "name": "1",
     "role": "guardian",
-    "children": [],
-    "created_at": "2026-04-23T10:02:11.719Z",
-    "updated_at": "2026-04-23T10:02:11.719Z"
+    "children": [
+      "child1"
+    ],
+    "created_at": "2026-04-23T15:08:17.349Z",
+    "updated_at": "2026-04-23T15:08:17.349Z"
   }
 ]
