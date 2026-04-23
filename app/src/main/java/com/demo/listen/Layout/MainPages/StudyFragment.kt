@@ -125,7 +125,7 @@ class StudyFragment : Fragment() {
         }
         v.findViewById<Button>(R.id.btn_speak_learn).setOnClickListener { // 情景对话
             val result = Bundle().apply {
-                putString("event", "SpeakStudy")
+                putString("event", "SpeakLearn")
             }
             parentFragmentManager.setFragmentResult("Study", result)
         }

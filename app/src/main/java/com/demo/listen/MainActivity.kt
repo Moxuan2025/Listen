@@ -15,6 +15,7 @@ import com.demo.listen.Layout.MainPages.RankFragment
 import com.demo.listen.Layout.MainPages.StudyFragment
 import com.demo.listen.Layout.MainPages.UserFragment
 import com.demo.listen.Layout.Assessment.SoundAssessPractice
+import com.demo.listen.Layout.EnjoyStudy.Enjoyment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.demo.listen.net.SessionStore
 
@@ -101,6 +102,9 @@ class MainActivity : AppCompatActivity() {
             val ret = bundle.getString("event")
             when (ret) {
                 "PersonalAssessment" -> loadFragment(personalAssessment)
+                "SpeakLearn" -> {
+                    startActivity(Intent(this@MainActivity, Enjoyment::class.java))
+                }
             }
         }
 

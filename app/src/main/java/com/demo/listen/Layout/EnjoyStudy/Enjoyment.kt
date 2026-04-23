@@ -44,5 +44,8 @@ class Enjoyment : AppCompatActivity() {
         tvSyllable.setOnClickListener {
             startActivity(Intent(this@Enjoyment, SyllableList::class.java))
         }
+        tvPractice.setOnClickListener {
+            startActivity(Intent(this@Enjoyment, SceneSelect::class.java))
+        }
     }
 }

@@ -30,7 +30,7 @@ class RankAdapter(private val items: MutableList<RankItem>) :
         holder.vAvatar.setBackgroundResource(item.avatarRes)
         holder.tvScore.text = "打卡天数：${item.clockInDays}"
 
-        // 可选：前三名特殊样式
+        // 前三名特殊样式
         when (item.rank) {
             1 -> holder.itemView.setBackgroundResource(R.drawable.bg_rank_first)
             2 -> holder.itemView.setBackgroundResource(R.drawable.bg_rank_second)
