@@ -20,7 +20,7 @@
         android:gravity="center"
         android:text="bang"
         android:textColor="@color/black"
-        android:textSize="@dimen/_60sdp" />
+        android:textSize="@dimen/_54sdp" />
 
     <TextView
         android:id="@+id/tv_spell_practise_counter"
@@ -77,8 +77,44 @@
         app:layout_constraintTop_toBottomOf="@id/bt_spell_nxt"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_24sdp"
         android:text="尝试"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_18sdp" />
+
+    <TextView
+        android:id="@+id/tv_spell_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pv_example_view"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="您的得分为:"
+        android:textSize="@dimen/_12sdp"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/tv_spell_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_spell_tip"
+        android:text="0"
+        android:textSize="@dimen/_40sdp"
+        android:textColor="@color/black" />
+
+    <Button
+        android:id="@+id/bt_spell_see_report"
+        android:layout_width="@dimen/_140sdp"
+        android:layout_height="@dimen/_50sdp"
+        android:backgroundTint="@color/sliver"
+        app:layout_constraintTop_toBottomOf="@id/bt_try_report"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="查看报告"
         android:textColor="@color/white"
         android:textSize="@dimen/_18sdp" />
 
