@@ -1,6 +1,7 @@
 package com.demo.listen.Layout.Assessment
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -75,7 +76,16 @@ class SoundAssessPractice : AppCompatActivity() {
             choice.add(tvChoiceB.text.toString())   // 记录选择
         }
         btNext.setOnClickListener {     // 点击了 "下一个"
-            nextProblem()
+            if (index != target.size)
+                nextProblem()
+            else {
+                startActivity(Intent(this@SoundAssessPractice,
+                    AssessReport::class.java).apply {
+                    putExtra("choice", ArrayList(choice))
+                    putExtra("target", ArrayList(target))
+                })
+                finish()
+            }
         }
     }
 
@@ -102,6 +112,11 @@ class SoundAssessPractice : AppCompatActivity() {
         btNext.visibility = View.INVISIBLE
 
         index++
+        if (index == target.size) {
+            btNext.setBackgroundColor(Color.YELLOW)
+            btNext.text = "查看报告"
+            btNext.setTextColor(Color.BLACK)
+        }
         tvCounter.text = "${index} / ${target.size}"
     }
 

@@ -24,9 +24,9 @@ class CompleteInfo : AppCompatActivity() {
 
     private var curPage = "identity"
 
-    private var userName: String? = null
-    private var userPasswd: String? = null
-    private var userIdentity: String? = null
+    private lateinit var userName: String
+    private lateinit var userPasswd: String
+    private lateinit var userIdentity: String
     private var childChoices: Array<String>? = null
     private var parentChoices: Array<String>? = null
 
@@ -35,8 +35,8 @@ class CompleteInfo : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_complete_info)
 
-        userName = intent.getStringExtra("uname")
-        userPasswd = intent.getStringExtra("passwd")
+        userName = intent.getStringExtra("uname") ?: "Null"
+        userPasswd = intent.getStringExtra("passwd") ?: "null"
 
         if (savedInstanceState == null) {
             loadFragment(chooseIdentityFragment)
@@ -98,43 +98,35 @@ class CompleteInfo : AppCompatActivity() {
     }
 
     private fun submitRegister() {
-        val uname = userName.orEmpty()
-        val passwd = userPasswd.orEmpty()
-
-        if (uname.isEmpty() || passwd.isEmpty()) {
-            Toast.makeText(this, "注册信息不完整", Toast.LENGTH_SHORT).show()
-            return
-        }
 
         lifecycleScope.launch {
             try {
                 val role = when (userIdentity) {
                     "child" -> "child"
-                    "parent", "家长", "监护人" -> "guardian"
-                    "admin", "管理员" -> "admin"
+                    "parent" -> "guardian"
+                    "admin" -> "admin"
                     else -> "guardian"
                 }
 
                 val result = ServerApi.register(
-                    username = uname,
-                    password = passwd,
-                    name = uname,
+                    username = userName,
+                    password = userPasswd,
+                    name = userName,
                     role = role,
                     identity = userIdentity,
                     choices = (childChoices?.toList() ?: emptyList()) + (parentChoices?.toList() ?: emptyList())
                 )
 
                 val finalRole = result.role ?: role  // 优先使用服务器返回的 role
-                Toast.makeText(this@CompleteInfo, "注册成功", Toast.LENGTH_SHORT).show()
 
                 // 保存到 SessionStore
-                SessionStore.save(this@CompleteInfo, uname, finalRole, result.token)
+                SessionStore.save(this@CompleteInfo, userName, finalRole, result.token)
 
                 // 跳转并传递 role
                 startActivity(Intent(this@CompleteInfo, MainActivity::class.java).apply {
-                    putExtra("uname", uname)
+                    putExtra("uname", userName)
                     putExtra("token", result.token)
-                    putExtra("role", finalRole)
+                    putExtra("role", userIdentity)
                 })
                 finish()
             } catch (e: Exception) {
@@ -145,7 +137,7 @@ class CompleteInfo : AppCompatActivity() {
 
     private fun handleFragmentResult() {
         supportFragmentManager.setFragmentResultListener("identity", this) { _, bundle ->
-            userIdentity = bundle.getString("choice")
+            userIdentity = bundle.getString("choice") ?: "Null"
             Toast.makeText(this, userIdentity, Toast.LENGTH_SHORT).show()
             switchPage(true)
         }

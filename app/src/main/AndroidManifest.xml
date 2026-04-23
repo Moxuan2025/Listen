@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
-
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-
-        android:usesCleartextTraffic="true"
-
-        android:theme="@style/Theme.Listen">
+        android:theme="@style/Theme.Listen"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Layout.Assessment.AssessReport"
+            android:exported="false" />
         <activity
             android:name=".Layout.Assessment.SceneSelect"
             android:exported="true" />
@@ -23,10 +24,10 @@
             android:name=".Layout.Assessment.PracticeFeedback"
             android:exported="true" />
         <activity
-            android:name=".Layout.Assessment.SyllablePractice"
+            android:name=".Layout.EnjoyStudy.SyllablePractice"
             android:exported="true" />
         <activity
-            android:name=".Layout.Assessment.SyllableList"
+            android:name=".Layout.EnjoyStudy.SyllableList"
             android:exported="true" />
         <activity
             android:name=".Layout.EnjoyStudy.Enjoyment"

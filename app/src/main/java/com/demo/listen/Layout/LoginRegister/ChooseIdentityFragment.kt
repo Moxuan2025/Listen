@@ -72,6 +72,7 @@ class ChooseIdentityFragment : Fragment() {
                 Toast.makeText(requireContext(), "请选择您的角色", Toast.LENGTH_SHORT).show()
             } else {
                 var choice: String = if (chooseChild == true) "child" else "parent"
+                Toast.makeText(requireContext(), "您的选择${choice}", Toast.LENGTH_SHORT).show()
                 val result = Bundle().apply {
                     putString("choice", choice)
                 }

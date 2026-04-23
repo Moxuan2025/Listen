@@ -1,17 +1,19 @@
-package com.demo.listen.Layout.Assessment
+package com.demo.listen.Layout.EnjoyStudy
 
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
+import android.widget.Button
 import android.widget.GridLayout
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.demo.listen.Layout.EnjoyStudy.SyllablePractice
 import com.demo.listen.R
-import kotlin.jvm.java
 
 class SyllableList : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,6 +22,7 @@ class SyllableList : AppCompatActivity() {
         setContentView(R.layout.activity_syllable_list)
 
         addSyllable()
+        handleClick()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -67,6 +70,12 @@ class SyllableList : AppCompatActivity() {
 
             textView.layoutParams = params
             gridLayout.addView(textView)
+        }
+    }
+
+    private fun handleClick() {
+        findViewById<ImageButton>(R.id.bt_sl_back).setOnClickListener {
+            finish()
         }
     }
 }

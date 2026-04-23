@@ -56,6 +56,8 @@ object ServerApi {
   //配置url
     private const val BASE_URL = "http://b98bae58.natappfree.cc"
 
+//    private const val BASE_URL = "127.0.0.1:8000"
+
     data class AuthResult(
         val token: String,
         val userName: String?,

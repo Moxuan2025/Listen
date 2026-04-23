@@ -1,5 +1,6 @@
 package com.demo.listen.Layout.EnjoyStudy
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -40,6 +41,8 @@ class Enjoyment : AppCompatActivity() {
     }
 
     private fun handleClick() {
-
+        tvSyllable.setOnClickListener {
+            startActivity(Intent(this@Enjoyment, SyllableList::class.java))
+        }
     }
 }
