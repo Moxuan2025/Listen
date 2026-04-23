@@ -121,33 +121,63 @@ object ServerApi {
         )
     }
 
-    suspend fun register(
-        username: String,
-        password: String,
-        name: String,
-        role: String,
-        identity: String? = null,
-        choices: List<String>? = null
-    ): AuthResult {
-        val body = JSONObject().apply {
-            put("username", username)
-            put("password", password)
-            put("name", name)
-            put("role", role)
-            if (identity != null) put("identity", identity)
-            if (choices != null) put("choices", JSONArray(choices))
-        }
-        val resp = request("POST", "/api/v1/auth/register", body)
-        if (!resp.optBoolean("ok")) {
-            error(resp.optString("message", "注册失败"))
-        }
-
-        val data = resp.getJSONObject("data")
-        val user = data.optJSONObject("user")
-        return AuthResult(
-            token = data.optString("token"),
-            userName = user?.optString("name"),
-            role = user?.optString("role")
-        )
+//    suspend fun register(
+//        username: String,
+//        password: String,
+//        name: String,
+//        role: String,
+//        guardian: String?,
+//        children: List<String>
+//    ): RegisterResult {
+//        // 内部请求体的构建也要对应修改
+//        val requestBody = mapOf(
+//            "username" to username,
+//            "password" to password,
+//            "name" to name,
+//            "role" to role,
+//            "guardian" to (guardian ?: ""), // 或直接 null
+//            "children" to children
+//        )
+//
+//        val resp = request("POST", "/api/v1/auth/register", body)
+//        if (!resp.optBoolean("ok")) {
+//            error(resp.optString("message", "注册失败"))
+//        }
+//
+//        val data = resp.getJSONObject("data")
+//        val user = data.optJSONObject("user")
+//        return AuthResult(
+//            token = data.optString("token"),
+//            userName = user?.optString("name"),
+//            role = user?.optString("role")
+//        )
+//    }
+suspend fun register(
+    username: String,
+    password: String,
+    name: String,
+    role: String,
+    guardian: String?,
+    children: List<String>
+): AuthResult {
+    val body = JSONObject().apply {
+        put("username", username)
+        put("password", password)
+        put("name", name)
+        put("role", role)
+        put("guardian", guardian ?: "")
+        put("children", JSONArray(children))
     }
+    val resp = request("POST", "/api/v1/auth/register", body)
+    if (!resp.optBoolean("ok")) {
+        error(resp.optString("message", "注册失败"))
+    }
+    val data = resp.getJSONObject("data")
+    val user = data.optJSONObject("user")
+    return AuthResult(
+        token = data.optString("token"),
+        userName = user?.optString("name"),
+        role = user?.optString("role")
+    )
+}
 }

@@ -6,14 +6,28 @@ const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
+const audioStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(__dirname, 'data', 'audio');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const name = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}${ext}`;
+    cb(null, name);
+  }
+});
+const upload = multer({ storage: audioStorage });
 const { randomUUID } = require("crypto");
 
 const app = express();
-const upload = multer();
+//const upload = multer();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/audio', express.static(path.join(__dirname, 'data', 'audio')));
 
 const PORT = process.env.PORT || 8000;
 
@@ -164,8 +178,8 @@ class JsonTable extends MemoryTable {
 const db = {
   users: new JsonTable("users.json", [
     { username: "admin", password: "admin", role: "admin", children: [] },
-    { username: "guardian1", password: "guardian1", role: "guardian", children: [] },
-    { username: "child1", password: "child1", role: "child", guardian: "guardian1" }
+    { username: "guardian1", password: "guardian1", role: "guardian", children: ["child1"] },
+ { username: "child1", password: "child1", role: "child", guardians: ["guardian1"] }
   ]),
   plans: new JsonTable("plans.json"),
   sessions: new JsonTable("sessions.json"),
@@ -190,7 +204,7 @@ function sanitizeUser(u) {
   if (u.role === "guardian") {
     result.children = u.children || [];
   } else if (u.role === "child") {
-    result.guardian = u.guardian;
+    result.guardians = u.guardians || [];
   }
   // admin 角色不返回 children 或 guardian
   return result;
@@ -228,7 +242,101 @@ function getCurrentUser(token) {
   return db.users.get(tokenRow.user_id);
 }
 
-// ---------- 注册与登录（核心修正）----------
+function registerUser({ username, password, name = "", role = "guardian", guardian_username = null, children_usernames = [] }) {
+  if (!username) apiFail("用户名不能为空", 400);
+  if (!password) apiFail("密码不能为空", 400);
+  if (!["guardian", "child", "admin"].includes(role)) apiFail("角色必须是 guardian、child 或 admin", 400);
+
+  const exists = findUserByUsername(username);
+  if (exists) apiFail("用户名已存在", 409);
+
+  // 孩子注册：监护人可选
+  if (role === "child") {
+    if (guardian_username) {
+      const guardian = findUserByUsername(guardian_username);
+      if (!guardian) apiFail("监护人不存在", 404);
+      if (guardian.role !== "guardian") apiFail("指定的用户不是监护人", 400);
+    }
+  }
+
+  // 监护人注册：必须至少关联一个孩子
+  if (role === "guardian") {
+    if (!children_usernames || !Array.isArray(children_usernames) || children_usernames.length === 0) {
+      apiFail("监护人注册必须至少关联一个孩子", 400);
+    }
+    for (const childName of children_usernames) {
+      const child = findUserByUsername(childName);
+      if (!child) apiFail(`孩子 ${childName} 不存在`, 404);
+      if (child.role !== "child") apiFail(`${childName} 不是孩子角色`, 400);
+     // if (child.guardian) apiFail(`孩子 ${childName} 已有监护人`, 409);
+    }
+  }
+
+  // 构建用户数据
+  const userPayload = {
+    username,
+    password,
+    name: name || username,
+    role,
+  };
+  if (role === "child") {
+    //userPayload.guardian = guardian_username || null;
+    userPayload.guardians = guardian_username ? [guardian_username] : [];
+  }
+  if (role === "guardian") {
+    userPayload.children = children_usernames;
+  }
+
+  const user = db.users.create(userPayload);
+
+  // 孩子关联监护人
+  if (role === "child" && guardian_username) {
+    const guardian = findUserByUsername(guardian_username);
+    if (guardian) {
+      const updatedChildren = [...(guardian.children || []), username];
+      db.users.update(guardian.id, { children: updatedChildren });
+    }
+  }
+
+  // 监护人关联孩子
+  if (role === "guardian") {
+    for (const childName of children_usernames) {
+      const child = findUserByUsername(childName);
+      if (child) {
+        //db.users.update(child.id, { guardian: username });
+        const updatedGuardians = [...(child.guardians || []), username];
+        db.users.update(child.id, { guardians: updatedGuardians });
+      }
+    }
+  }
+
+  // 如果是孩子，自动创建空白档案
+  if (role === 'child') {
+    try {
+      const childDir = path.join(DATA_DIR, 'childfile');
+      if (!fs.existsSync(childDir)) fs.mkdirSync(childDir, { recursive: true });
+      const profilePath = path.join(childDir, `${username}.json`);
+      const profile = {
+        name: username,
+        hearing_loss_level: "未知",
+        listening_scores: [],
+        expression_scores: [],
+        comprehension_scores: [],
+        overall_scores: [],
+        current_plan: null,
+        latest_report: null
+      };
+      fs.writeFileSync(profilePath, JSON.stringify(profile, null, 2), 'utf8');
+    } catch (e) {
+      console.error(`创建孩子档案失败: ${username}`, e);
+    }
+  }
+
+  const token = createTokenForUser(user.id);
+  return { token, user: sanitizeUser(user) };
+}
+
+/*// ---------- 注册与登录（）----------
 function registerUser({ username, password, name = "", role = "guardian", guardian_username = null }) {
   if (!username) apiFail("用户名不能为空", 400);
   if (!password) apiFail("密码不能为空", 400);
@@ -243,6 +351,28 @@ function registerUser({ username, password, name = "", role = "guardian", guardi
     if (!guardian) apiFail("监护人不存在", 404);
     if (guardian.role !== "guardian") apiFail("指定的用户不是监护人", 400);
   }
+  // 如果是孩子，自动创建空白档案
+if (role === 'child') {
+  try {
+    const childDir = path.join(DATA_DIR, 'childfile');
+    if (!fs.existsSync(childDir)) fs.mkdirSync(childDir, { recursive: true });
+    const profilePath = path.join(childDir, `${username}.json`);
+    const profile = {
+      name: username,
+      hearing_loss_level: "未知",
+      listening_scores: [],
+      expression_scores: [],
+      comprehension_scores: [],
+      overall_scores: [],
+      current_plan: null,
+      latest_report: null
+    };
+    fs.writeFileSync(profilePath, JSON.stringify(profile, null, 2), 'utf8');
+  } catch (e) {
+    // 不影响注册流程，仅打印错误
+    console.error(`创建孩子档案失败: ${username}`, e);
+  }
+}
 
   // 创建用户
   const user = db.users.create({
@@ -266,6 +396,7 @@ function registerUser({ username, password, name = "", role = "guardian", guardi
   const token = createTokenForUser(user.id);
   return { token, user: sanitizeUser(user) };
 }
+*/
 function login(username, password) {
   const u = findUserByUsername(username);
   if (!u || u.password !== password) {
@@ -370,6 +501,18 @@ app.get("/api/v1/auth/check-username", (req, res) => {
 // 注册
 app.post("/api/v1/auth/register", (req, res) => {
   const { username, password, role, guardian, children } = req.body;
+  const result = registerUser({
+    username: (username || "").trim(),
+    password: password || "",
+    role: role || "guardian",
+    guardian_username: guardian ? guardian.trim() : null,
+    children_usernames: children || [],
+  });
+  res.json(apiOk(result, "注册成功"));
+});
+
+/*app.post("/api/v1/auth/register", (req, res) => {
+  const { username, password, role, guardian, children } = req.body;
   const newUser = registerUser({
     username: (username || "").trim(),
     password: password || "",
@@ -379,7 +522,7 @@ app.post("/api/v1/auth/register", (req, res) => {
   });
   const token = createTokenForUser(newUser.id);
   res.json(apiOk({ token, user: sanitizeUser(newUser) }, "注册成功"));
-});
+});*/
 
 // 登录
 app.post("/api/v1/auth/login", (req, res) => {
@@ -436,11 +579,11 @@ app.post("/api/v1/children/add", (req, res) => {
   // 更新监护人的 children 列表
   const newChildren = [...currentUser.children, childUsername];
   db.users.update(currentUser.id, { children: newChildren });
-  // 更新孩子的 guardian 字段（一个孩子只能有一个监护人，如有旧监护人需先解除）
-  if (childUser.guardian && childUser.guardian !== currentUser.username) {
-    // 可选：提示或自动解除旧关系，这里直接覆盖
-  }
-  db.users.update(childUser.id, { guardian: currentUser.username });
+const currentGuardians = childUser.guardians || [];
+if (!currentGuardians.includes(currentUser.username)) {
+  const updatedGuardians = [...currentGuardians, currentUser.username];
+  db.users.update(childUser.id, { guardians: updatedGuardians });
+}
   res.json(apiOk({ childUsername, guardian: currentUser.username }, "添加成功"));
 });
 
@@ -458,9 +601,13 @@ app.post("/api/v1/children/remove", (req, res) => {
   db.users.update(currentUser.id, { children: newChildren });
   // 更新孩子的 guardian 字段为 null（或空）
   const childUser = findUserByUsername(childUsername);
-  if (childUser && childUser.guardian === currentUser.username) {
+  /*if (childUser && childUser.guardian === currentUser.username) {
     db.users.update(childUser.id, { guardian: null });
-  }
+  }*/
+  if (childUser && childUser.guardians && childUser.guardians.includes(currentUser.username)) {
+  const updatedGuardians = childUser.guardians.filter(g => g !== currentUser.username);
+  db.users.update(childUser.id, { guardians: updatedGuardians });
+}
   res.json(apiOk({ childUsername, removed: true }, "移除成功"));
 });
 
