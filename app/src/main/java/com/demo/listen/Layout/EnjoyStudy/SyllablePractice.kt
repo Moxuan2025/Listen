@@ -1,5 +1,6 @@
 package com.demo.listen.Layout.EnjoyStudy
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
@@ -10,10 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.demo.listen.R
+import kotlin.jvm.java
 
 class SyllablePractice : AppCompatActivity() {
 
     private var syllable: String? = null
+
+    private var pinyin: List<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,8 +25,10 @@ class SyllablePractice : AppCompatActivity() {
         setContentView(R.layout.activity_syllable_practice)
 
         syllable = intent.getStringExtra("Syllable")
+        pinyin = intent.getStringArrayListExtra("Pinyin") ?: emptyList()
+
         findViewById<TextView>(R.id.tv_syllable_target).text = syllable
-        addPinYin()
+        addPinYin(pinyin ?: emptyList())
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -30,30 +36,36 @@ class SyllablePractice : AppCompatActivity() {
             insets
         }
     }
-    // 所有 b 开头的拼音组合（常用）
-    val bPinyinList = listOf(
-        "ba", "bo", "bi", "bu",
-        "bai", "bei", "bao", "ban", "ben",
-        "bang", "beng", "bian", "biao", "bie",
-        "bin", "bing"
-    )
 
-    private fun addPinYin() {
+    private fun addPinYin(list: List<String>) {
         val gridLayout = findViewById<GridLayout>(R.id.gl_syllable_group)
+        var num = "共 ${pinyin?.size.toString()} 个"
+        findViewById<TextView>(R.id.syllable_number).text = num
 
         gridLayout.removeAllViews()
         gridLayout.columnCount = 3  // 3 列
 
-        for ((index, pinyin) in bPinyinList.withIndex()) {
+        for ((index, pinyinItem) in list.withIndex()) {
             // 创建 TextView
             val textView = TextView(this).apply {
-                text = pinyin
+                text = pinyinItem
                 textSize = 18f
                 gravity = Gravity.CENTER
                 setPadding(16, 12, 16, 12)
 
                 setBackgroundResource(R.drawable.input_box)
                 setTextColor(Color.BLACK)
+
+                setOnClickListener {
+                    // 跳转到其他Activity，并传递拼音
+                    val intent = Intent(this@SyllablePractice, SpellPractise::class.java).apply {
+                        putStringArrayListExtra("pinyin_list",
+                            ArrayList(list))                    // 传递整个拼音列表
+                        putExtra("index", index)            // 传递当前索引
+                    }
+                    startActivity(intent)
+                }
+
             }
 
             // 创建 GridLayout.LayoutParams

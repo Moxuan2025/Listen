@@ -1,5 +1,6 @@
 package com.demo.listen.Layout.EnjoyStudy
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -8,12 +9,15 @@ import android.widget.Button
 import android.widget.GridLayout
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.demo.listen.Layout.EnjoyStudy.SyllablePractice
 import com.demo.listen.R
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class SyllableList : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +36,7 @@ class SyllableList : AppCompatActivity() {
     }
 
     private fun addSyllable() {
+        val pinyinMap = getPinyinData(this@SyllableList)
         // 声母列表（21个）
         val initials = listOf(
             "b", "p", "m", "f", "d", "t", "n", "l",
@@ -53,8 +58,12 @@ class SyllableList : AppCompatActivity() {
 
                 // 点击事件
                 setOnClickListener {
-                    val intent = Intent(this@SyllableList, SyllablePractice::class.java)
+                    val intent = Intent(this@SyllableList,
+                        SyllablePractice::class.java)
                     // 传入声母字符
+                    val pyList = pinyinMap[initial]
+                    intent.putStringArrayListExtra("Pinyin",
+                        ArrayList(pyList ?: emptyList()))
                     intent.putExtra("Syllable", initial)
                     startActivity(intent)
                 }
@@ -76,6 +85,24 @@ class SyllableList : AppCompatActivity() {
     private fun handleClick() {
         findViewById<ImageButton>(R.id.bt_sl_back).setOnClickListener {
             finish()
+        }
+    }
+
+    // 解析 JSON，获取拼音
+    fun getPinyinData(context: Context): Map<String, List<String>> {
+        return try {
+            // 修正文件名为 PinYin.json（注意大小写）
+            val jsonString = context.assets.open("PinYin.json")
+                .bufferedReader()
+                .use { it.readText() }
+
+            val type = object : TypeToken<Map<String, List<String>>>() {}.type
+            Gson().fromJson(jsonString, type) ?: emptyMap()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // 打印详细错误信息
+            println("读取文件错误: ${e.message}")
+            emptyMap()
         }
     }
 }

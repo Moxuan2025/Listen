@@ -20,6 +20,9 @@
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".Layout.EnjoyStudy.SpellPractise"
+            android:exported="true" />
+        <activity
             android:name=".Layout.Assessment.AssessReport"
             android:exported="true" />
         <activity

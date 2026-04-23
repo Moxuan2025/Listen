@@ -1,0 +1,23 @@
+{
+  "b": ["ba", "bo", "bi", "bu", "bai", "bei", "bao", "ban", "ben", "bang", "beng", "bian", "biao", "bie", "bin", "bing"],
+  "p": ["pa", "po", "pi", "pu", "pai", "pei", "pao", "pou", "pan", "pen", "pang", "peng", "pian", "piao", "pie", "pin", "ping"],
+  "m": ["ma", "mo", "mi", "mu", "mai", "mei", "mao", "mou", "man", "men", "mang", "meng", "mian", "miao", "mie", "min", "ming", "miu"],
+  "f": ["fa", "fo", "fu", "fei", "fou", "fan", "fen", "fang", "feng"],
+  "d": ["da", "de", "di", "du", "dai", "dei", "dao", "dou", "dan", "dang", "deng", "dong", "dian", "diao", "die", "diu", "ding", "duo", "duan", "dun"],
+  "t": ["ta", "te", "ti", "tu", "tai", "tao", "tou", "tan", "tang", "teng", "tong", "tian", "tiao", "tie", "ting", "tuo", "tuan", "tun"],
+  "n": ["na", "ne", "ni", "nu", "nv", "nai", "nei", "nao", "nou", "nan", "nen", "nang", "neng", "nong", "nian", "niao", "nie", "niu", "ning", "nuo", "nuan", "nve"],
+  "l": ["la", "le", "li", "lu", "lv", "lai", "lei", "lao", "lou", "lan", "lang", "leng", "long", "lia", "lian", "liao", "lie", "liu", "ling", "luo", "luan", "lun", "lve"],
+  "g": ["ga", "ge", "gu", "gai", "gei", "gao", "gou", "gan", "gen", "gang", "geng", "gong", "gua", "guai", "guan", "guang", "gui", "gun", "guo"],
+  "k": ["ka", "ke", "ku", "kai", "kei", "kao", "kou", "kan", "ken", "kang", "keng", "kong", "kua", "kuai", "kuan", "kuang", "kui", "kun", "kuo"],
+  "h": ["ha", "he", "hu", "hai", "hei", "hao", "hou", "han", "hen", "hang", "heng", "hong", "hua", "huai", "huan", "huang", "hui", "hun", "huo"],
+  "j": ["ji", "ju", "jia", "jiao", "jie", "jiu", "jian", "jin", "jiang", "jing", "jiong", "jue", "juan", "jun"],
+  "q": ["qi", "qu", "qia", "qiao", "qie", "qiu", "qian", "qin", "qiang", "qing", "qiong", "que", "quan", "qun"],
+  "x": ["xi", "xu", "xia", "xiao", "xie", "xiu", "xian", "xin", "xiang", "xing", "xiong", "xue", "xuan", "xun"],
+  "zh": ["zha", "zhe", "zhi", "zhu", "zhai", "zhei", "zhao", "zhou", "zhan", "zhen", "zhang", "zheng", "zhong", "zhua", "zhuai", "zhuan", "zhuang", "zhui", "zhun", "zhuo"],
+  "ch": ["cha", "che", "chi", "chu", "chai", "chao", "chou", "chan", "chen", "chang", "cheng", "chong", "chua", "chuai", "chuan", "chuang", "chui", "chun", "chuo"],
+  "sh": ["sha", "she", "shi", "shu", "shai", "shei", "shao", "shou", "shan", "shen", "shang", "sheng", "shua", "shuai", "shuan", "shuang", "shui", "shun", "shuo"],
+  "r": ["re", "ri", "ru", "rao", "rou", "ran", "ren", "rang", "reng", "rong", "rua", "ruan", "rui", "run", "ruo"],
+  "z": ["za", "ze", "zi", "zu", "zai", "zei", "zao", "zou", "zan", "zen", "zang", "zeng", "zong", "zuan", "zui", "zun", "zuo"],
+  "c": ["ca", "ce", "ci", "cu", "cai", "cao", "cou", "can", "cen", "cang", "ceng", "cong", "cuan", "cui", "cun", "cuo"],
+  "s": ["sa", "se", "si", "su", "sai", "sao", "sou", "san", "sen", "sang", "seng", "song", "suan", "sui", "sun", "suo"]
+}
