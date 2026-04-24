@@ -2,62 +2,62 @@ package com.demo.listen.Layout.DataType
 
 import kotlin.random.Random
 
-class BinaryChoice {        // 二选一
-    private var _answer: String = ""
-    private var _disturb: String = ""
+// 基类（抽象类）
+abstract class Problem {
+    protected lateinit var _answer: String
 
-    constructor(answer: String, disturb: String) {
-        _answer = answer
-        _disturb = disturb
-    }
+    abstract fun getAnswer(): String
 
-    fun optionList(): List<String> {
-        return listOf(_answer, _disturb)
-    }
+    // 默认返回空列表，避免 null 问题
+    open fun optionList(): List<String> = listOf("<None")
 
-    fun getAnswer(): String {
-        return _answer
-    }
+    open fun getProblem(): String = "<None>"
 }
 
-class CompleteSentence {        // 选词补全句子
-    private var _problem: String = ""
-    private var _answer: String = ""
-    private var _disturb: String = ""
-
-    constructor(problem: String, answer: String, disturb: String) {
-        _problem = problem
+// 简单问题（只需要答案）
+class SimpleProblem(answer: String) : Problem() {
+    init {
         _answer = answer
-        _disturb = disturb
     }
 
-    fun optionList(): List<String> {
-        return listOf(_answer, _disturb)
-    }
-
-    fun getProblem(): String {
-        return _problem
-    }
-
-    fun getAnswer(): String {
-        return _answer
-    }
+    override fun getAnswer(): String = _answer
 }
 
-class WordFormation {       // 选字组词
-    private var _answer: String = ""
-    private var _choices: List<String> = emptyList()
-
-    constructor(answer: String, choices: List<String>) {
+// 二选一问题
+class BinaryChoice(answer: String, private val _disturb: String) : Problem() {
+    init {
         _answer = answer
-        _choices = choices
     }
 
-    fun optionList(): List<String> {
-        return _choices
+    override fun getAnswer(): String = _answer
+
+    override fun optionList(): List<String> = listOf(_answer, _disturb)
+}
+
+// 选词补全句子
+class CompleteSentence(
+    private val _problem: String,
+    answer: String,
+    private val _disturb: String
+) : Problem() {
+    init {
+        _answer = answer
     }
 
-    fun getAnswer(): String {
-        return _answer
+    override fun getAnswer(): String = _answer
+
+    override fun getProblem(): String = _problem
+
+    override fun optionList(): List<String> = listOf(_answer, _disturb)
+}
+
+// 选字组词
+class WordFormation(answer: String, private val _choices: List<String>) : Problem() {
+    init {
+        _answer = answer
     }
+
+    override fun getAnswer(): String = _answer
+
+    override fun optionList(): List<String> = _choices
 }

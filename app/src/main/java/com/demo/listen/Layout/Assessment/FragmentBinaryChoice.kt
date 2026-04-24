@@ -76,6 +76,7 @@ class FragmentBinaryChoice : Fragment() {
         firstChoice.setOnClickListener {
             if (canChoose) {
                 firstChoice.setBackgroundResource(R.drawable.bg_choice_selected)
+                chooseFirst = true
                 if (chooseSecond) {
                     chooseSecond = false
                     secondChoice.setBackgroundResource(R.drawable.bg_choice)
@@ -89,6 +90,7 @@ class FragmentBinaryChoice : Fragment() {
         secondChoice.setOnClickListener {
             if (canChoose) {
                 secondChoice.setBackgroundResource(R.drawable.bg_choice_selected)
+                chooseSecond = true
                 if (chooseFirst) {
                     chooseFirst = false
                     firstChoice.setBackgroundResource(R.drawable.bg_choice)

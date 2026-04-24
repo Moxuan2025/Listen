@@ -22,6 +22,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.demo.listen.Layout.DataType.BinaryChoice
+import com.demo.listen.Layout.DataType.CompleteSentence
+import com.demo.listen.Layout.DataType.Problem
+import com.demo.listen.Layout.DataType.SimpleProblem
+import com.demo.listen.Layout.DataType.WordFormation
 import com.demo.listen.R
 import java.io.File
 
@@ -41,11 +45,12 @@ class Assess : AppCompatActivity() {
     private lateinit var record: ImageView
 
     private val fBinaryChoice = FragmentBinaryChoice()
+    private val fWordFormation = FragmentWordFormation()
 
 
     private var problemTotalNum = 15
     private var index = 0
-    private var state: String = "not_answer_yet"    // 两种状态：answered, not_answer_yet
+    private var state: String = "not_answer_yet"    // 三种状态：answered, not_answer_yet, answer_showed
     private lateinit var viewModel: ShareListenState    // 没有播放过音频不能做选择
 
     private var level = 4           // 残疾程度
@@ -95,7 +100,6 @@ class Assess : AppCompatActivity() {
                 return@observe
             }
             state = "answered"
-            answer.text = sigleSelection[index].getAnswer()
             btSure.visibility = View.VISIBLE
         }
         viewModel.updateOptions(sigleSelection[index].optionList())
@@ -103,7 +107,21 @@ class Assess : AppCompatActivity() {
 
     private fun handleClick() {
         btSure.setOnClickListener {
-            goNext()
+            if (state == "answered") {
+                answer.text = sigleSelection[index].getAnswer()
+                if (index+1 == problemTotalNum)
+                    btSure.text = "查看报告"
+                else
+                    btSure.text = "下一个"
+                state = "answer_showed"
+
+                ObjectAnimator.ofInt(progress, "progress",
+                    index, index+1).apply {
+                    duration = 100
+                    start()
+                }
+            } else
+                goNext()
         }
         playSound.setOnClickListener {
             getPlaySound()
@@ -116,11 +134,15 @@ class Assess : AppCompatActivity() {
             // TODO: 记录录音
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    startRecording()
+                    record.setImageResource(R.drawable.ic_record) // 需要添加录音中的图标
+                    record.alpha = 0.7f // 改变透明度表示按下状态
                     true
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    stopRecording()
+                    record.setImageResource(R.drawable.ic_record_gray)
+                    record.alpha = 1.0f
+                    state = "answered"
+                    btSure.visibility = View.VISIBLE
                     true
                 }
                 else -> false
@@ -137,29 +159,9 @@ class Assess : AppCompatActivity() {
     }
 
     // test
-    val sigleSelection = listOf(
-        BinaryChoice("wu", "hu"),       //读音
-        BinaryChoice("gu", "ga"),
-        BinaryChoice("cong", "zong"),
-        BinaryChoice("ca", "che"),      // 词语
-        BinaryChoice("wu", "hu"),
-        BinaryChoice("gu", "ga"),
-
-        BinaryChoice("cong", "zong"),   // 完成句子
-        BinaryChoice("wu", "hu"),
-        BinaryChoice("gu", "ga"),
-
-        BinaryChoice("wu", "hu"),       // 跟读
-        BinaryChoice("gu", "ga"),
-        BinaryChoice("cong", "zong"),
-
-        BinaryChoice("wu", "hu"),       // 组词. 多选
-        BinaryChoice("gu", "ga"),
-        BinaryChoice("cong", "zong"),
-    )
 
     private fun goNext() {
-        var showIndex = index+1
+        index++
 
         // 两种状态：answered, not_answer_yet
         if (state == "not_answer_yet") {    // 还未回答问题，不允许下一题
@@ -167,7 +169,7 @@ class Assess : AppCompatActivity() {
                 Toast.LENGTH_SHORT).show()
             return
         }
-        if (showIndex == problemTotalNum && state == "answered") {  // 完成所有评估
+        if (index == problemTotalNum && state == "answer_showed") {  // 完成所有评估
             startActivity(Intent(this@Assess,
                 AssessReport::class.java).apply {
 //                putExtra("choice", ArrayList(choice))
@@ -178,146 +180,54 @@ class Assess : AppCompatActivity() {
 
         state = "not_answer_yet"                   // 更新状态
         viewModel.updatePlayState(false)    // 不能做选择
+        progressCounter.text = "${index+1}/${problemTotalNum}"
 
-        progressCounter.text = "${showIndex}/${problemTotalNum}"
-        ObjectAnimator.ofInt(progress, "progress",
-            index, showIndex).apply {
-            duration = 1000
-            start()
-        }
         answer.text = "?"
+        btSure.text = "确定"
         btSure.visibility = View.INVISIBLE
 
-        when (showIndex) {
-            7 -> {
+        when (index) {
+            6 -> {
                 problemType.text = "完成句子"
             }
-            10 -> {
+            9 -> {
                 problemTxt.text = ""
                 removeCurrentFragment()
                 fRecord.visibility = View.VISIBLE
                 problemType.text = "跟读"
             }
-            13 -> {
+            12 -> {
                 fRecord.visibility = View.GONE
-                // TODO: load new fragment
+                loadFragment(fWordFormation)
                 problemType.text = "选字组词"
             }
         }
 
-        when (showIndex) {
-            1,2,3 -> {
+        when (index) {
+            0,1,2 -> {
                 tip.text = "听录音，选择正确的读音"
-                viewModel.updateOptions(sigleSelection[showIndex].optionList())
+                viewModel.updateOptions(sigleSelection[index].optionList())
             }
-            4,5,6 -> {
+            3,4,5 -> {
                 tip.text = "听录音，选择正确的词语"
-                viewModel.updateOptions(sigleSelection[showIndex].optionList())
+                viewModel.updateOptions(sigleSelection[index].optionList())
             }
-            7,8,9 -> {
+            6,7,8 -> {
+                problemTxt.text = sigleSelection[index].getProblem()
                 tip.text = "听录音，选择正确的词语"
-                viewModel.updateOptions(sigleSelection[showIndex].optionList())
+                viewModel.updateOptions(sigleSelection[index].optionList())
             }
-            10, 11, 12 -> {
+            9,10,11 -> {
                 tip.text = "听录音，读出正确的读音"
-                viewModel.updateOptions(sigleSelection[showIndex].optionList())
+                viewModel.updateOptions(sigleSelection[index].optionList())
                 // TODO: 录音
             }
             else -> {
                 tip.text = "听录音，选字组词"
-                viewModel.updateOptions(sigleSelection[showIndex].optionList())
+                viewModel.updateOptions(sigleSelection[index].optionList())
             }
         }
-        index++
     }
-
-    private var mediaRecorder: MediaRecorder? = null
-    private var isRecording = false
-    private var audioFile: File? = null
-    private var startTime = 0L  // 记录开始时间
-    private val MIN_RECORD_TIME = 3000L  // 最小录音时长 3秒（毫秒）
-
-    private fun startRecording() {
-        if (isRecording) return
-
-        try {
-            record.setImageResource(R.drawable.ic_record)   // 需要添加录音中的图标
-            startTime = System.currentTimeMillis()          // 记录开始时间
-            // 创建音频文件
-            audioFile = File(externalCacheDir,
-                "audio_${System.currentTimeMillis()}.3gp")
-
-            mediaRecorder = MediaRecorder().apply {
-                setAudioSource(MediaRecorder.AudioSource.MIC)
-                setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-                setOutputFile(audioFile?.absolutePath)
-
-                prepare()
-                start()
-            }
-
-            isRecording = true
-            Toast.makeText(this, "开始录音", Toast.LENGTH_SHORT).show()
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, "录音失败: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun stopRecording() {
-        if (!isRecording) return
-
-        try {
-            mediaRecorder?.apply {
-                stop()
-                release()
-            }
-            mediaRecorder = null
-            isRecording = false
-
-            val duration = System.currentTimeMillis() - startTime   // 计算录音时长
-
-            if (duration < MIN_RECORD_TIME) {
-                // 录音时间过短，删除文件
-                audioFile?.delete()
-                audioFile = null
-                Toast.makeText(this,
-                    "录音时间过短（至少${MIN_RECORD_TIME/1000}秒），已取消",
-                    Toast.LENGTH_SHORT).show()
-            } else {
-                // 录音有效，处理文件
-                Toast.makeText(this,
-                    "录音完成，时长：${duration/1000}秒",
-                    Toast.LENGTH_SHORT).show()
-                audioFile?.let { file ->
-                    handleRecordedAudio(file)
-                }
-            }
-            record.setImageResource(R.drawable.ic_record_gray)  // 恢复图标样式
-            state = "answered"
-            btSure.visibility = View.VISIBLE
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, "录音结束异常: ${e.message}",
-                Toast.LENGTH_SHORT).show()
-            // 异常时也删除文件
-            audioFile?.delete()
-        }
-    }
-
-    private fun handleRecordedAudio(file: File) {
-        // TODO: 发送录音，评估
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mediaRecorder?.release()
-        mediaRecorder = null
-    }
-
 
     private fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
@@ -333,4 +243,25 @@ class Assess : AppCompatActivity() {
                 .commit()
         }
     }
+
+    val sigleSelection: List<Problem> = listOf(
+        BinaryChoice("wu", "hu"),       //读音
+        BinaryChoice("gu", "ga"),
+        BinaryChoice("cong", "zong"),
+        BinaryChoice("ca", "che"),      // 词语
+        BinaryChoice("he", "ha"),
+        BinaryChoice("ba", "bu"),
+
+        CompleteSentence("今天___很高兴", "我", "你"),   // 完成句子
+        CompleteSentence("红红的___像火球", "太阳", "月球"),
+        CompleteSentence("吃___很棒", "肉", "饭"),
+
+        SimpleProblem("苹果"),       // 跟读
+        SimpleProblem("书籍"),
+        SimpleProblem("乌龟"),
+
+        WordFormation("学校", listOf("学","习", "生", "校")),       // 组词. 多选
+        WordFormation("学校", listOf("学","习", "生", "校")),
+        WordFormation("学校", listOf("学","习", "生", "校")),
+    )
 }
