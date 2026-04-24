@@ -1,6 +1,29 @@
 // 添加错误验证行
-// throw new Error("如果看到这条消息，说明真的执行了这个文件！");
+// throw new Error("OK！");
+require('dotenv').config();
+const tencentcloud = require('tencentcloud-sdk-nodejs');
 
+// 初始化 TTS 客户端
+const TtsClient = tencentcloud.tts.v20190823.Client;
+const ttsClient = new TtsClient({
+  credential: {
+    secretId: process.env.TENCENT_SECRET_ID,
+    secretKey: process.env.TENCENT_SECRET_KEY,
+  },
+  region: "ap-guangzhou",
+  profile: { httpProfile: { endpoint: "tts.tencentcloudapi.com" } }
+});
+
+// 初始化口语评测客户端
+const SoeClient = tencentcloud.soe.v20180724.Client;
+const soeClient = new SoeClient({
+  credential: {
+    secretId: process.env.TENCENT_SECRET_ID,
+    secretKey: process.env.TENCENT_SECRET_KEY,
+  },
+  region: "ap-guangzhou",
+  profile: { httpProfile: { endpoint: "soe.tencentcloudapi.com" } }
+});
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
@@ -498,6 +521,92 @@ app.get("/api/v1/auth/check-username", (req, res) => {
   res.json(apiOk({ exists }));
 });
 
+// POST /api/v1/tts/synthesize
+app.post('/api/v1/tts/synthesize', async (req, res) => {
+  try {
+    const { text, voiceType = 1002, speed = 0, volume = 0 } = req.body;
+    
+    // 文本长度限制：中文最多 600 字，英文最多 1800 字母
+    if (!text || text.length > 600) {
+      return res.status(400).json(apiFail("文本不能为空且不能超过600字"));
+    }
+
+    const params = {
+      Text: text,
+      SessionId: newId(),
+      VoiceType: voiceType,    // 可选声音类型，1002 为智瑜（女声）
+      Speed: speed,            // -2 到 6，0 为正常语速
+      Volume: volume,          // -10 到 10，0 为正常音量
+      Codec: "mp3",            // 返回格式 mp3/pcm
+    };
+    
+    const response = await ttsClient.TextToVoice(params);
+    // 返回 base64 编码的音频内容
+    res.json(apiOk({ 
+      audio: response.Audio,   // base64 编码的音频数据
+      sessionId: response.SessionId
+    }));
+  } catch (error) {
+    console.error("TTS 合成失败:", error);
+    res.status(500).json(apiFail(error.message || "语音合成失败"));
+  }
+});
+
+// POST /api/v1/soe/init
+app.post('/api/v1/soe/init', async (req, res) => {
+  try {
+    const { refText, evalMode = "Word", scoreCoeff = 1.0 } = req.body;
+    
+    const sessionId = newId();
+    const params = {
+      SessionId: sessionId,
+      RefText: refText,                       // 标准文本
+      EvalMode: evalMode,                     // Word/Sentence/Paragraph
+      ScoreCoeff: scoreCoeff,                 // 评分数值系数
+    };
+    
+    // 调用初始化接口
+    await soeClient.InitOralProcess(params);
+    res.json(apiOk({ sessionId, refText }));
+  } catch (error) {
+    console.error("初始化评测失败:", error);
+    res.status(500).json(apiFail(error.message || "初始化失败"));
+  }
+});
+
+// POST /api/v1/soe/evaluate
+app.post('/api/v1/soe/evaluate', async (req, res) => {
+  try {
+    const { 
+      sessionId, 
+      seqId = 1,           // 音频分片序号
+      isEnd = 1,           // 是否最后一个分片（1是0否）
+      userVoiceData,       // base64 编码的语音数据
+      voiceEncodeType = 1, // 1:pcm / 2:wav / 3:mp3
+      voiceFileType = 3    // 同上
+    } = req.body;
+    
+    const params = {
+      SessionId: sessionId,
+      SeqId: seqId,
+      IsEnd: isEnd,
+      UserVoiceData: userVoiceData,
+      VoiceEncodeType: voiceEncodeType,
+      VoiceFileType: voiceFileType,
+    };
+    
+    const response = await soeClient.OralProcess(params);
+    res.json(apiOk({
+      pronAccuracy: response.PronAccuracy,      // 发音准确度
+      pronFluency: response.PronFluency,        // 流利度
+      pronCompletion: response.PronCompletion,  // 完整度
+      suggestedScore: response.SuggestedScore,  // 推荐分数
+    }));
+  } catch (error) {
+    console.error("口语评测失败:", error);
+    res.status(500).json(apiFail(error.message || "评测失败"));
+  }
+});
 // 注册
 app.post("/api/v1/auth/register", (req, res) => {
   const { username, password, role, guardian, children } = req.body;

@@ -7,3 +7,9 @@
     "dev": "node server.js"
   }
 }
+{
+  "dependencies": {
+    "tencentcloud-sdk-nodejs": "^4.0.0",
+    "dotenv": "^16.0.0"
+  }
+}

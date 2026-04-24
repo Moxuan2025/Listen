@@ -56,7 +56,7 @@ object SessionStore {
 
 object ServerApi {
   //配置url
-    private const val BASE_URL = "http://b98bae58.natappfree.cc"
+  private const val BASE_URL = "http://f5e6369e.natappfree.cc"
 
 //    private const val BASE_URL = "127.0.0.1:8000"
 
@@ -81,6 +81,47 @@ object ServerApi {
     suspend fun finishAssessment(sessionId: String): AssessmentResult {
         // TODO: POST /api/v1/assessments/finish，返回评分
         return AssessmentResult(80f, 75f, 82f, 79f)
+    }
+    // 语音合成
+    suspend fun textToSpeech(text: String): String {
+        val body = JSONObject().apply {
+            put("text", text)
+            put("voiceType", 1002)  // 可选: 1002 女声, 101001 男声
+            put("speed", 0)
+            put("volume", 0)
+        }
+        val resp = request("POST", "/api/v1/tts/synthesize", body)
+        if (!resp.optBoolean("ok")) {
+            error(resp.optString("message", "TTS 失败"))
+        }
+        return resp.getJSONObject("data").optString("audio")  // 返回 base64 字符串
+    }
+
+    // 初始化口语评测
+    suspend fun initOralEvaluation(refText: String, evalMode: String): String {
+        val body = JSONObject().apply {
+            put("refText", refText)
+            put("evalMode", evalMode)
+        }
+        val resp = request("POST", "/api/v1/soe/init", body)
+        if (!resp.optBoolean("ok")) {
+            error(resp.optString("message", "初始化失败"))
+        }
+        return resp.getJSONObject("data").optString("sessionId")
+    }
+
+    // 提交评测音频
+    suspend fun evaluateAudio(sessionId: String, audioBase64: String, isEnd: Boolean): JSONObject {
+        val body = JSONObject().apply {
+            put("sessionId", sessionId)
+            put("userVoiceData", audioBase64)
+            put("isEnd", if (isEnd) 1 else 0)
+        }
+        val resp = request("POST", "/api/v1/soe/evaluate", body)
+        if (!resp.optBoolean("ok")) {
+            error(resp.optString("message", "评测失败"))
+        }
+        return resp.getJSONObject("data")
     }
 
     private suspend fun request(
