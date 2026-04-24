@@ -19,6 +19,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://mirrors.tencent.com/repository/maven/tencent_public/") }
+        maven { url = uri("https://oss.sonatype.org/content/repositories/releases/") }
     }
 }
 

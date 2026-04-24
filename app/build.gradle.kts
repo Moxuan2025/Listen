@@ -50,6 +50,18 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation ("androidx.media3:media3-ui:1.5.1")
+
+    
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")     // 网络请求
+    implementation("com.google.code.gson:gson:2.8.9")     // JSON 解析（你已有，保持一致）
+    implementation("androidx.media3:media3-exoplayer:1.3.0") // 播放器
+
+ 
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
+
 }
+
+
+
+    
+
