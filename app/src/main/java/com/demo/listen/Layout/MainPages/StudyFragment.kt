@@ -1,6 +1,7 @@
 package com.demo.listen.Layout.MainPages
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
@@ -11,8 +12,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.GridLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.demo.listen.Layout.Assessment.Assess
+import com.demo.listen.Layout.Assessment.DisabilityLevel
 import com.demo.listen.R
 import java.time.LocalDate
 import java.time.YearMonth
@@ -111,17 +115,20 @@ class StudyFragment : Fragment() {
             } else
                 setCalender(curYear, curMonth)
         }
-        v.findViewById<Button>(R.id.btn_clockin).setOnClickListener { // 言语/听力评估
+        v.findViewById<Button>(R.id.btn_clockin).setOnClickListener {           // 打卡
+            Toast.makeText(requireContext(), "打卡成功！",
+                Toast.LENGTH_SHORT).show()
             val result = Bundle().apply {
                 putString("event", "ClockIn")
             }
             parentFragmentManager.setFragmentResult("Study", result)
         }
-        v.findViewById<Button>(R.id.btn_personal_assessment).setOnClickListener { // 言语/听力学习
-            val result = Bundle().apply {
-                putString("event", "PersonalAssessment")
-            }
-            parentFragmentManager.setFragmentResult("Study", result)
+        v.findViewById<Button>(R.id.btn_personal_assessment).setOnClickListener { // 评估
+            startActivity(Intent(requireContext(), DisabilityLevel::class.java))
+//            val result = Bundle().apply {
+//                putString("event", "PersonalAssessment")
+//            }
+//            parentFragmentManager.setFragmentResult("Study", result)
         }
         v.findViewById<Button>(R.id.btn_speak_learn).setOnClickListener { // 情景对话
             val result = Bundle().apply {

@@ -9,12 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import com.demo.listen.Layout.Assessment.FragmentPersonalAssessment
-import com.demo.listen.Layout.Assessment.FragmentSoundAssess
 import com.demo.listen.Layout.MainPages.RankFragment
 import com.demo.listen.Layout.MainPages.StudyFragment
 import com.demo.listen.Layout.MainPages.UserFragment
-import com.demo.listen.Layout.Assessment.SoundAssessPractice
 import com.demo.listen.Layout.EnjoyStudy.Enjoyment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.demo.listen.net.SessionStore
@@ -27,9 +24,6 @@ class MainActivity : AppCompatActivity() {
     private val userFragment = UserFragment()
     private val rankFragment = RankFragment()
 
-    // 评估选项界面
-    private val personalAssessment = FragmentPersonalAssessment()
-    private val soundAssess = FragmentSoundAssess()
 
     private var loged = false
 
@@ -97,41 +91,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleFragmentResult() {
         // 学习主界面
-        supportFragmentManager.setFragmentResultListener("Study", this) {
-                _, bundle ->
+        supportFragmentManager.setFragmentResultListener("Study",
+            this) { _, bundle ->
             val ret = bundle.getString("event")
             when (ret) {
-//                "PersonalAssessment" -> loadFragment(personalAssessment)
-                "PersonalAssessment" -> {
-                    startActivity(Intent(this@MainActivity, AssessmentActivity::class.java)
-                        .putExtra("child_username", SessionStore.name(this))) // 或从 UI 获取当前孩子
-                }
+//                "PersonalAssessment" -> {
+//                    startActivity(Intent(this@MainActivity, AssessmentActivity::class.java)
+//                        .putExtra("child_username", SessionStore.name(this))) // 或从 UI 获取当前孩子
+//                }
                 "SpeakLearn" -> {
-                    startActivity(Intent(this@MainActivity, Enjoyment::class.java))
+                    startActivity(Intent(this@MainActivity,
+                        Enjoyment::class.java))
                 }
-            }
-        }
-
-        // 个人评估
-        supportFragmentManager.setFragmentResultListener("PersonalAssessment", this) {
-                _, bundle ->
-            val ret = bundle.getString("event")
-            when (ret) {
-                "Back" -> loadFragment(studyFragment)
-                "SoundAssess" -> loadFragment(soundAssess)
-            }
-        }
-        supportFragmentManager.setFragmentResultListener("SoundAssess", this) {
-                _, bundle ->
-            val ret = bundle.getString("event")
-            when (ret) {
-                "Back" -> loadFragment(personalAssessment)
-                "SoundPractice" -> startActivity(Intent(this@MainActivity,
-                    SoundAssessPractice::class.java).apply {
-                    putExtra("feature", "Practice") })
-                "ProfessionalAssess"-> startActivity(Intent(this@MainActivity,
-                    SoundAssessPractice::class.java).apply {
-                    putExtra("feature", "Assess") })
             }
         }
     }
