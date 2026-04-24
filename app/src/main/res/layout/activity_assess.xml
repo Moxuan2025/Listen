@@ -28,7 +28,7 @@
         android:gravity="center"
         android:textSize="@dimen/_14sdp"
         android:textColor="@color/black"
-        android:text="第1题" />
+        android:text="单选" />
 
     <TextView
         android:id="@+id/assess_problem_counter"
@@ -54,7 +54,7 @@
         android:layout_marginHorizontal="@dimen/_30sdp"
         android:progressDrawable="@drawable/progress_bar_assessment"
         android:max="15"
-        android:progress="1"/>
+        android:progress="0"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -96,15 +96,25 @@
                     android:layout_height="@dimen/_30sdp"
                     android:background="@drawable/ic_play_sound"/>
             </LinearLayout>
+            <TextView
+                android:id="@+id/assess_problem_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_30sdp"
+                android:gravity="center"
+                android:textSize="@dimen/_18sdp"
+                android:textColor="@color/black"
+                android:text="天上有一个大大的__ __，和咕咕嘎嘎。" />
             <FrameLayout
                 android:id="@+id/assess_problem_area"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp"
                 android:layout_marginHorizontal="@dimen/_20sdp" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_16sdp"
+                android:layout_marginTop="@dimen/_4sdp"
                 android:orientation="horizontal"
                 android:gravity="bottom">
                 <View
@@ -114,14 +124,14 @@
                     android:layout_width="@dimen/_50sdp"
                     android:layout_height="@dimen/_50sdp" />
                 <Button
-                    android:id="@+id/assess_next"
+                    android:id="@+id/assess_sure"
                     android:layout_width="@dimen/_100sdp"
-                    android:layout_height="@dimen/_40sdp"
+                    android:layout_height="@dimen/_44sdp"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/yellow_bt"
+                    android:backgroundTint="@color/bt_green"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_16sdp"
-                    android:text="下一题" />
+                    android:text="确认" />
                 <View
                     android:layout_width="@dimen/_50sdp"
                     android:layout_height="@dimen/_50sdp" />

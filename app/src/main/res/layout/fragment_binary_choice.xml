@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Layout.Assessment.FragmentBinaryChoice">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_120sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginHorizontal="@dimen/_30sdp"
+        android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/choice_first"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_choice"
+            android:layout_margin="@dimen/_10sdp"
+            android:gravity="center"
+            android:text="first"
+            android:textSize="@dimen/_20sdp"
+            android:textColor="@color/black" />
+        <TextView
+            android:id="@+id/choice_second"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_choice"
+            android:layout_margin="@dimen/_10sdp"
+            android:gravity="center"
+            android:text="第二"
+            android:textSize="@dimen/_20sdp"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
