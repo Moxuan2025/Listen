@@ -152,9 +152,6 @@ class SpellPractise : AppCompatActivity() {
             state = "spelled"
             tvScore.text = "${scoreList[currentIndex]}"
         }
-
-        if (!scoreList.contains(0))
-            btSeeReport.visibility = View.VISIBLE   // 练习完，一直显示
     }
 
     // pos: 请求获取分数的拼音
@@ -177,5 +174,8 @@ class SpellPractise : AppCompatActivity() {
 
         state = "spelled"
         btTry.text = "再次尝试"
+
+        if (!scoreList.contains(0))
+            btSeeReport.visibility = View.VISIBLE   // 练习完，一直显示
     }
 }

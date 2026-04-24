@@ -14,13 +14,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Listen"
         android:usesCleartextTraffic="true">
-
-
+        <activity
+            android:name=".Layout.Assessment.Assess"
+            android:exported="true" />
+        <activity
+            android:name=".Layout.Assessment.DisabilityLevel"
+            android:exported="true" />
         <activity android:name=".Layout.Assessment.AssessmentActivity" />
         <activity
             android:name=".Layout.guardian.GuardianActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Layout.EnjoyStudy.SpellPractise"
             android:exported="true" />

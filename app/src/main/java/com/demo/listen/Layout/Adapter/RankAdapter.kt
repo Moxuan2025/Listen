@@ -1,10 +1,11 @@
-package com.demo.listen.Layout
+package com.demo.listen.Layout.Adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.demo.listen.Layout.DataType.RankItem
 import com.demo.listen.R
 
 class RankAdapter(private val items: MutableList<RankItem>) :

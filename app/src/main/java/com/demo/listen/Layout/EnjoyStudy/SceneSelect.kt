@@ -8,7 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.demo.listen.Layout.Scene
-import com.demo.listen.Layout.SceneAdapter
+import com.demo.listen.Layout.Adapter.SceneAdapter
 import com.demo.listen.R
 
 class SceneSelect : AppCompatActivity() {

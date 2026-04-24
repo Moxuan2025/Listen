@@ -1,4 +1,4 @@
-package com.demo.listen.Layout
+package com.demo.listen.Layout.DataType
 
 data class RankItem(
     val rank: Int,                  // 排名

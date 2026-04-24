@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.demo.listen.Layout.RankAdapter
-import com.demo.listen.Layout.RankItem
+import com.demo.listen.Layout.Adapter.RankAdapter
+import com.demo.listen.Layout.DataType.RankItem
 import com.demo.listen.R
 
 // TODO: Rename parameter arguments, choose names that match

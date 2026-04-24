@@ -1,8 +1,10 @@
-package com.demo.listen.Layout
+package com.demo.listen.Layout.Adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.demo.listen.Layout.Scene
+import com.demo.listen.Layout.SceneViewHolder
 import com.demo.listen.R
 
 class SceneAdapter(
