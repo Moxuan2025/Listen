@@ -3,11 +3,14 @@ package com.demo.listen.Layout.Assessment
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.media.MediaRecorder
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -20,6 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.demo.listen.Layout.DataType.BinaryChoice
 import com.demo.listen.R
+import java.io.File
 
 class Assess : AppCompatActivity() {
 
@@ -33,6 +37,8 @@ class Assess : AppCompatActivity() {
     private lateinit var playSound: LinearLayout
     private lateinit var playSoundIB: ImageButton
     private lateinit var problemArea: FrameLayout
+    private lateinit var fRecord: LinearLayout
+    private lateinit var record: ImageView
 
     private val fBinaryChoice = FragmentBinaryChoice()
 
@@ -74,6 +80,8 @@ class Assess : AppCompatActivity() {
         playSound = findViewById<LinearLayout>(R.id.assess_play_sound)
         playSoundIB = findViewById<ImageButton>(R.id.assess_play_sound_ib)
         problemArea = findViewById<FrameLayout>(R.id.assess_problem_area)
+        fRecord = findViewById<LinearLayout>(R.id.frame_record)
+        record = findViewById<ImageView>(R.id.assess_sound_record)
     }
 
     private var isInit = true
@@ -102,6 +110,21 @@ class Assess : AppCompatActivity() {
         }
         playSoundIB.setOnClickListener {
             getPlaySound()
+        }
+
+        record.setOnTouchListener { _, event ->
+            // TODO: 记录录音
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    startRecording()
+                    true
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    stopRecording()
+                    true
+                }
+                else -> false
+            }
         }
     }
 
@@ -171,10 +194,12 @@ class Assess : AppCompatActivity() {
             }
             10 -> {
                 problemTxt.text = ""
-                // TODO: load new fragment
+                removeCurrentFragment()
+                fRecord.visibility = View.VISIBLE
                 problemType.text = "跟读"
             }
             13 -> {
+                fRecord.visibility = View.GONE
                 // TODO: load new fragment
                 problemType.text = "选字组词"
             }
@@ -206,10 +231,106 @@ class Assess : AppCompatActivity() {
         index++
     }
 
+    private var mediaRecorder: MediaRecorder? = null
+    private var isRecording = false
+    private var audioFile: File? = null
+    private var startTime = 0L  // 记录开始时间
+    private val MIN_RECORD_TIME = 3000L  // 最小录音时长 3秒（毫秒）
+
+    private fun startRecording() {
+        if (isRecording) return
+
+        try {
+            record.setImageResource(R.drawable.ic_record)   // 需要添加录音中的图标
+            startTime = System.currentTimeMillis()          // 记录开始时间
+            // 创建音频文件
+            audioFile = File(externalCacheDir,
+                "audio_${System.currentTimeMillis()}.3gp")
+
+            mediaRecorder = MediaRecorder().apply {
+                setAudioSource(MediaRecorder.AudioSource.MIC)
+                setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+                setOutputFile(audioFile?.absolutePath)
+
+                prepare()
+                start()
+            }
+
+            isRecording = true
+            Toast.makeText(this, "开始录音", Toast.LENGTH_SHORT).show()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "录音失败: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun stopRecording() {
+        if (!isRecording) return
+
+        try {
+            mediaRecorder?.apply {
+                stop()
+                release()
+            }
+            mediaRecorder = null
+            isRecording = false
+
+            val duration = System.currentTimeMillis() - startTime   // 计算录音时长
+
+            if (duration < MIN_RECORD_TIME) {
+                // 录音时间过短，删除文件
+                audioFile?.delete()
+                audioFile = null
+                Toast.makeText(this,
+                    "录音时间过短（至少${MIN_RECORD_TIME/1000}秒），已取消",
+                    Toast.LENGTH_SHORT).show()
+            } else {
+                // 录音有效，处理文件
+                Toast.makeText(this,
+                    "录音完成，时长：${duration/1000}秒",
+                    Toast.LENGTH_SHORT).show()
+                audioFile?.let { file ->
+                    handleRecordedAudio(file)
+                }
+            }
+            record.setImageResource(R.drawable.ic_record_gray)  // 恢复图标样式
+            state = "answered"
+            btSure.visibility = View.VISIBLE
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "录音结束异常: ${e.message}",
+                Toast.LENGTH_SHORT).show()
+            // 异常时也删除文件
+            audioFile?.delete()
+        }
+    }
+
+    private fun handleRecordedAudio(file: File) {
+        // TODO: 发送录音，评估
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaRecorder?.release()
+        mediaRecorder = null
+    }
+
 
     private fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.assess_problem_area, fragment)
             .commit()
+    }
+
+    private fun removeCurrentFragment() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.assess_problem_area)
+        if (fragment != null) {
+            supportFragmentManager.beginTransaction()
+                .remove(fragment)
+                .commit()
+        }
     }
 }
