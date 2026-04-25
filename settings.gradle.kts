@@ -21,6 +21,7 @@ dependencyResolutionManagement {
         mavenCentral()
         maven { url = uri("https://mirrors.tencent.com/repository/maven/tencent_public/") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/releases/") }
+        maven { url = uri("https://jitpack.io") }
     }
 }
 

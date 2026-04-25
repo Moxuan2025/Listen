@@ -1,5 +1,6 @@
 package com.demo.listen.Layout.Assessment
 
+import android.content.Intent
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -21,6 +22,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import com.demo.listen.net.HunyuanHelper
 import com.tencent.cloud.soe.TAIOralController
+import android.graphics.Color
 class AssessmentActivity : AppCompatActivity() {
 
     private lateinit var childUsername: String
@@ -125,8 +127,16 @@ val expressionScore = if (vocabularyScores.isNotEmpty()) vocabularyScores.averag
             }
         }
 
-        // 7. 显示结果页
-        loadFragment(ResultFragment.newInstance(result))
+        // 7. 跳转到报告页面
+        val intent = Intent(this, com.demo.listen.Layout.ReportPage::class.java).apply {
+            putExtra("listening_score", result.listeningScore)
+            putExtra("listening_level_score", levelScore.toFloat()) // 传递听力等级分数
+            putExtra("expression_score", result.expressionScore)
+            putExtra("comprehension_score", result.comprehensionScore)
+            putExtra("overall_score", result.overallScore)
+        }
+        startActivity(intent)
+        finish() // 关闭评估活动，防止返回键回到题目页
     }
 
     private fun generateMockQuestions(): List<AssessmentQuestion> {
@@ -369,12 +379,6 @@ class QuestionFragment : Fragment(R.layout.fragment_question) {
                         }, 1000)
                     }
                 }
-
-                // 测试用下一题按钮
-                (view as ViewGroup).addView(Button(requireContext()).apply {
-                    text = "下一题(测试)"
-                    setOnClickListener { goToNext(questions, currentIndex + 1) }
-                })
             }
 
             "read_after" -> {
@@ -444,16 +448,31 @@ class QuestionFragment : Fragment(R.layout.fragment_question) {
                         btnRead.isEnabled = true
                     }
                 }
-
-                // 测试用下一题按钮（保留）
-                (view as ViewGroup).addView(Button(requireContext()).apply {
-                    text = "下一题(测试)"
-                    setOnClickListener { goToNext(questions, currentIndex + 1) }
-                })
             }
             "comprehension" -> {
                 comprehensionContainer.visibility = View.VISIBLE
                 etAnswer.setText("")
+                
+                // 美化输入框
+                etAnswer.apply {
+                    setBackgroundResource(R.drawable.green_bg)
+                    setPadding(32, 24, 32, 24)
+                    hint = "请输入你的答案..."
+                    textSize = 16f
+                }
+
+                // 美化提交按钮
+                btnSubmit.apply {
+                    setBackgroundColor(Color.parseColor("#4CAF50"))   // 绿色
+                    setTextColor(Color.WHITE)
+                    textSize = 18f
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._40sdp)
+                    ).apply {
+                        topMargin = 32
+                    }
+                }
 
                 btnSubmit.setOnClickListener {
                     val userAnswer = etAnswer.text.toString().trim()
@@ -484,12 +503,6 @@ class QuestionFragment : Fragment(R.layout.fragment_question) {
                         }
                     }
                 }
-
-                // 测试用下一题按钮
-                (view as ViewGroup).addView(Button(requireContext()).apply {
-                    text = "下一题(测试)"
-                    setOnClickListener { goToNext(questions, currentIndex + 1) }
-                })
             }
         }
     }
