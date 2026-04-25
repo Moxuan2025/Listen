@@ -1,5 +1,6 @@
 package com.demo.listen.net
 
+import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -7,11 +8,10 @@ import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
+import java.text.SimpleDateFormat
+import java.util.*
 
-import android.content.Context
-import com.demo.listen.Layout.Assessment.AssessmentResult
-import com.demo.listen.Layout.Assessment.AssessmentQuestion
-
+// ========== 本地存储工具 ==========
 object SessionStore {
     private const val PREF = "session"
     private const val KEY_NAME = "name"
@@ -26,8 +26,6 @@ object SessionStore {
             .putString(KEY_TOKEN, token)
             .apply()
     }
-
-    //fun getRole(context: Context): String? = prefs.getString("role", null)
 
     fun name(context: Context): String {
         return context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
@@ -54,11 +52,9 @@ object SessionStore {
     }
 }
 
+// ========== 服务器 API ==========
 object ServerApi {
-  //配置url
-  private const val BASE_URL = "http://f5e6369e.natappfree.cc"
-
-//    private const val BASE_URL = "127.0.0.1:8000"
+    private const val BASE_URL = "http://f5e6369e.natappfree.cc"
 
     data class AuthResult(
         val token: String,
@@ -66,27 +62,63 @@ object ServerApi {
         val role: String?
     )
 
-    // 开始评估会话（返回 sessionId）
+    // 开始评估会话
     suspend fun startAssessment(childUsername: String, level: Int): String {
-        // TODO: 调用 POST /api/v1/assessments/start，返回 { sessionId: "xxx" }
-        return "mock-session-id"
+        val body = JSONObject().apply {
+            put("child_username", childUsername)
+            put("level", level)
+        }
+        val resp = request("POST", "/api/v1/sessions/start", body)
+        if (!resp.optBoolean("ok")) {
+            error(resp.optString("message", "启动评估会话失败"))
+        }
+        return resp.getJSONObject("data").optString("id")
     }
 
-    // 提交单题答案（可批量，也可每道题提交）
+    // 完成评估并上传分数
+    suspend fun finishAssessment(
+        sessionId: String,
+        level: Int,
+        levelScore: Double,
+        avgReadScore: Double,
+        expressionScore: Double,
+        readingScore: Double,
+        overallScore: Double,
+        answers: Map<Int, String>
+    ): Boolean {
+        val answersJson = JSONObject()
+        answers.forEach { (index, answer) -> answersJson.put(index.toString(), answer) }
+
+        val summary = JSONObject().apply {
+            put("level", level)
+            put("level_score", levelScore)
+            put("avg_read_score", avgReadScore)
+            put("expression_score", expressionScore)
+            put("reading_score", readingScore)
+            put("overall_score", overallScore)
+            put("answers", answersJson)
+        }
+
+        val body = JSONObject().apply {
+            put("status", "finished")
+            put("finished_at", SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).format(Date()))
+            put("summary", summary)
+        }
+
+        val resp = request("POST", "/api/v1/sessions/$sessionId/finish", body)
+        return resp.optBoolean("ok")
+    }
+
+    // 提交单题答案（预留）
     suspend fun submitAnswer(sessionId: String, questionIndex: Int, answer: String) {
-        // TODO: POST /api/v1/assessments/answer
+        // TODO: 实现逐题提交
     }
 
-    // 完成评估，返回评估结果
-    suspend fun finishAssessment(sessionId: String): AssessmentResult {
-        // TODO: POST /api/v1/assessments/finish，返回评分
-        return AssessmentResult(80f, 75f, 82f, 79f)
-    }
     // 语音合成
     suspend fun textToSpeech(text: String): String {
         val body = JSONObject().apply {
             put("text", text)
-            put("voiceType", 1002)  // 可选: 1002 女声, 101001 男声
+            put("voiceType", 1002)
             put("speed", 0)
             put("volume", 0)
         }
@@ -94,7 +126,7 @@ object ServerApi {
         if (!resp.optBoolean("ok")) {
             error(resp.optString("message", "TTS 失败"))
         }
-        return resp.getJSONObject("data").optString("audio")  // 返回 base64 字符串
+        return resp.getJSONObject("data").optString("audio")
     }
 
     // 初始化口语评测
@@ -124,6 +156,63 @@ object ServerApi {
         return resp.getJSONObject("data")
     }
 
+    // 检查用户名
+    suspend fun checkUsername(username: String): Boolean {
+        val path = "/api/v1/auth/check-username?username=" + URLEncoder.encode(username, "UTF-8")
+        val resp = request("GET", path)
+        return resp.optJSONObject("data")?.optBoolean("exists", false) ?: false
+    }
+
+    // 登录
+    suspend fun login(username: String, password: String): AuthResult {
+        val body = JSONObject().apply {
+            put("username", username)
+            put("password", password)
+        }
+        val resp = request("POST", "/api/v1/auth/login", body)
+        if (!resp.optBoolean("ok")) {
+            error(resp.optString("message", "登录失败"))
+        }
+        val data = resp.getJSONObject("data")
+        val user = data.optJSONObject("user")
+        return AuthResult(
+            token = data.optString("token"),
+            userName = user?.optString("name"),
+            role = user?.optString("role")
+        )
+    }
+
+    // 注册
+    suspend fun register(
+        username: String,
+        password: String,
+        name: String,
+        role: String,
+        guardian: String?,
+        children: List<String>
+    ): AuthResult {
+        val body = JSONObject().apply {
+            put("username", username)
+            put("password", password)
+            put("name", name)
+            put("role", role)
+            put("guardian", guardian ?: "")
+            put("children", JSONArray(children))
+        }
+        val resp = request("POST", "/api/v1/auth/register", body)
+        if (!resp.optBoolean("ok")) {
+            error(resp.optString("message", "注册失败"))
+        }
+        val data = resp.getJSONObject("data")
+        val user = data.optJSONObject("user")
+        return AuthResult(
+            token = data.optString("token"),
+            userName = user?.optString("name"),
+            role = user?.optString("role")
+        )
+    }
+
+    // 通用 HTTP 请求
     private suspend fun request(
         method: String,
         path: String,
@@ -154,90 +243,4 @@ object ServerApi {
             JSONObject(resp)
         }
     }
-
-    suspend fun checkUsername(username: String): Boolean {
-        val path = "/api/v1/auth/check-username?username=" +
-                URLEncoder.encode(username, "UTF-8")
-        val resp = request("GET", path)
-        return resp.optJSONObject("data")?.optBoolean("exists", false) ?: false
-    }
-
-    suspend fun login(username: String, password: String): AuthResult {
-        val body = JSONObject().apply {
-            put("username", username)
-            put("password", password)
-        }
-        val resp = request("POST", "/api/v1/auth/login", body)
-        if (!resp.optBoolean("ok")) {
-            error(resp.optString("message", "登录失败"))
-        }
-
-        val data = resp.getJSONObject("data")
-        val user = data.optJSONObject("user")
-        return AuthResult(
-            token = data.optString("token"),
-            userName = user?.optString("name"),
-            role = user?.optString("role")
-        )
-    }
-
-//    suspend fun register(
-//        username: String,
-//        password: String,
-//        name: String,
-//        role: String,
-//        guardian: String?,
-//        children: List<String>
-//    ): RegisterResult {
-//        // 内部请求体的构建也要对应修改
-//        val requestBody = mapOf(
-//            "username" to username,
-//            "password" to password,
-//            "name" to name,
-//            "role" to role,
-//            "guardian" to (guardian ?: ""), // 或直接 null
-//            "children" to children
-//        )
-//
-//        val resp = request("POST", "/api/v1/auth/register", body)
-//        if (!resp.optBoolean("ok")) {
-//            error(resp.optString("message", "注册失败"))
-//        }
-//
-//        val data = resp.getJSONObject("data")
-//        val user = data.optJSONObject("user")
-//        return AuthResult(
-//            token = data.optString("token"),
-//            userName = user?.optString("name"),
-//            role = user?.optString("role")
-//        )
-//    }
-suspend fun register(
-    username: String,
-    password: String,
-    name: String,
-    role: String,
-    guardian: String?,
-    children: List<String>
-): AuthResult {
-    val body = JSONObject().apply {
-        put("username", username)
-        put("password", password)
-        put("name", name)
-        put("role", role)
-        put("guardian", guardian ?: "")
-        put("children", JSONArray(children))
-    }
-    val resp = request("POST", "/api/v1/auth/register", body)
-    if (!resp.optBoolean("ok")) {
-        error(resp.optString("message", "注册失败"))
-    }
-    val data = resp.getJSONObject("data")
-    val user = data.optJSONObject("user")
-    return AuthResult(
-        token = data.optString("token"),
-        userName = user?.optString("name"),
-        role = user?.optString("role")
-    )
-}
 }
