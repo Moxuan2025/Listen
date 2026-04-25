@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
 
     <application
         android:allowBackup="true"
@@ -17,66 +15,75 @@
         android:theme="@style/Theme.Listen"
         android:usesCleartextTraffic="true">
 
-<!--        android:usesCleartextTraffic="true"-->
+        <activity
+            android:name=".Layout.Assessment.PracticeList"
+            android:exported="false" />
+
         <activity
             android:name=".Layout.EnjoyStudy.TonePractise"
             android:exported="false" />
+
         <activity
             android:name=".Layout.Assessment.Assess"
             android:exported="true" />
+
         <activity
             android:name=".Layout.Assessment.DisabilityLevel"
             android:exported="true" />
+
         <activity
             android:name=".Layout.Assessment.AssessmentActivity"
             android:exported="true" />
+
         <activity
             android:name=".Layout.guardian.GuardianActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Layout.EnjoyStudy.SpellPractise"
-            android:exported="true" />
+            android:screenOrientation="fullSensor" />
+
         <activity
             android:name=".Layout.Assessment.AssessReport"
             android:exported="true" />
+
         <activity
             android:name=".Layout.EnjoyStudy.SceneSelect"
             android:exported="true" />
+
         <activity
             android:name=".Layout.EnjoyStudy.PracticeFeedback"
             android:exported="true" />
+
         <activity
             android:name=".Layout.EnjoyStudy.SyllablePractice"
             android:exported="true" />
+
         <activity
             android:name=".Layout.EnjoyStudy.SyllableList"
             android:exported="true" />
+
         <activity
             android:name=".Layout.EnjoyStudy.Enjoyment"
             android:exported="true" />
-        <activity
-            android:name=".Layout.Assessment.SoundAssessPractice"
-            android:exported="true" />
+
         <activity
             android:name=".Layout.LoginRegister.CompleteInfo"
             android:exported="true" />
+
         <activity
             android:name=".Layout.LoginRegister.Login"
             android:exported="true" />
+
         <activity
             android:name=".Layout.LoginRegister.LoginOrRegister"
             android:exported="true" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

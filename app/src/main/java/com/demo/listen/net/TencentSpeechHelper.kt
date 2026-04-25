@@ -14,28 +14,54 @@ import com.tencent.cloud.realtime.tts.core.ws.SpeechClient
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.ByteBuffer
+import java.util.Properties
 import java.util.UUID
 
 object TencentSpeechHelper {
 
-    // ⚠️ 请替换为你的真实密钥
+    // 密钥变量（不再硬编码）
+    private var APP_ID: String = ""
+    private var SECRET_ID: String = ""
+    private var SECRET_KEY: String = ""
 
-    private const val APP_ID = "XXX"
-    private const val SECRET_ID = "XXX"
-    private const val SECRET_KEY = "XXX"
+    // 是否已加载密钥
+    private var keyLoaded = false
 
+    /**
+     * 从 assets 加载密钥（第一次调用时自动执行）
+     */
+    private fun ensureKeysLoaded(context: Context) {
+        if (keyLoaded) return
+        try {
+            val props = Properties()
+            context.applicationContext.assets.open("tencent_tts.properties").use { stream ->
+                props.load(stream)
+            }
+            APP_ID = props.getProperty("APP_ID", "")
+            SECRET_ID = props.getProperty("SECRET_ID", "")
+            SECRET_KEY = props.getProperty("SECRET_KEY", "")
+            keyLoaded = true
+            Log.d("TTS", "密钥加载成功 APP_ID=$APP_ID")
+        } catch (e: Exception) {
+            Log.e("TTS", "密钥加载失败，请检查 assets/tencent_tts.properties", e)
+            // 不抛出异常，避免崩溃，后续合成会因 APP_ID 为空而给出提示
+        }
+    }
 
     private val ttsProxy = SpeechClient()
     private var synthesizer: RealTimeSpeechSynthesizer? = null
     private var exoPlayer: ExoPlayer? = null
 
-    /**
-     * 合成语音并播放
-     * @param text 要朗读的文本
-     * @param context Android Context
-     * @param onComplete 播放完成后的回调（不管成功失败都会调用）
-     */
     fun synthesisAndPlay(text: String, context: Context, onComplete: () -> Unit) {
+        // ---- 新增：保证密钥已加载 ----
+        ensureKeysLoaded(context)
+        if (APP_ID.isEmpty()) {
+            runOnUiThread(context) {
+                Toast.makeText(context, "密钥未配置", Toast.LENGTH_SHORT).show()
+                onComplete()
+            }
+            return
+        }
         if (text.isBlank()) {
             Toast.makeText(context, "朗读文本为空", Toast.LENGTH_SHORT).show()
             onComplete()

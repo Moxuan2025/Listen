@@ -1,5 +1,6 @@
 package com.demo.listen.Layout.Adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,9 +28,12 @@ class RankAdapter(private val items: MutableList<RankItem>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.tvRank.text = item.rank.toString()
+        holder.tvRank.setTextColor(Color.BLACK)
         holder.tvName.text = item.name
+        holder.tvName.setTextColor(Color.BLACK)
         holder.vAvatar.setBackgroundResource(item.avatarRes)
         holder.tvScore.text = "打卡天数：${item.clockInDays}"
+        holder.tvScore.setTextColor(Color.BLACK)
 
         // 前三名特殊样式
         when (item.rank) {

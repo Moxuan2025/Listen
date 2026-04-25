@@ -125,10 +125,6 @@ class StudyFragment : Fragment() {
         }
         v.findViewById<Button>(R.id.btn_personal_assessment).setOnClickListener { // 评估
             startActivity(Intent(requireContext(), DisabilityLevel::class.java))
-//            val result = Bundle().apply {
-//                putString("event", "PersonalAssessment")
-//            }
-//            parentFragmentManager.setFragmentResult("Study", result)
         }
         v.findViewById<Button>(R.id.btn_speak_learn).setOnClickListener { // 情景对话
             val result = Bundle().apply {

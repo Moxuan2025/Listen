@@ -1,14 +1,19 @@
 package com.demo.listen.Layout.EnjoyStudy
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.VideoView
+import androidx.lifecycle.ViewModelProvider
+import com.demo.listen.Layout.Assessment.PracticeList
 import com.demo.listen.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -30,12 +35,29 @@ class FragmentPracticeContent : Fragment() {
     private lateinit var playRecord: ImageView      // 播放录音
     private lateinit var spellAction: TextView
     private lateinit var record: ImageButton        // 录音
+    private lateinit var recordTip: TextView
     private lateinit var preTone: TextView
     private lateinit var nxtTone: TextView
 
 
+    private lateinit var viewModel: SharePracticeData
+    private var action = listOf<String>("", "", "", "")
+    private var curIndex: Int = 0
+
+    private var pinyin = ""
+    private var scoreList = mutableListOf("--", "--", "--", "--")  // 记录为字符串，方便替换
+    // TODO: 一个变量记录录音数据
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        arguments?.let { bundle ->
+            pinyin = bundle.getString("pinyin") ?: "<None>"
+            Toast.makeText(requireContext(), pinyin,
+                Toast.LENGTH_SHORT).show()
+        }
+
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -54,8 +76,9 @@ class FragmentPracticeContent : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapWidget()
+        initPage()
+        handleClick()
     }
-
 
     private fun mapWidget() {
         video = requireView().findViewById<VideoView>(R.id.example_video)
@@ -63,11 +86,89 @@ class FragmentPracticeContent : Fragment() {
         playRecord = requireView().findViewById<ImageView>(R.id.example_sound_play)
         spellAction = requireView().findViewById<TextView>(R.id.spell_action)
         record = requireView().findViewById<ImageButton>(R.id.practise_sound_record)
+        recordTip = requireView().findViewById<TextView>(R.id.practise_sound_record_tip)
         preTone = requireView().findViewById<TextView>(R.id.pc_pre)
         nxtTone = requireView().findViewById<TextView>(R.id.pc_nxt)
     }
 
+    private fun initPage() {
+        viewModel = ViewModelProvider(requireActivity())[SharePracticeData::class.java]
+        viewModel.action.observe(viewLifecycleOwner) { actions ->
+            action = actions
+        }
+        viewModel.index.observe(viewLifecycleOwner) { index ->
+            curIndex = index
+            changePage()
+        }
+    }
 
+    private fun changePage() {
+        spellAction.text = "发声动作:\n" + action[curIndex]
+        score.text = scoreList[curIndex]
+
+        playRecord.setImageResource(R.drawable.ic_play_sound_gray)
+        if (scoreList[curIndex] != "--")
+            playRecord.setImageResource(R.drawable.ic_play_sound)
+
+        preTone.text = "上一个"
+        preTone.visibility = View.VISIBLE
+        nxtTone.text = "下一个"
+        if (curIndex == 0) preTone.visibility = View.INVISIBLE
+        if (curIndex == action.size-1) nxtTone.text = "进阶!"
+    }
+
+    private fun handleClick() {
+        preTone.setOnClickListener {
+            curIndex -= 1
+            if (curIndex < 0) curIndex = 0
+            viewModel.changeIndex(curIndex)     // 通知 activity 改变
+        }
+        nxtTone.setOnClickListener {
+            curIndex += 1
+            if (curIndex == action.size) {  // 什么时候到达末尾
+                startActivity(Intent(requireActivity(),
+                    PracticeList::class.java).apply {
+                    putExtra("pinyin", pinyin)
+                    putExtra("mode", "word")        // 词汇练习
+                })
+                requireActivity().finish()
+            } else
+                viewModel.changeIndex(curIndex)
+        }
+
+        record.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    record.setBackgroundResource(R.drawable.ic_record)
+                    recordTip.text = "聆听中"
+                    record.tag = System.currentTimeMillis()
+                    // TODO: 开始录音
+                }
+                MotionEvent.ACTION_UP -> {
+                    record.setBackgroundResource(R.drawable.ic_record_gray)
+                    recordTip.text = "按住说话"
+                    // TODO: 结束录音
+                    val downTime = record.tag as? Long
+                    if (downTime != null) {
+                        val pressDuration = System.currentTimeMillis() - downTime
+                        if (pressDuration < 800) {
+                            Toast.makeText(requireContext(), "没听到呢，能再试一下吗",
+                                Toast.LENGTH_SHORT).show()
+                        } else {
+                            // TODO: 评估分数
+                            scoreList[curIndex] = "90"
+                            score.text = scoreList[curIndex]
+                            playRecord.setImageResource(R.drawable.ic_play_sound)
+                        }
+                    }
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    record.setBackgroundResource(R.drawable.ic_record_gray)
+                }
+            }
+            true
+        }
+    }
 
     companion object {
         @JvmStatic
