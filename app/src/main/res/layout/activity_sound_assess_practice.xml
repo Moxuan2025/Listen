@@ -51,10 +51,11 @@
         app:layout_constraintTop_toBottomOf="@id/tv_assess_target"
         android:orientation="horizontal"
         android:gravity="center" >
+
         <TextView
             android:id="@+id/play"
             android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
+            android:layout_height="37dp"
             android:background="@drawable/play" />
     </LinearLayout>
 

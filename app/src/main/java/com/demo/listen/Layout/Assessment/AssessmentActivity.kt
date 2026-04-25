@@ -83,7 +83,11 @@ class AssessmentActivity : AppCompatActivity() {
         val avgReadScore = if (readScores.isNotEmpty()) readScores.average() else 0.0
 
         // 3. 表达能力分数 (暂未实现真实评分，默认75)
-        val expressionScore = 75.0
+        val vocabularyScores = answers.filterKeys { it in 0..4 }
+    .mapNotNull { (_, value) ->
+        value.substringAfter("词汇得分：").toDoubleOrNull()
+    }
+val expressionScore = if (vocabularyScores.isNotEmpty()) vocabularyScores.average() else 0.0
 
         // 4. 阅读能力分数 (从答案中提取NLP评分，索引10-14)
         val readingScores = answers.filterKeys { it in 10..14 }
@@ -324,7 +328,7 @@ class QuestionFragment : Fragment(R.layout.fragment_question) {
                 optionsContainer.removeAllViews()
                 val optionButtons = mutableListOf<Button>()
                 question.options?.forEach { option ->
-                    val btn = Button(requireContext()).apply {
+                    val btn = Button(optionsContainer.context).apply {
                         text = option
                         layoutParams = LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -351,14 +355,15 @@ class QuestionFragment : Fragment(R.layout.fragment_question) {
                         optionButtons.forEach { it.isEnabled = false }
                         btnRead.isEnabled = false
 
-                        optionButtons.forEach { it.setBackgroundResource(android.R.drawable.btn_default) }
+                        optionButtons.forEach { it.setBackgroundResource(R.drawable.green_bg) }
                         btn.setBackgroundColor(0xFFFF0000.toInt())
 
                         optionButtons.firstOrNull { it.text == question.correctAnswer }?.let {
                             it.setBackgroundColor(0xFF00AA00.toInt())
                         }
 
-                        (activity as? AssessmentActivity)?.saveAnswer(currentIndex, btn.text.toString())
+                        val score = if (btn.text == question.correctAnswer) 100 else 0
+(activity as? AssessmentActivity)?.saveAnswer(currentIndex, "词汇得分：$score")
                         Handler(Looper.getMainLooper()).postDelayed({
                             goToNext(questions, currentIndex + 1)
                         }, 1000)
@@ -376,7 +381,7 @@ class QuestionFragment : Fragment(R.layout.fragment_question) {
                 btnRead.visibility = View.VISIBLE
                 btnRead.text = "听示范音"
 
-                val recordBtn = Button(requireContext()).apply { text = "🎤 开始录音" }
+                val recordBtn = Button(optionsContainer.context).apply { text = "开始录音" }
                 (btnRead.parent as? ViewGroup)?.addView(recordBtn)
 
                 var oralController: TAIOralController? = null
