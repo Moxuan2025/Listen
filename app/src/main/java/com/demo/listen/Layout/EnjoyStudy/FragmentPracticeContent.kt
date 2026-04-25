@@ -11,57 +11,46 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.VideoView
 import androidx.lifecycle.ViewModelProvider
-import com.demo.listen.Layout.EnjoyStudy.PracticeList
 import com.demo.listen.R
+import com.demo.listen.net.TencentSpeechHelper
+import com.demo.listen.net.PinyinUtils
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FragmentPracticeContent.newInstance] factory method to
- * create an instance of this fragment.
- */
 class FragmentPracticeContent : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-
-    private lateinit var ivView: ImageView                // 内容的讲解示例图片
-    private lateinit var tvPinyinCenter: TextView         // 学习内容, type == "pinyin"
-    private lateinit var tvPinYin: TextView               // 学习内容, type != "word"
-    private lateinit var tvWord: TextView                 // 学习内容, type != "word"
+    private lateinit var ivView: ImageView
+    private lateinit var tvPinyinCenter: TextView
+    private lateinit var tvPinYin: TextView
+    private lateinit var tvWord: TextView
     private lateinit var playExample: ImageView
     private lateinit var score: TextView
-    private lateinit var playRecord: ImageView      // 播放录音
+    private lateinit var playRecord: ImageView
     private lateinit var spellAction: TextView
-    private lateinit var record: ImageButton        // 录音
+    private lateinit var record: ImageButton
     private lateinit var recordTip: TextView
     private lateinit var preTone: TextView
     private lateinit var nxtTone: TextView
-
 
     private lateinit var viewModel: SharePracticeData
     private var action = listOf<String>("")
     private var curIndex: Int = 0
 
     private var syllable = ""
-    private var scoreList: MutableList<Int> ?= mutableListOf()        // 学习/练习 数据记录
-    // TODO: 一个变量记录录音数据，用于播放和上传
+    private var scoreList: MutableList<Int>? = mutableListOf()
+
+    private var isExamplePlaying = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         arguments?.let { bundle ->
             syllable = bundle.getString("Syllable") ?: "<None>"
-            Toast.makeText(requireContext(), syllable,
-                Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), syllable, Toast.LENGTH_SHORT).show()
         }
-
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -72,9 +61,7 @@ class FragmentPracticeContent : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_practice_content,
-            container, false)
+        return inflater.inflate(R.layout.fragment_practice_content, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -85,30 +72,24 @@ class FragmentPracticeContent : Fragment() {
     }
 
     private fun mapWidget() {
-        ivView = requireView().findViewById<ImageView>(R.id.example_view)
-
-        tvPinyinCenter = requireView().findViewById<TextView>(R.id.practice_content_label)
-        tvPinYin = requireView().findViewById<TextView>(R.id.tv_pinyin)
-        tvWord = requireView().findViewById<TextView>(R.id.tv_content)
-        spellAction = requireView().findViewById<TextView>(R.id.spell_action)
-
-        playExample = requireView().findViewById<ImageView>(R.id.example_sound_play)
-        playRecord = requireView().findViewById<ImageView>(R.id.record_sound_play)
-        record = requireView().findViewById<ImageButton>(R.id.practise_sound_record)
-
-        score = requireView().findViewById<TextView>(R.id.practice_score)
-        recordTip = requireView().findViewById<TextView>(R.id.practise_sound_record_tip)
-        preTone = requireView().findViewById<TextView>(R.id.pc_pre)
-        nxtTone = requireView().findViewById<TextView>(R.id.pc_nxt)
+        ivView = requireView().findViewById(R.id.example_view)
+        tvPinyinCenter = requireView().findViewById(R.id.practice_content_label)
+        tvPinYin = requireView().findViewById(R.id.tv_pinyin)
+        tvWord = requireView().findViewById(R.id.tv_content)
+        spellAction = requireView().findViewById(R.id.spell_action)
+        playExample = requireView().findViewById(R.id.example_sound_play)
+        playRecord = requireView().findViewById(R.id.record_sound_play)
+        record = requireView().findViewById(R.id.practise_sound_record)
+        score = requireView().findViewById(R.id.practice_score)
+        recordTip = requireView().findViewById(R.id.practise_sound_record_tip)
+        preTone = requireView().findViewById(R.id.pc_pre)
+        nxtTone = requireView().findViewById(R.id.pc_nxt)
     }
 
     private var next: String = "word"
     private var target: List<String> = listOf()
-    private var showView: Boolean = false
-
-    private var type = "pinyin"     // 传入数据的类型：拼音 pinyin、词汇 word、词组 phrase、句子 sentence
-    private var contentList = listOf<WordPinYin>()  // 数据
-
+    private var type = "pinyin"
+    private var contentList = listOf<WordPinYin>()
     private var totalItem = 0
 
     private fun initPage() {
@@ -119,31 +100,26 @@ class FragmentPracticeContent : Fragment() {
         tvWord.visibility = View.INVISIBLE
         tvPinYin.visibility = View.INVISIBLE
 
-        viewModel.action.observe(viewLifecycleOwner) { actions ->
-            action = actions
-        }
-        viewModel.nextPage.observe(viewLifecycleOwner) { nextPage ->
-            next = nextPage
-        }
-        viewModel.target.observe(viewLifecycleOwner) {targets ->
+        viewModel.action.observe(viewLifecycleOwner) { actions -> action = actions }
+        viewModel.nextPage.observe(viewLifecycleOwner) { nextPage -> next = nextPage }
+        viewModel.target.observe(viewLifecycleOwner) { targets ->
             if (targets.isNotEmpty()) {
                 target = targets
                 totalItem = target.size
-                scoreList = MutableList(totalItem) {-1}
+                scoreList = MutableList(totalItem) { -1 }
             }
         }
-        viewModel.wordPinYin.observe(viewLifecycleOwner) {wpy ->
+        viewModel.wordPinYin.observe(viewLifecycleOwner) { wpy ->
             if (wpy.isNotEmpty()) {
                 contentList = wpy
                 totalItem = wpy.size
-                scoreList = MutableList(totalItem) {-1}
+                scoreList = MutableList(totalItem) { -1 }
             }
         }
-        viewModel.type.observe(viewLifecycleOwner) {vtype ->
+        viewModel.type.observe(viewLifecycleOwner) { vtype ->
             type = vtype
-            showView = true     // 可视
             ivView.visibility = View.VISIBLE
-            when(type) {
+            when (type) {
                 "pinyin" -> tvPinyinCenter.visibility = View.VISIBLE
                 "word", "phrase", "sentence" -> {
                     tvWord.visibility = View.VISIBLE
@@ -158,11 +134,11 @@ class FragmentPracticeContent : Fragment() {
     }
 
     private fun changePage() {
-        var sc = scoreList?.get(curIndex)
+        val sc = scoreList?.get(curIndex)
         score.text = "--"
 
-        when(type) {
-            "pinyin" -> {  // TODO: 修改本条代码
+        when (type) {
+            "pinyin" -> {
                 tvPinyinCenter.text = target[curIndex]
                 spellAction.text = "发声动作:\n" + action[curIndex]
             }
@@ -174,7 +150,7 @@ class FragmentPracticeContent : Fragment() {
         }
 
         playRecord.setImageResource(R.drawable.ic_play_sound_gray)
-        if (sc != -1){
+        if (sc != -1) {
             playRecord.setImageResource(R.drawable.ic_play_sound)
             score.text = sc.toString()
         }
@@ -183,63 +159,99 @@ class FragmentPracticeContent : Fragment() {
         preTone.visibility = View.VISIBLE
         nxtTone.text = "下一个"
         if (curIndex == 0) preTone.visibility = View.INVISIBLE
-        if (curIndex == totalItem-1) {
-            when(next) {
+        if (curIndex == totalItem - 1) {
+            when (next) {
                 "word" -> nxtTone.text = "进阶!"
                 "report" -> nxtTone.text = "查看报告"
             }
         }
     }
 
-    private fun handleClick() {
+
+        private fun handleClick() {
+            // ============ 播放示例音频（SSML方式朗读拼音） ============
+            playExample.setOnClickListener {
+                if (isExamplePlaying) {
+                    Toast.makeText(requireContext(), "正在播放，请稍后", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                val rawText = when (type) {
+                    "pinyin" -> target.getOrElse(curIndex) { "" }
+                    "word", "phrase", "sentence" -> contentList.getOrNull(curIndex)?.word ?: ""
+                    else -> ""
+                }
+
+                if (rawText.isBlank()) {
+                    Toast.makeText(requireContext(), "没有可朗读的内容", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                // ✅ 改用你已验证的 PinyinUtils 处理拼音 → SSML
+                val textToSpeak = if (type == "pinyin") {
+                    // 将带声调符号的拼音转成数字声调，再包装为 SSML
+                    val numberPinyin = PinyinUtils.convertToneMarkToNumber(rawText)
+                    PinyinUtils.buildPinyinSsml(numberPinyin)
+                } else {
+                    rawText   // 普通文字直接朗读
+                }
+
+                isExamplePlaying = true
+                TencentSpeechHelper.synthesisAndPlay(
+                    text = textToSpeak,
+                    context = requireContext(),
+                    onComplete = {
+                        isExamplePlaying = false
+                    }
+                )
+            }
+
+        // 原有导航
         preTone.setOnClickListener {
             curIndex -= 1
             if (curIndex < 0) curIndex = 0
-            viewModel.changeIndex(curIndex)     // 通知 activity 改变
+            viewModel.changeIndex(curIndex)
         }
         nxtTone.setOnClickListener {
             curIndex += 1
-            if (curIndex == totalItem) {              // 什么时候到达末尾
-                when(next) {
-                    "word" -> {             // 去学习词汇
-                        startActivity(Intent(requireActivity(),
-                            PracticeList::class.java).apply {
+            if (curIndex == totalItem) {
+                when (next) {
+                    "word" -> {
+                        startActivity(Intent(requireActivity(), PracticeList::class.java).apply {
                             putExtra("Syllable", syllable)
                             putExtra("mode", "word")
                         })
                     }
-                    "report"  -> {
-                        // TODO: 跳转到正确的报告页面
-                        startActivity(Intent(requireActivity(),
-                            PracticeFeedback::class.java).apply {
-                        })
+                    "report" -> {
+                        startActivity(Intent(requireActivity(), PracticeFeedback::class.java).apply {})
                     }
                 }
                 requireActivity().finish()
-            } else
+            } else {
                 viewModel.changeIndex(curIndex)
+            }
         }
 
+        // 原有录音逻辑
         record.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     record.setBackgroundResource(R.drawable.ic_record)
                     recordTip.text = "聆听中"
                     record.tag = System.currentTimeMillis()
-                    // TODO: 开始录音
                 }
                 MotionEvent.ACTION_UP -> {
                     record.setBackgroundResource(R.drawable.ic_record_gray)
                     recordTip.text = "按住说话"
-                    // TODO: 结束录音
                     val downTime = record.tag as? Long
                     if (downTime != null) {
                         val pressDuration = System.currentTimeMillis() - downTime
                         if (pressDuration < 800) {
-                            Toast.makeText(requireContext(), "没听到呢，能再试一下吗",
-                                Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(), "没听到呢，能再试一下吗",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } else {
-                            // TODO: 评估分数
                             scoreList?.set(curIndex, 90)
                             score.text = scoreList?.get(curIndex).toString()
                             playRecord.setImageResource(R.drawable.ic_play_sound)
@@ -253,6 +265,55 @@ class FragmentPracticeContent : Fragment() {
             true
         }
     }
+
+    // =================== SSML 辅助方法 ===================
+    private fun convertToneMarkToNumber(tonedPinyin: String): String {
+        if (tonedPinyin.isEmpty()) return ""
+
+        val toneMap = mapOf(
+            'ā' to "a1", 'á' to "a2", 'ǎ' to "a3", 'à' to "a4",
+            'ō' to "o1", 'ó' to "o2", 'ǒ' to "o3", 'ò' to "o4",
+            'ē' to "e1", 'é' to "e2", 'ě' to "e3", 'è' to "e4",
+            'ī' to "i1", 'í' to "i2", 'ǐ' to "i3", 'ì' to "i4",
+            'ū' to "u1", 'ú' to "u2", 'ǔ' to "u3", 'ù' to "u4",
+            'ǖ' to "v1", 'ǘ' to "v2", 'ǚ' to "v3", 'ǜ' to "v4"
+        )
+
+        val result = StringBuilder()
+        var toneNumber: Char? = null
+
+        for (ch in tonedPinyin) {
+            val mapped = toneMap[ch]
+            if (mapped != null) {
+                result.append(mapped[0])
+                toneNumber = mapped[1]
+            } else {
+                result.append(ch)
+            }
+        }
+
+        if (toneNumber != null) {
+            result.append(toneNumber)
+        }
+
+        return result.toString().lowercase()
+    }
+
+    private fun buildPinyinSSML(tonedPinyin: String): String {
+        var digitalTone = convertToneMarkToNumber(tonedPinyin)
+
+        // 无声调且含元音时补第一声
+        if (!digitalTone.last().isDigit() && containsVowel(digitalTone)) {
+            digitalTone += "1"
+        }
+
+        return "<speak><phoneme alphabet=\"py\" ph=\"$digitalTone\">$tonedPinyin</phoneme></speak>"
+    }
+
+    private fun containsVowel(s: String): Boolean {
+        return s.any { it in "aoeiuv" }
+    }
+    // ===============================================================
 
     companion object {
         @JvmStatic
