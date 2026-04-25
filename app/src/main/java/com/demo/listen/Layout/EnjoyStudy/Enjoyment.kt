@@ -14,7 +14,7 @@ class Enjoyment : AppCompatActivity() {
     private lateinit var tvClockIn: TextView
     private lateinit var tvSyllable: TextView
     private lateinit var tvWord: TextView
-    private lateinit var tvPractice: TextView
+    private lateinit var tvCondition: TextView
     private lateinit var tvPhrase: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +36,7 @@ class Enjoyment : AppCompatActivity() {
         tvClockIn = findViewById<TextView>(R.id.enjoyment_clockin_days)
         tvSyllable = findViewById<TextView>(R.id.tv_enjoy_syllable)
         tvWord = findViewById<TextView>(R.id.tv_enjoy_word)
-        tvPractice = findViewById<TextView>(R.id.tv_condition_practice)
+        tvCondition = findViewById<TextView>(R.id.tv_condition_practice)
         tvPhrase = findViewById<TextView>(R.id.tv_enjoy_phrase)
     }
 
@@ -44,7 +44,7 @@ class Enjoyment : AppCompatActivity() {
         tvSyllable.setOnClickListener {
             startActivity(Intent(this@Enjoyment, SyllableList::class.java))
         }
-        tvPractice.setOnClickListener {
+        tvCondition.setOnClickListener {
             startActivity(Intent(this@Enjoyment, SceneSelect::class.java))
         }
     }

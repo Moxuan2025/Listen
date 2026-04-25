@@ -14,6 +14,7 @@ import android.view.Gravity
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -32,9 +33,9 @@ class SyllablePractice : AppCompatActivity() {
     private lateinit var fPhrase: TextView      // go->词组练习
     private lateinit var fSentence: TextView    // go->句子练习
 
-    private var syllable: String? = null
+    private var syllable: String = "<None>"
 
-    private var pinyin: List<String>? = null
+    private var pinyin: List<String> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,11 +44,12 @@ class SyllablePractice : AppCompatActivity() {
 
         mapWidget()
 
-        syllable = intent.getStringExtra("Syllable")
+        syllable = intent.getStringExtra("Syllable") ?: "<None>"
         pinyin = intent.getStringArrayListExtra("Pinyin") ?: emptyList()
 
         findViewById<TextView>(R.id.tv_syllable_target).text = syllable
         addPinYin(pinyin ?: emptyList())
+        handleClick()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -89,6 +91,7 @@ class SyllablePractice : AppCompatActivity() {
                     val tones = getPinyinTones(this@SyllablePractice, pinyinItem)
                     val intent = Intent(this@SyllablePractice,
                         TonePractise::class.java).apply {
+                            putExtra("Syllable", syllable)
                             putStringArrayListExtra("tones",
                                 ArrayList(tones ?: emptyList()))
                     }
@@ -108,6 +111,16 @@ class SyllablePractice : AppCompatActivity() {
             }
 
             gridLayout.addView(textView, params)
+        }
+    }
+
+    private fun handleClick() {
+        fWrod.setOnClickListener {
+            startActivity(Intent(this,
+                PracticeList::class.java).apply {
+                putExtra("Syllable", syllable)
+                putExtra("mode", "word")        // 词汇练习
+            })
         }
     }
 

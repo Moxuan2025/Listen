@@ -33,11 +33,13 @@ class TonePractise : AppCompatActivity() {
 
     private var tones: List<String> = listOf("-")
     private var pinyin: String = ""
+    private var syllable: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_tone_practise)
 
+        syllable = intent.getStringExtra("Syllable") ?: "<None>"
         tones = intent.getStringArrayListExtra("tones")?: listOf("-")
         if (tones.size == 5)
             pinyin = tones[4]
@@ -74,7 +76,9 @@ class TonePractise : AppCompatActivity() {
         toneQu.text = tones[3]
 
         viewModel.changeAction(getAction())
+        viewModel.setNext("word")
         viewModel.changeIndex(0)
+        viewModel.changeTarget(tones.take(4))
         viewModel.index.observe(this) { index ->
             toneChange(index)
         }
@@ -87,19 +91,15 @@ class TonePractise : AppCompatActivity() {
 
     private fun handleClick() {
         toneYinPing.setOnClickListener {
-//            toneChange(1)
             viewModel.changeIndex(0)
         }
         toneYangPing.setOnClickListener {
-//            toneChange(2)
             viewModel.changeIndex(1)
         }
         toneShang.setOnClickListener {
-//            toneChange(3)
             viewModel.changeIndex(2)
         }
         toneQu.setOnClickListener {
-//            toneChange(4)
             viewModel.changeIndex(3)
         }
     }
@@ -150,7 +150,7 @@ class TonePractise : AppCompatActivity() {
 
     private fun loadFragment(fragment: Fragment) {
         val bundle = Bundle().apply {
-            putString("pinyin", pinyin)
+            putString("Syllable", syllable)
         }
         fragment.arguments = bundle
         supportFragmentManager.beginTransaction()

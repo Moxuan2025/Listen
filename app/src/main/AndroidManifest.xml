@@ -16,9 +16,11 @@
         android:theme="@style/Theme.Listen"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Layout.Assessment.PracticeList"
+            android:name=".Layout.EnjoyStudy.NormalStudy"
             android:exported="false" />
-        <!-- android:usesCleartextTraffic="true" -->
+        <activity
+            android:name=".Layout.EnjoyStudy.PracticeList"
+            android:exported="false" /> <!-- android:usesCleartextTraffic="true" -->
         <activity
             android:name=".Layout.EnjoyStudy.TonePractise"
             android:exported="false" />

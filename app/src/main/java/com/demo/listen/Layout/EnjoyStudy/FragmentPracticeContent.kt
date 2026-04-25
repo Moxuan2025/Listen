@@ -13,7 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.VideoView
 import androidx.lifecycle.ViewModelProvider
-import com.demo.listen.Layout.Assessment.PracticeList
+import com.demo.listen.Layout.EnjoyStudy.PracticeList
 import com.demo.listen.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -30,7 +30,10 @@ class FragmentPracticeContent : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    private lateinit var video: VideoView
+
+    private lateinit var ivView: ImageView          // 内容的讲解示例图片
+    private lateinit var content: TextView         // 学习内容
+    private lateinit var playExample: ImageView
     private lateinit var score: TextView
     private lateinit var playRecord: ImageView      // 播放录音
     private lateinit var spellAction: TextView
@@ -44,17 +47,16 @@ class FragmentPracticeContent : Fragment() {
     private var action = listOf<String>("", "", "", "")
     private var curIndex: Int = 0
 
-    private var pinyin = ""
-    private var scoreList = mutableListOf("--", "--", "--", "--")  // 记录为字符串，方便替换
+    private var syllable = ""
+    private var scoreList = mutableListOf(0, 0, 0, 0)  // 记录为字符串，方便替换
     // TODO: 一个变量记录录音数据
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let { bundle ->
-            pinyin = bundle.getString("pinyin") ?: "<None>"
-            Toast.makeText(requireContext(), pinyin,
+            syllable = bundle.getString("Syllable") ?: "<None>"
+            Toast.makeText(requireContext(), syllable,
                 Toast.LENGTH_SHORT).show()
         }
 
@@ -81,9 +83,11 @@ class FragmentPracticeContent : Fragment() {
     }
 
     private fun mapWidget() {
-        video = requireView().findViewById<VideoView>(R.id.example_video)
+        ivView = requireView().findViewById<ImageView>(R.id.example_view)
+        content = requireView().findViewById<TextView>(R.id.practice_content_label)
+        playExample = requireView().findViewById<ImageView>(R.id.example_sound_play)
         score = requireView().findViewById<TextView>(R.id.practice_score)
-        playRecord = requireView().findViewById<ImageView>(R.id.example_sound_play)
+        playRecord = requireView().findViewById<ImageView>(R.id.record_sound_play)
         spellAction = requireView().findViewById<TextView>(R.id.spell_action)
         record = requireView().findViewById<ImageButton>(R.id.practise_sound_record)
         recordTip = requireView().findViewById<TextView>(R.id.practise_sound_record_tip)
@@ -91,8 +95,15 @@ class FragmentPracticeContent : Fragment() {
         nxtTone = requireView().findViewById<TextView>(R.id.pc_nxt)
     }
 
+    private var next: String = "<None>"
+    private var target: List<String> = listOf()
+    private var showView: Boolean = false
     private fun initPage() {
         viewModel = ViewModelProvider(requireActivity())[SharePracticeData::class.java]
+
+        content.visibility = View.INVISIBLE
+        ivView.visibility = View.INVISIBLE
+
         viewModel.action.observe(viewLifecycleOwner) { actions ->
             action = actions
         }
@@ -100,14 +111,28 @@ class FragmentPracticeContent : Fragment() {
             curIndex = index
             changePage()
         }
+        viewModel.nextPage.observe(viewLifecycleOwner) { nextPage ->
+            next = nextPage
+        }
+        viewModel.target.observe(viewLifecycleOwner) {targets ->
+            if (targets.isNotEmpty()) {
+                target = targets
+                showView = true
+                content.visibility = View.VISIBLE
+                ivView.visibility = View.VISIBLE
+                content.text = target[curIndex]
+            }
+        }
     }
 
     private fun changePage() {
         spellAction.text = "发声动作:\n" + action[curIndex]
-        score.text = scoreList[curIndex]
+        score.text = scoreList[curIndex].toString()
+
+        if (showView) content.text = target[curIndex]
 
         playRecord.setImageResource(R.drawable.ic_play_sound_gray)
-        if (scoreList[curIndex] != "--")
+        if (scoreList[curIndex] != 0)
             playRecord.setImageResource(R.drawable.ic_play_sound)
 
         preTone.text = "上一个"
@@ -125,12 +150,14 @@ class FragmentPracticeContent : Fragment() {
         }
         nxtTone.setOnClickListener {
             curIndex += 1
-            if (curIndex == action.size) {  // 什么时候到达末尾
-                startActivity(Intent(requireActivity(),
-                    PracticeList::class.java).apply {
-                    putExtra("pinyin", pinyin)
-                    putExtra("mode", "word")        // 词汇练习
-                })
+            if (curIndex == action.size) {              // 什么时候到达末尾
+                if (next == "word") {                   // 去学习词汇
+                    startActivity(Intent(requireActivity(),
+                        PracticeList::class.java).apply {
+                        putExtra("Syllable", syllable)
+                        putExtra("mode", "word")        // 词汇练习
+                    })
+                }
                 requireActivity().finish()
             } else
                 viewModel.changeIndex(curIndex)
@@ -156,8 +183,8 @@ class FragmentPracticeContent : Fragment() {
                                 Toast.LENGTH_SHORT).show()
                         } else {
                             // TODO: 评估分数
-                            scoreList[curIndex] = "90"
-                            score.text = scoreList[curIndex]
+                            scoreList[curIndex] = 90
+                            score.text = scoreList[curIndex].toString()
                             playRecord.setImageResource(R.drawable.ic_play_sound)
                         }
                     }

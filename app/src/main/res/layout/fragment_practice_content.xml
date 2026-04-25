@@ -7,18 +7,58 @@
     android:background="@color/white"
     tools:context=".Layout.EnjoyStudy.FragmentPracticeContent">
 
-    <VideoView
-        android:id="@+id/example_video"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_120sdp"
+    <ImageView
+        android:id="@+id/example_view"
+        android:layout_width="@dimen/_160sdp"
+        android:layout_height="@dimen/_80sdp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginHorizontal="@dimen/_60sdp" />
+        android:background="@drawable/bg_blackboard"/>
+    <TextView
+        android:id="@+id/practice_content_label"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintRight_toRightOf="@id/example_view"
+        app:layout_constraintLeft_toLeftOf="@id/example_view"
+        app:layout_constraintTop_toTopOf="@id/example_view"
+        app:layout_constraintBottom_toBottomOf="@id/example_view"
+        android:paddingBottom="@dimen/_6sdp"
+        android:gravity="center"
+        android:textColor="@color/white_op"
+        android:textSize="@dimen/_16sdp"
+        android:text="你好世界" />
+
+    <LinearLayout
+        android:id="@+id/ll_pc_top"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_40sdp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/example_view"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:orientation="horizontal"
+        android:gravity="center" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/gray_opacity"
+            android:text="播放示例:"/>
+        <ImageView
+            android:id="@+id/example_sound_play"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:background="@drawable/ic_play_sound_gray"
+            android:layout_marginLeft="@dimen/_10sdp"/>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_pc"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_30sdp"
-        app:layout_constraintTop_toBottomOf="@id/example_video"
+        app:layout_constraintTop_toBottomOf="@id/ll_pc_top"
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginHorizontal="@dimen/_20sdp"
         android:gravity="center" >
@@ -47,9 +87,9 @@
             android:gravity="center"
             android:textSize="@dimen/_16sdp"
             android:textColor="@color/black"
-            android:text="点击播放" />
+            android:text="点击播放:" />
         <ImageView
-            android:id="@+id/example_sound_play"
+            android:id="@+id/record_sound_play"
             android:layout_width="@dimen/_30sdp"
             android:layout_height="@dimen/_30sdp"
             android:src="@drawable/ic_play_sound_gray"
@@ -127,10 +167,10 @@
     <View
         android:layout_width="@dimen/_40sdp"
         android:layout_height="@dimen/_40sdp"
-        app:layout_constraintTop_toTopOf="@id/example_video"
-        app:layout_constraintBottom_toBottomOf="@id/example_video"
-        app:layout_constraintLeft_toRightOf="@id/example_video"
+        app:layout_constraintTop_toTopOf="@id/ll_pc_sr"
+        app:layout_constraintBottom_toBottomOf="@id/ll_pc_sr"
         app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="@dimen/_20sdp"
         android:background="@drawable/dog"/>
 
 
