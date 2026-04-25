@@ -1,19 +1,36 @@
 package com.demo.listen.Layout.EnjoyStudy
 
+/*
+SyllableList    -> SyllablePractice -> SpellPractise
+                                    -> TonePractise
+ */
+
+
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.GridLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.demo.listen.R
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlin.jvm.java
 
 class SyllablePractice : AppCompatActivity() {
+
+    private lateinit var word: TextView       // 词汇
+    private lateinit var phrase: TextView     // 词组
+    private lateinit var sentence: TextView   // 句子
+    private lateinit var fWrod: TextView        // go->词汇练习
+    private lateinit var fPhrase: TextView      // go->词组练习
+    private lateinit var fSentence: TextView    // go->句子练习
 
     private var syllable: String? = null
 
@@ -23,6 +40,8 @@ class SyllablePractice : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_syllable_practice)
+
+        mapWidget()
 
         syllable = intent.getStringExtra("Syllable")
         pinyin = intent.getStringArrayListExtra("Pinyin") ?: emptyList()
@@ -35,6 +54,15 @@ class SyllablePractice : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    private fun mapWidget() {
+        word = findViewById<TextView>(R.id.tv_syllable_word)
+        phrase = findViewById<TextView>(R.id.tv_syllable_phrase)
+        sentence = findViewById<TextView>(R.id.tv_syllable_sentence)
+        fWrod = findViewById<TextView>(R.id.word_go)
+        fPhrase = findViewById<TextView>(R.id.phrase_go)
+        fSentence = findViewById<TextView>(R.id.sentence_go)
     }
 
     private fun addPinYin(list: List<String>) {
@@ -58,14 +86,14 @@ class SyllablePractice : AppCompatActivity() {
 
                 setOnClickListener {
                     // 跳转到其他Activity，并传递拼音
-                    val intent = Intent(this@SyllablePractice, SpellPractise::class.java).apply {
-                        putStringArrayListExtra("pinyin_list",
-                            ArrayList(list))                    // 传递整个拼音列表
-                        putExtra("index", index)            // 传递当前索引
+                    val tones = getPinyinTones(this@SyllablePractice, pinyinItem)
+                    val intent = Intent(this@SyllablePractice,
+                        TonePractise::class.java).apply {
+                            putStringArrayListExtra("tones",
+                                ArrayList(tones ?: emptyList()))
                     }
                     startActivity(intent)
                 }
-
             }
 
             // 创建 GridLayout.LayoutParams
@@ -81,5 +109,11 @@ class SyllablePractice : AppCompatActivity() {
 
             gridLayout.addView(textView, params)
         }
+    }
+
+    fun getPinyinTones(context: Context, pinyin: String): List<String>? {
+        val json = context.assets.open("Tone.json").bufferedReader().use { it.readText() }
+        val map = Gson().fromJson<Map<String, List<String>>>(json, object : TypeToken<Map<String, List<String>>>() {}.type)
+        return map[pinyin.lowercase()]
     }
 }

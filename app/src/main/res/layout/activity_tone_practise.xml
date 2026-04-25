@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".Layout.EnjoyStudy.TonePractise">
+
+    <LinearLayout
+        android:id="@+id/tone_list"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_50sdp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@drawable/bg_tone_layout_frame"
+        android:foreground="@drawable/bg_tone_layout_frame"
+        android:clipToOutline="true">
+        <TextView
+            android:id="@+id/tone_yin_ping"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@drawable/bg_tone_practising"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/white"
+            android:text="shuāng" />
+        <TextView
+            android:id="@+id/tone_yang_ping"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@drawable/bg_tone_normal"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/black"
+            android:text="shuáng" />
+        <TextView
+            android:id="@+id/tone_shang"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@drawable/bg_tone_normal"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/black"
+            android:text="shuǎng" />
+        <TextView
+            android:id="@+id/tone_qu"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@drawable/bg_tone_normal"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/black"
+            android:text="shuàng" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/tone_list"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <FrameLayout
+            android:id="@+id/tone_practise_area"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

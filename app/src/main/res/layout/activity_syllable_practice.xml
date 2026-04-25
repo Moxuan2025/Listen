@@ -74,12 +74,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="@dimen/_2sdp">
-                    <TextView
-                        android:layout_width="@dimen/_60sdp"
-                        android:layout_height="@dimen/_60sdp"
-                        android:background="@drawable/star"
-                        android:scaleX="0.8"
-                        android:scaleY="0.8" />
                     <View
                         android:layout_width="@dimen/_5sdp"
                         android:layout_height="match_parent"
@@ -114,6 +108,13 @@
                             android:textSize="@dimen/_12sdp"
                             android:textColor="@color/white"/>
                     </LinearLayout>
+                    <TextView
+                        android:id="@+id/word_go"
+                        android:layout_width="@dimen/_40sdp"
+                        android:layout_height="@dimen/_60sdp"
+                        android:background="@drawable/ic_go"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -121,12 +122,54 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="@dimen/_2sdp">
+                    <View
+                        android:layout_width="@dimen/_5sdp"
+                        android:layout_height="match_parent"
+                        android:background="@color/bt_green" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background = "@drawable/green_bar_bg"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:padding="@dimen/_3sdp">
+                        <TextView
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="词组"
+                            android:textSize="@dimen/_18sdp"
+                            android:textColor="@color/white" />
+                        <View
+                            android:layout_width="@dimen/_2sdp"
+                            android:layout_height="match_parent"
+                            android:background = "@drawable/white_bar_bg"
+                            android:layout_marginLeft="@dimen/_3sdp" />
+                        <TextView
+                            android:id="@+id/tv_syllable_phrase"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="@dimen/_3sdp"
+                            android:gravity="left|center_vertical"
+                            android:text="（一）请输入文本\n（二）请输入文本"
+                            android:textSize="@dimen/_12sdp"
+                            android:textColor="@color/white"/>
+                    </LinearLayout>
                     <TextView
-                        android:layout_width="@dimen/_60sdp"
+                        android:id="@+id/phrase_go"
+                        android:layout_width="@dimen/_40sdp"
                         android:layout_height="@dimen/_60sdp"
-                        android:background="@drawable/star"
+                        android:background="@drawable/ic_go"
                         android:scaleX="0.8"
                         android:scaleY="0.8" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_2sdp">
                     <View
                         android:layout_width="@dimen/_5sdp"
                         android:layout_height="match_parent"
@@ -161,53 +204,13 @@
                             android:textSize="@dimen/_12sdp"
                             android:textColor="@color/white"/>
                     </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/_2sdp">
                     <TextView
-                        android:layout_width="@dimen/_60sdp"
+                        android:id="@+id/sentence_go"
+                        android:layout_width="@dimen/_40sdp"
                         android:layout_height="@dimen/_60sdp"
-                        android:background="@drawable/star"
+                        android:background="@drawable/ic_go"
                         android:scaleX="0.8"
                         android:scaleY="0.8" />
-                    <View
-                        android:layout_width="@dimen/_5sdp"
-                        android:layout_height="match_parent"
-                        android:background="@color/bt_green" />
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background = "@drawable/green_bar_bg"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:padding="@dimen/_3sdp">
-                        <TextView
-                            android:layout_width="@dimen/_20sdp"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="文段"
-                            android:textSize="@dimen/_18sdp"
-                            android:textColor="@color/white" />
-                        <View
-                            android:layout_width="@dimen/_2sdp"
-                            android:layout_height="match_parent"
-                            android:background = "@drawable/white_bar_bg"
-                            android:layout_marginLeft="@dimen/_3sdp" />
-                        <TextView
-                            android:id="@+id/tv_syllable_section"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:layout_marginLeft="@dimen/_3sdp"
-                            android:gravity="left|center_vertical"
-                            android:text="（一）请输入文本\n（二）请输入文本"
-                            android:textSize="@dimen/_12sdp"
-                            android:textColor="@color/white"/>
-                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
