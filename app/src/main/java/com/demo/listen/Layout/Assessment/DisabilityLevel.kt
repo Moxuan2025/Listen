@@ -1,4 +1,5 @@
 package com.demo.listen.Layout.Assessment
+import com.demo.listen.Layout.Assessment.AssessmentActivity
 
 import android.content.Intent
 import android.graphics.Color
@@ -70,7 +71,7 @@ class DisabilityLevel : AppCompatActivity() {
 
     private fun handleLevelClick(level: Int) {
         startActivity(Intent(this@DisabilityLevel,
-            Assess::class.java).apply {
+            AssessmentActivity::class.java).apply {
                 putExtra("level", level)
         })
     }
