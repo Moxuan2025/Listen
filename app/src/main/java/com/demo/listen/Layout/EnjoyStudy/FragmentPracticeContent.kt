@@ -2,7 +2,6 @@ package com.demo.listen.Layout.EnjoyStudy
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -11,10 +10,14 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.demo.listen.R
+import com.demo.listen.net.OralEvaluationHelper
+import com.demo.listen.net.PinyinHanziMap
 import com.demo.listen.net.TencentSpeechHelper
 import com.demo.listen.net.PinyinUtils
+import com.tencent.cloud.soe.TAIOralController
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -44,6 +47,11 @@ class FragmentPracticeContent : Fragment() {
     private var scoreList: MutableList<Int>? = mutableListOf()
 
     private var isExamplePlaying = false
+
+    // ========== 口语评测相关变量 ==========
+    private var oralController: TAIOralController? = null
+    private var isRecording = false
+    private var ignoreResult = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,44 +175,39 @@ class FragmentPracticeContent : Fragment() {
         }
     }
 
-
-        private fun handleClick() {
-            // ============ 播放示例音频（SSML方式朗读拼音） ============
-            playExample.setOnClickListener {
-                if (isExamplePlaying) {
-                    Toast.makeText(requireContext(), "正在播放，请稍后", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-
-                val rawText = when (type) {
-                    "pinyin" -> target.getOrElse(curIndex) { "" }
-                    "word", "phrase", "sentence" -> contentList.getOrNull(curIndex)?.word ?: ""
-                    else -> ""
-                }
-
-                if (rawText.isBlank()) {
-                    Toast.makeText(requireContext(), "没有可朗读的内容", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-
-                // ✅ 改用你已验证的 PinyinUtils 处理拼音 → SSML
-                val textToSpeak = if (type == "pinyin") {
-                    // 将带声调符号的拼音转成数字声调，再包装为 SSML
-                    val numberPinyin = PinyinUtils.convertToneMarkToNumber(rawText)
-                    PinyinUtils.buildPinyinSsml(numberPinyin)
-                } else {
-                    rawText   // 普通文字直接朗读
-                }
-
-                isExamplePlaying = true
-                TencentSpeechHelper.synthesisAndPlay(
-                    text = textToSpeak,
-                    context = requireContext(),
-                    onComplete = {
-                        isExamplePlaying = false
-                    }
-                )
+    private fun handleClick() {
+        // ============ 播放示例音频 ============
+        playExample.setOnClickListener {
+            if (isExamplePlaying) {
+                Toast.makeText(requireContext(), "正在播放，请稍后", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            val rawText = when (type) {
+                "pinyin" -> target.getOrElse(curIndex) { "" }
+                "word", "phrase", "sentence" -> contentList.getOrNull(curIndex)?.word ?: ""
+                else -> ""
+            }
+
+            if (rawText.isBlank()) {
+                Toast.makeText(requireContext(), "没有可朗读的内容", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val textToSpeak = if (type == "pinyin") {
+                val numberPinyin = PinyinUtils.convertToneMarkToNumber(rawText)
+                PinyinUtils.buildPinyinSsml(numberPinyin)
+            } else {
+                rawText
+            }
+
+            isExamplePlaying = true
+            TencentSpeechHelper.synthesisAndPlay(
+                text = textToSpeak,
+                context = requireContext(),
+                onComplete = { isExamplePlaying = false }
+            )
+        }
 
         // 原有导航
         preTone.setOnClickListener {
@@ -216,15 +219,11 @@ class FragmentPracticeContent : Fragment() {
             curIndex += 1
             if (curIndex == totalItem) {
                 when (next) {
-                    "word" -> {
-                        startActivity(Intent(requireActivity(), PracticeList::class.java).apply {
-                            putExtra("Syllable", syllable)
-                            putExtra("mode", "word")
-                        })
-                    }
-                    "report" -> {
-                        startActivity(Intent(requireActivity(), PracticeFeedback::class.java).apply {})
-                    }
+                    "word" -> startActivity(Intent(requireActivity(), PracticeList::class.java).apply {
+                        putExtra("Syllable", syllable)
+                        putExtra("mode", "word")
+                    })
+                    "report" -> startActivity(Intent(requireActivity(), PracticeFeedback::class.java).apply {})
                 }
                 requireActivity().finish()
             } else {
@@ -232,88 +231,112 @@ class FragmentPracticeContent : Fragment() {
             }
         }
 
-        // 原有录音逻辑
+        // ============ 录音按钮：统一走真实评测 ============
         record.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    record.setBackgroundResource(R.drawable.ic_record)
-                    recordTip.text = "聆听中"
-                    record.tag = System.currentTimeMillis()
-                }
-                MotionEvent.ACTION_UP -> {
-                    record.setBackgroundResource(R.drawable.ic_record_gray)
-                    recordTip.text = "按住说话"
-                    val downTime = record.tag as? Long
-                    if (downTime != null) {
-                        val pressDuration = System.currentTimeMillis() - downTime
-                        if (pressDuration < 800) {
-                            Toast.makeText(
-                                requireContext(), "没听到呢，能再试一下吗",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            scoreList?.set(curIndex, 90)
-                            score.text = scoreList?.get(curIndex).toString()
-                            playRecord.setImageResource(R.drawable.ic_play_sound)
-                        }
+                    if (isExamplePlaying || isRecording) return@setOnTouchListener true
+
+                    val rawRefText = when (type) {
+                        "pinyin" -> target.getOrElse(curIndex) { "" }
+                        "word", "phrase", "sentence" -> contentList.getOrNull(curIndex)?.word ?: ""
+                        else -> ""
                     }
+
+                    // 如果是拼音模式，尝试转换为汉字；转换失败则提示并终止本次录音
+                    val refText: String
+                    if (type == "pinyin" && rawRefText.isNotBlank()) {
+                        val hanzi = PinyinHanziMap.getHanzi(rawRefText)
+                        if (hanzi == null) {
+                            Toast.makeText(requireContext(), "该拼音暂不支持评测", Toast.LENGTH_SHORT).show()
+                            return@setOnTouchListener true
+                        }
+                        refText = hanzi
+                    } else {
+                        refText = rawRefText
+                    }
+
+                    if (refText.isBlank()) {
+                        Toast.makeText(requireContext(), "没有参考文本", Toast.LENGTH_SHORT).show()
+                        return@setOnTouchListener true
+                    }
+
+                    android.util.Log.d("OralEval", "开始评测，参考文本: '$refText', 类型: $type")
+
+                    record.setBackgroundResource(R.drawable.ic_record)
+                    recordTip.text = "正在聆听..."
+                    record.tag = System.currentTimeMillis()
+                    isRecording = true
+                    ignoreResult = false
+
+                    // 所有类型均启动腾讯云口语评测
+                    oralController = OralEvaluationHelper.startManualEvaluation(
+                        requireContext(), refText
+                    ) { resultStr ->
+                        if (ignoreResult) { ignoreResult = false; return@startManualEvaluation }
+                        val parsedScore = resultStr.toDoubleOrNull()
+                        if (parsedScore != null) {
+                            val intScore = parsedScore.toInt()
+                            scoreList?.set(curIndex, intScore)
+                            score.text = intScore.toString()
+                            playRecord.setImageResource(R.drawable.ic_play_sound)
+                        } else {
+                            score.text = "评分失败"
+                            Toast.makeText(requireContext(), "评测失败: $resultStr", Toast.LENGTH_LONG).show()
+                        }
+                        resetRecordButton()
+                    }
+                    true
                 }
+
+                MotionEvent.ACTION_UP -> {
+                    if (!isRecording) return@setOnTouchListener true
+                    val downTime = record.tag as? Long
+                    val pressDuration = if (downTime != null) System.currentTimeMillis() - downTime else 0L
+
+                    if (pressDuration < 800) {
+                        // 短按：取消本次评测，不记录分数
+                        ignoreResult = true
+                        OralEvaluationHelper.stopManualEvaluation(oralController)
+                        resetRecordButton()
+                        Toast.makeText(requireContext(), "没听到呢，能再试一下吗", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // 长按：停止录音，等待回调自动更新分数
+                        OralEvaluationHelper.stopManualEvaluation(oralController)
+                        // 按钮保持“聆听中”状态，由回调中的 resetRecordButton 恢复
+                    }
+                    true
+                }
+
                 MotionEvent.ACTION_CANCEL -> {
-                    record.setBackgroundResource(R.drawable.ic_record_gray)
+                    if (isRecording) {
+                        ignoreResult = true
+                        OralEvaluationHelper.stopManualEvaluation(oralController)
+                        resetRecordButton()
+                    }
+                    true
                 }
-            }
-            true
-        }
-    }
 
-    // =================== SSML 辅助方法 ===================
-    private fun convertToneMarkToNumber(tonedPinyin: String): String {
-        if (tonedPinyin.isEmpty()) return ""
-
-        val toneMap = mapOf(
-            'ā' to "a1", 'á' to "a2", 'ǎ' to "a3", 'à' to "a4",
-            'ō' to "o1", 'ó' to "o2", 'ǒ' to "o3", 'ò' to "o4",
-            'ē' to "e1", 'é' to "e2", 'ě' to "e3", 'è' to "e4",
-            'ī' to "i1", 'í' to "i2", 'ǐ' to "i3", 'ì' to "i4",
-            'ū' to "u1", 'ú' to "u2", 'ǔ' to "u3", 'ù' to "u4",
-            'ǖ' to "v1", 'ǘ' to "v2", 'ǚ' to "v3", 'ǜ' to "v4"
-        )
-
-        val result = StringBuilder()
-        var toneNumber: Char? = null
-
-        for (ch in tonedPinyin) {
-            val mapped = toneMap[ch]
-            if (mapped != null) {
-                result.append(mapped[0])
-                toneNumber = mapped[1]
-            } else {
-                result.append(ch)
+                else -> false
             }
         }
+    }
 
-        if (toneNumber != null) {
-            result.append(toneNumber)
+    private fun resetRecordButton() {
+        record.setBackgroundResource(R.drawable.ic_record_gray)
+        recordTip.text = "按住说话"
+        isRecording = false
+        oralController = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (isRecording && oralController != null) {
+            OralEvaluationHelper.stopManualEvaluation(oralController)
+            oralController = null
+            isRecording = false
         }
-
-        return result.toString().lowercase()
     }
-
-    private fun buildPinyinSSML(tonedPinyin: String): String {
-        var digitalTone = convertToneMarkToNumber(tonedPinyin)
-
-        // 无声调且含元音时补第一声
-        if (!digitalTone.last().isDigit() && containsVowel(digitalTone)) {
-            digitalTone += "1"
-        }
-
-        return "<speak><phoneme alphabet=\"py\" ph=\"$digitalTone\">$tonedPinyin</phoneme></speak>"
-    }
-
-    private fun containsVowel(s: String): Boolean {
-        return s.any { it in "aoeiuv" }
-    }
-    // ===============================================================
 
     companion object {
         @JvmStatic
