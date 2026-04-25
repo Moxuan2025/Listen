@@ -1025,5 +1025,105 @@
     "duration_seconds": null,
     "created_at": "2026-04-25T15:03:26.102Z",
     "updated_at": "2026-04-25T15:03:26.102Z"
+  },
+  {
+    "id": "06d6dd01625043e5ae40785acbab977a",
+    "child_username": "",
+    "level": 1,
+    "status": "finished",
+    "started_at": "2026-04-25T15:08:47.717Z",
+    "finished_at": "2026-04-25T23:08:58.465Z",
+    "summary": {
+      "level": 1,
+      "level_score": 25,
+      "avg_read_score": 0,
+      "expression_score": 75,
+      "reading_score": 0,
+      "overall_score": 22.5,
+      "answers": {}
+    },
+    "duration_seconds": null,
+    "created_at": "2026-04-25T15:08:47.717Z",
+    "updated_at": "2026-04-25T15:08:58.676Z"
+  },
+  {
+    "id": "c0d7229e4f434c5e974094f0c8f18ade",
+    "child_username": "",
+    "level": -1,
+    "status": "finished",
+    "started_at": "2026-04-25T15:10:54.179Z",
+    "finished_at": "2026-04-25T23:11:04.586Z",
+    "summary": {
+      "level": -1,
+      "level_score": 100,
+      "avg_read_score": 0,
+      "expression_score": 0,
+      "reading_score": 0,
+      "overall_score": 30,
+      "answers": {
+        "0": "词汇得分：0",
+        "1": "词汇得分：0",
+        "2": "词汇得分：0",
+        "3": "词汇得分：0"
+      }
+    },
+    "duration_seconds": null,
+    "created_at": "2026-04-25T15:10:54.180Z",
+    "updated_at": "2026-04-25T15:11:05.065Z"
+  },
+  {
+    "id": "b57c01fdc56d45f3b0fae185c4cc3041",
+    "child_username": "",
+    "level": 4,
+    "status": "finished",
+    "started_at": "2026-04-25T15:11:12.717Z",
+    "finished_at": "2026-04-25T23:11:22.335Z",
+    "summary": {
+      "level": 4,
+      "level_score": 90,
+      "avg_read_score": 0,
+      "expression_score": 50,
+      "reading_score": 0,
+      "overall_score": 37,
+      "answers": {
+        "0": "词汇得分：0",
+        "3": "词汇得分：100"
+      }
+    },
+    "duration_seconds": null,
+    "created_at": "2026-04-25T15:11:12.717Z",
+    "updated_at": "2026-04-25T15:11:22.856Z"
+  },
+  {
+    "id": "b0d7ad5e741f478d85e92d6821d4e0e5",
+    "child_username": "",
+    "level": -1,
+    "status": "finished",
+    "started_at": "2026-04-25T15:11:26.951Z",
+    "finished_at": "2026-04-25T23:11:32.495Z",
+    "summary": {
+      "level": -1,
+      "level_score": 100,
+      "avg_read_score": 0,
+      "expression_score": 0,
+      "reading_score": 0,
+      "overall_score": 30,
+      "answers": {}
+    },
+    "duration_seconds": null,
+    "created_at": "2026-04-25T15:11:26.951Z",
+    "updated_at": "2026-04-25T15:11:32.991Z"
+  },
+  {
+    "id": "b212d22281b24227b667194f374cb8ca",
+    "child_username": "",
+    "level": 1,
+    "status": "running",
+    "started_at": "2026-04-25T15:13:02.483Z",
+    "finished_at": null,
+    "summary": null,
+    "duration_seconds": null,
+    "created_at": "2026-04-25T15:13:02.483Z",
+    "updated_at": "2026-04-25T15:13:02.483Z"
   }
 ]
