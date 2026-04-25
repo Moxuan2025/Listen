@@ -78,6 +78,7 @@ class TonePractise : AppCompatActivity() {
         viewModel.changeAction(getAction())
         viewModel.setNext("word")
         viewModel.changeIndex(0)
+        viewModel.setType("pinyin")
         viewModel.changeTarget(tones.take(4))
         viewModel.index.observe(this) { index ->
             toneChange(index)

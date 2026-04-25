@@ -1,7 +1,7 @@
 package com.demo.listen.Layout.EnjoyStudy
 
 import android.content.Context
-import android.graphics.Color
+import android.content.Intent
 import android.os.Bundle
 import android.widget.CheckBox
 import android.widget.GridLayout
@@ -11,13 +11,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.demo.listen.Layout.DataType.PracticeItem
 import com.demo.listen.R
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.IOException
+import java.util.ArrayList
 
 class PracticeList : AppCompatActivity() {
 
@@ -45,6 +44,7 @@ class PracticeList : AppCompatActivity() {
 
         mapWidget()
         initPage()
+        handleClick()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -74,6 +74,23 @@ class PracticeList : AppCompatActivity() {
         practiceItems = loadPracticeItems(this)
         list.columnCount = 1
         setupList()
+    }
+
+    private fun handleClick() {
+        start.setOnClickListener {
+            var pyl = getPinYinList()
+            if (pyl.isEmpty()) {
+                Toast.makeText(this, "请至少选择一项",
+                    Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            startActivity(Intent(this,
+                NormalStudy::class.java).apply {
+                putStringArrayListExtra("PinYinList", ArrayList(pyl))
+                putExtra("Mode", mode)    // 进入相应的界面
+            })
+            finish()
+        }
     }
 
     private fun setupList() {
@@ -155,9 +172,24 @@ class PracticeList : AppCompatActivity() {
         }
     }
 
+    // 获取被选择的拼音
+    // 存在对应以拼音命名的json文件，通过拼音确定打开那些文件获取练习数据
+    private fun getPinYinList(): List<String> {
+        var slt = getSelectedItems()
+        var ret: MutableList<String> = mutableListOf()
+        slt.forEach { practiceItem ->
+            ret.add(practiceItem.pinyin)
+        }
+        return ret
+
+//        return getSelectedItems().map { it.pinyin }
+    }
+
     fun loadPracticeItems(context: Context): List<PracticeItem> {
         val jsonString = try {
-            context.assets.open("bWord.json").bufferedReader().use { it.readText() }
+            context.assets.open("b.json").bufferedReader().use { it.readText() }
+            // TODO: comment
+//            context.assets.open("${syllable}.json").bufferedReader().use { it.readText() }
         } catch (e: IOException) {
             e.printStackTrace()
             return emptyList()

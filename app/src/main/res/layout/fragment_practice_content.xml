@@ -28,6 +28,29 @@
         android:textColor="@color/white_op"
         android:textSize="@dimen/_16sdp"
         android:text="你好世界" />
+    <TextView
+        android:id="@+id/tv_pinyin"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_40sdp"
+        app:layout_constraintRight_toRightOf="@id/example_view"
+        app:layout_constraintLeft_toLeftOf="@id/example_view"
+        app:layout_constraintTop_toTopOf="@id/example_view"
+        android:gravity="bottom|center_horizontal"
+        android:textColor="@color/white_op"
+        android:textSize="@dimen/_16sdp"
+        android:text="shì jiè" />
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_40sdp"
+        app:layout_constraintRight_toRightOf="@id/example_view"
+        app:layout_constraintLeft_toLeftOf="@id/example_view"
+        app:layout_constraintBottom_toBottomOf="@id/example_view"
+        android:gravity="top|center_horizontal"
+        android:textColor="@color/white_op"
+        android:textSize="@dimen/_16sdp"
+        android:text="世界" />
+
 
     <LinearLayout
         android:id="@+id/ll_pc_top"
@@ -107,7 +130,7 @@
         android:background="@color/bt_green"
         android:paddingHorizontal="@dimen/_8sdp"
         android:paddingVertical="@dimen/_6sdp"
-        android:textSize="@dimen/_14sdp"
+        android:textSize="@dimen/_10sdp"
         android:textColor="@color/white"
         android:text="test\n测试"/>
 

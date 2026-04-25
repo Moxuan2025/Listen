@@ -31,8 +31,10 @@ class FragmentPracticeContent : Fragment() {
     private var param2: String? = null
 
 
-    private lateinit var ivView: ImageView          // 内容的讲解示例图片
-    private lateinit var content: TextView         // 学习内容
+    private lateinit var ivView: ImageView                // 内容的讲解示例图片
+    private lateinit var tvPinyinCenter: TextView         // 学习内容, type == "pinyin"
+    private lateinit var tvPinYin: TextView               // 学习内容, type != "word"
+    private lateinit var tvWord: TextView                 // 学习内容, type != "word"
     private lateinit var playExample: ImageView
     private lateinit var score: TextView
     private lateinit var playRecord: ImageView      // 播放录音
@@ -44,12 +46,12 @@ class FragmentPracticeContent : Fragment() {
 
 
     private lateinit var viewModel: SharePracticeData
-    private var action = listOf<String>("", "", "", "")
+    private var action = listOf<String>("")
     private var curIndex: Int = 0
 
     private var syllable = ""
-    private var scoreList = mutableListOf(0, 0, 0, 0)  // 记录为字符串，方便替换
-    // TODO: 一个变量记录录音数据
+    private var scoreList: MutableList<Int> ?= mutableListOf()        // 学习/练习 数据记录
+    // TODO: 一个变量记录录音数据，用于播放和上传
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,32 +86,41 @@ class FragmentPracticeContent : Fragment() {
 
     private fun mapWidget() {
         ivView = requireView().findViewById<ImageView>(R.id.example_view)
-        content = requireView().findViewById<TextView>(R.id.practice_content_label)
-        playExample = requireView().findViewById<ImageView>(R.id.example_sound_play)
-        score = requireView().findViewById<TextView>(R.id.practice_score)
-        playRecord = requireView().findViewById<ImageView>(R.id.record_sound_play)
+
+        tvPinyinCenter = requireView().findViewById<TextView>(R.id.practice_content_label)
+        tvPinYin = requireView().findViewById<TextView>(R.id.tv_pinyin)
+        tvWord = requireView().findViewById<TextView>(R.id.tv_content)
         spellAction = requireView().findViewById<TextView>(R.id.spell_action)
+
+        playExample = requireView().findViewById<ImageView>(R.id.example_sound_play)
+        playRecord = requireView().findViewById<ImageView>(R.id.record_sound_play)
         record = requireView().findViewById<ImageButton>(R.id.practise_sound_record)
+
+        score = requireView().findViewById<TextView>(R.id.practice_score)
         recordTip = requireView().findViewById<TextView>(R.id.practise_sound_record_tip)
         preTone = requireView().findViewById<TextView>(R.id.pc_pre)
         nxtTone = requireView().findViewById<TextView>(R.id.pc_nxt)
     }
 
-    private var next: String = "<None>"
+    private var next: String = "word"
     private var target: List<String> = listOf()
     private var showView: Boolean = false
+
+    private var type = "pinyin"     // 传入数据的类型：拼音 pinyin、词汇 word、词组 phrase、句子 sentence
+    private var contentList = listOf<WordPinYin>()  // 数据
+
+    private var totalItem = 0
+
     private fun initPage() {
         viewModel = ViewModelProvider(requireActivity())[SharePracticeData::class.java]
 
-        content.visibility = View.INVISIBLE
+        tvPinyinCenter.visibility = View.INVISIBLE
         ivView.visibility = View.INVISIBLE
+        tvWord.visibility = View.INVISIBLE
+        tvPinYin.visibility = View.INVISIBLE
 
         viewModel.action.observe(viewLifecycleOwner) { actions ->
             action = actions
-        }
-        viewModel.index.observe(viewLifecycleOwner) { index ->
-            curIndex = index
-            changePage()
         }
         viewModel.nextPage.observe(viewLifecycleOwner) { nextPage ->
             next = nextPage
@@ -117,29 +128,67 @@ class FragmentPracticeContent : Fragment() {
         viewModel.target.observe(viewLifecycleOwner) {targets ->
             if (targets.isNotEmpty()) {
                 target = targets
-                showView = true
-                content.visibility = View.VISIBLE
-                ivView.visibility = View.VISIBLE
-                content.text = target[curIndex]
+                totalItem = target.size
+                scoreList = MutableList(totalItem) {-1}
             }
+        }
+        viewModel.wordPinYin.observe(viewLifecycleOwner) {wpy ->
+            if (wpy.isNotEmpty()) {
+                contentList = wpy
+                totalItem = wpy.size
+                scoreList = MutableList(totalItem) {-1}
+            }
+        }
+        viewModel.type.observe(viewLifecycleOwner) {vtype ->
+            type = vtype
+            showView = true     // 可视
+            ivView.visibility = View.VISIBLE
+            when(type) {
+                "pinyin" -> tvPinyinCenter.visibility = View.VISIBLE
+                "word", "phrase", "sentence" -> {
+                    tvWord.visibility = View.VISIBLE
+                    tvPinYin.visibility = View.VISIBLE
+                }
+            }
+        }
+        viewModel.index.observe(viewLifecycleOwner) { index ->
+            curIndex = index
+            changePage()
         }
     }
 
     private fun changePage() {
-        spellAction.text = "发声动作:\n" + action[curIndex]
-        score.text = scoreList[curIndex].toString()
+        var sc = scoreList?.get(curIndex)
+        score.text = "--"
 
-        if (showView) content.text = target[curIndex]
+        when(type) {
+            "pinyin" -> {  // TODO: 修改本条代码
+                tvPinyinCenter.text = target[curIndex]
+                spellAction.text = "发声动作:\n" + action[curIndex]
+            }
+            "word", "phrase", "sentence" -> {
+                tvWord.text = contentList[curIndex].word
+                tvPinYin.text = contentList[curIndex].pinyin
+                spellAction.text = "发声动作:\n" + contentList[curIndex].action
+            }
+        }
 
         playRecord.setImageResource(R.drawable.ic_play_sound_gray)
-        if (scoreList[curIndex] != 0)
+        if (sc != -1){
             playRecord.setImageResource(R.drawable.ic_play_sound)
+            score.text = sc.toString()
+        }
 
         preTone.text = "上一个"
         preTone.visibility = View.VISIBLE
         nxtTone.text = "下一个"
         if (curIndex == 0) preTone.visibility = View.INVISIBLE
-        if (curIndex == action.size-1) nxtTone.text = "进阶!"
+        if (curIndex == totalItem-1) {
+            when(next) {
+                "word" -> nxtTone.text = "进阶!"
+                "report" -> nxtTone.text = "查看报告"
+            }
+        }
     }
 
     private fun handleClick() {
@@ -150,13 +199,21 @@ class FragmentPracticeContent : Fragment() {
         }
         nxtTone.setOnClickListener {
             curIndex += 1
-            if (curIndex == action.size) {              // 什么时候到达末尾
-                if (next == "word") {                   // 去学习词汇
-                    startActivity(Intent(requireActivity(),
-                        PracticeList::class.java).apply {
-                        putExtra("Syllable", syllable)
-                        putExtra("mode", "word")        // 词汇练习
-                    })
+            if (curIndex == totalItem) {              // 什么时候到达末尾
+                when(next) {
+                    "word" -> {             // 去学习词汇
+                        startActivity(Intent(requireActivity(),
+                            PracticeList::class.java).apply {
+                            putExtra("Syllable", syllable)
+                            putExtra("mode", "word")
+                        })
+                    }
+                    "report"  -> {
+                        // TODO: 跳转到正确的报告页面
+                        startActivity(Intent(requireActivity(),
+                            PracticeFeedback::class.java).apply {
+                        })
+                    }
                 }
                 requireActivity().finish()
             } else
@@ -183,8 +240,8 @@ class FragmentPracticeContent : Fragment() {
                                 Toast.LENGTH_SHORT).show()
                         } else {
                             // TODO: 评估分数
-                            scoreList[curIndex] = 90
-                            score.text = scoreList[curIndex].toString()
+                            scoreList?.set(curIndex, 90)
+                            score.text = scoreList?.get(curIndex).toString()
                             playRecord.setImageResource(R.drawable.ic_play_sound)
                         }
                     }
