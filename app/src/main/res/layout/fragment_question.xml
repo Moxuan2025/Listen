@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:paddingTop="70dp"
+    android:paddingBottom="24dp">
 
     <TextView
         android:id="@+id/tvProgress"
@@ -19,24 +23,31 @@
         android:textSize="20sp"
         android:layout_marginBottom="16dp" />
 
-    <!-- ✅ 这是你必需的朗读按钮，之前漏了 -->
     <Button
         android:id="@+id/btnRead"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="听题目"
-        android:layout_marginBottom="16dp"
-        android:visibility="gone" />
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="37dp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:background="@drawable/play"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:text=""
+        android:textColor="@android:color/transparent"
+        app:backgroundTint="@null"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:padding="0dp" />
 
-    <!-- 词语选择的选项容器 -->
+
     <LinearLayout
         android:id="@+id/optionsContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/_25sdp"
+        android:theme="@style/GreenCardTheme" />
 
-    <!-- 阅读理解的作答区域 -->
     <LinearLayout
         android:id="@+id/comprehensionContainer"
         android:layout_width="match_parent"
@@ -54,7 +65,9 @@
             android:id="@+id/btnSubmit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="提交" />
+            android:text="提交"
+            android:background="@drawable/green_bg"
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </LinearLayout>

@@ -324,7 +324,7 @@ class QuestionFragment : Fragment(R.layout.fragment_question) {
                 optionsContainer.removeAllViews()
                 val optionButtons = mutableListOf<Button>()
                 question.options?.forEach { option ->
-                    val btn = Button(requireContext()).apply {
+                    val btn = Button(optionsContainer.context).apply {
                         text = option
                         layoutParams = LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -351,7 +351,7 @@ class QuestionFragment : Fragment(R.layout.fragment_question) {
                         optionButtons.forEach { it.isEnabled = false }
                         btnRead.isEnabled = false
 
-                        optionButtons.forEach { it.setBackgroundResource(android.R.drawable.btn_default) }
+                        optionButtons.forEach { it.setBackgroundResource(R.drawable.green_bg) }
                         btn.setBackgroundColor(0xFFFF0000.toInt())
 
                         optionButtons.firstOrNull { it.text == question.correctAnswer }?.let {
@@ -376,7 +376,7 @@ class QuestionFragment : Fragment(R.layout.fragment_question) {
                 btnRead.visibility = View.VISIBLE
                 btnRead.text = "听示范音"
 
-                val recordBtn = Button(requireContext()).apply { text = "🎤 开始录音" }
+                val recordBtn = Button(optionsContainer.context).apply { text = "开始录音" }
                 (btnRead.parent as? ViewGroup)?.addView(recordBtn)
 
                 var oralController: TAIOralController? = null
