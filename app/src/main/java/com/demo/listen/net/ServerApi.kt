@@ -54,7 +54,7 @@ object SessionStore {
 
 // ========== 服务器 API ==========
 object ServerApi {
-    private const val BASE_URL = "http://f5e6369e.natappfree.cc"
+    private const val BASE_URL = "http://q6f969d4.natappfree.cc"
 
     data class AuthResult(
         val token: String,

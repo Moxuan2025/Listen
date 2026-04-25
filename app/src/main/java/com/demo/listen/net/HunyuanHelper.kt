@@ -52,6 +52,54 @@ object HunyuanHelper {
      * 句子相似度计算入口（新增 context 参数，与 TTS 调用方式一致）
      */
     /**
+     * 通用聊天接口（用于智能助手）
+     */
+    fun chat(prompt: String, context: Context): String {
+        loadKeys(context)
+        if (SECRET_ID.isEmpty()) return "密钥配置错误"
+
+        var result = "请求失败"
+        val latch = java.util.concurrent.CountDownLatch(1)
+
+        thread {
+            try {
+                val messagesArray = org.json.JSONArray()
+                val messageObj = org.json.JSONObject()
+                messageObj.put("Role", "user")
+                messageObj.put("Content", prompt)
+                messagesArray.put(messageObj)
+
+                val payloadJson = JSONObject().apply {
+                    put("Model", "hunyuan-lite")
+                    put("Messages", messagesArray)
+                }
+                val payload = payloadJson.toString()
+
+                val headers = sign(ACTION, payload)
+                val response = httpPost(payload, headers)
+                
+                // 解析响应
+                val json = JSONObject(response)
+                val respObj = json.getJSONObject("Response")
+                if (respObj.has("Error")) {
+                    result = "API错误: " + respObj.getJSONObject("Error").getString("Message")
+                } else {
+                    val choices = respObj.getJSONArray("Choices")
+                    val message = choices.getJSONObject(0).getJSONObject("Message")
+                    result = message.getString("Content")
+                }
+            } catch (e: Exception) {
+                result = "异常: ${e.message}"
+            } finally {
+                latch.countDown()
+            }
+        }
+        
+        latch.await()
+        return result
+    }
+
+    /**
      * 句子相似度计算入口。
      * @param text1 句子1
      * @param text2 句子2

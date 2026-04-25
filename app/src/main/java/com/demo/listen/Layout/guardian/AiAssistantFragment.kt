@@ -52,49 +52,37 @@ class AiAssistantFragment : Fragment() {
 
     private fun sendQuestion(question: String) {
         appendMessage("👤 你：$question")
-        btnSend.isEnabled = false // 防止重复点击
+        btnSend.isEnabled = false
 
         lifecycleScope.launch {
             try {
-                // 1. 准备孩子档案信息（这里可以先写死，后续改为从 ServerApi 获取）
-                val childProfile = """
-                    姓名：小明
-                    年龄：6岁
-                    最近评估结果：听力能力 85分，表达能力 70分，理解能力 90分。
-                    健康状况：无过敏史，近期有轻微咳嗽。
-                """.trimIndent()
-
-                // 2. 构建带有角色设定的提示词
+                // 构建符合“儿童学习成长助手”身份的系统提示词
                 val systemPrompt = """
-                    你是一位专业的儿童健康与教育顾问。请根据以下孩子档案回答家长的问题。
-                    如果孩子档案中没有相关信息，请给出通用的健康或教育建议。
-                    
-                    【孩子档案】
-                    $childProfile
-                    
+                    你是一位服务于家长的**儿童学习成长助手**，具备亲切、耐心、专业的语气。
+
+                    【核心能力与边界】
+                    1. 你可以查询孩子的学习档案、评估报告（如听力、表达、理解维度）。
+                    2. 基于档案数据提供学习建议，回答教育方法、亲子沟通等日常咨询。
+                    3. **严禁**提供医疗诊断、心理治疗建议或任何超出教育辅导范畴的结论。
+                    4. 当需要展示具体数据时，必须引用从档案中查到的真实值，不得捏造。
+                    5. 语气要温暖，多使用鼓励性语言，强调进步而非缺陷。
+
+                    【当前孩子档案参考】
+                    - 姓名：小明
+                    - 年龄：6岁
+                    - 最近评估：听力 85分，表达 78分，理解 92分，综合 85分。
+
                     【家长问题】
                     $question
-                    
+
                     请给出简洁、温暖且专业的建议：
                 """.trimIndent()
 
-                // 3. 调用混元 AI (使用 getSimilarity 的底层逻辑，但这里我们需要聊天功能)
-                // 注意：之前的 HunyuanHelper.getSimilarity 是专门用于计算相似度的。
-                // 为了通用性，我们直接调用 HunyuanHelper 的聊天接口（如果存在）或者复用其签名逻辑发起 ChatCompletions 请求。
-                // 鉴于 HunyuanHelper 目前只暴露了 getSimilarity，我们暂时复用其内部逻辑发起一次标准的聊天请求。
-                
-                // 为了简化，我们假设 HunyuanHelper 增加了一个 chat 方法，或者我们在这里直接构造请求。
-                // 由于不能修改 HunyuanHelper 太多，我们暂时使用一个简化的方式：
-                // 实际上，getSimilarity 内部就是调用 ChatCompletions。我们可以微调一下 prompt 让它直接返回建议。
-                
-                // 这里我们直接使用 HunyuanHelper 现有的能力，但为了效果更好，建议在 HunyuanHelper 中增加一个通用的 chat 方法。
-                // 临时方案：我们直接调用 HunyuanHelper 的一个新扩展方法（稍后在 HunyuanHelper 中添加）
-                
+                // 调用混元 AI
                 val answer = HunyuanHelper.chat(systemPrompt, requireContext())
                 appendMessage("🤖 助手：$answer")
             } catch (e: Exception) {
                 appendMessage("❌ 请求失败：${e.message}")
-                Toast.makeText(requireContext(), "AI 服务暂时不可用", Toast.LENGTH_SHORT).show()
             } finally {
                 btnSend.isEnabled = true
             }
