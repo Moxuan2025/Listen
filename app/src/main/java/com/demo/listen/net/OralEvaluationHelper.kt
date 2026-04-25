@@ -144,7 +144,7 @@ object OralEvaluationHelper {
             override fun onVolumeDb(volume: Float) {}
 
             override fun onFinish(msg: String?) {
-                Log.d("OralEval", "评测完成: $msg")
+                Log.d("OralEval", "手动评测完成: $msg")
                 handleResult(msg, context, onResult)
                 controller.release()
             }
@@ -156,10 +156,38 @@ object OralEvaluationHelper {
                 resp: String?
             ) {
                 val errMsg = server?.message ?: client?.message ?: "未知错误"
-                Log.e("OralEval", "评测错误: $errMsg, resp=$resp")
+                Log.e("OralEval", "手动评测错误: message=$errMsg")
+                Log.e("OralEval", "完整响应: $resp")
+                
+                // 解析具体错误类型，提供友好提示
+                var userFriendlyMsg = "评测失败: $errMsg"
+                
+                // 尝试从 resp 中解析错误码
+                var errorCode = -1
+                try {
+                    if (resp != null) {
+                        val json = JSONObject(resp)
+                        errorCode = json.optInt("code", -1)
+                    }
+                } catch (e: Exception) {
+                    Log.e("OralEval", "解析错误码失败: ${e.message}")
+                }
+                
+                when (errorCode) {
+                    4103 -> {
+                        userFriendlyMsg = "参考文本包含无法识别的词汇，请更换常用字词"
+                        Log.e("OralEval", "OOV错误：参考文本中有超出词库的字词")
+                    }
+                    else -> {
+                        if (errorCode != -1) {
+                            userFriendlyMsg = "评测失败: $errMsg (错误码: $errorCode)"
+                        }
+                    }
+                }
+                
                 runOnUiThread(context) {
-                    Toast.makeText(context, "评测失败: $errMsg", Toast.LENGTH_SHORT).show()
-                    onResult("评测失败")
+                    Toast.makeText(context, userFriendlyMsg, Toast.LENGTH_LONG).show()
+                    onResult(userFriendlyMsg)
                 }
                 controller.release()
             }
