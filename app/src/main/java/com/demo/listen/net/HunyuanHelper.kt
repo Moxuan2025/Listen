@@ -9,6 +9,7 @@ import java.net.URL
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.TimeZone
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import kotlin.concurrent.thread
@@ -132,16 +133,23 @@ object HunyuanHelper {
     // ---------- TC3-HMAC-SHA256 签名（严格对齐官方 Java 示例） ----------
     private fun sign(action: String, payload: String): Map<String, String> {
         val now = Date()
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }
         val timestamp = now.time / 1000   // 秒级时间戳
         val date = dateFormat.format(now)
 
         val credentialScope = "$date/$SERVICE/tc3_request"
 
         // 1. 规范请求串（Canonical Request）
-        //    content-type 值与请求头保持绝对一致：application/json
-        val canonicalHeaders = "content-type:application/json\nhost:$HOST\n"
-        val signedHeaders = "content-type;host"
+        //    注意：X-TC-* 头部必须按字典序加入签名
+        val canonicalHeaders = "content-type:application/json\n" +
+                "host:$HOST\n" +
+                "x-tc-action:${action.lowercase()}\n" +
+                "x-tc-region:$REGION\n" +
+                "x-tc-timestamp:$timestamp\n" +
+                "x-tc-version:$VERSION\n"
+        val signedHeaders = "content-type;host;x-tc-action;x-tc-region;x-tc-timestamp;x-tc-version"
         val hashedPayload = sha256Hex(payload)
         val canonicalRequest = "POST\n/\n\n$canonicalHeaders\n$signedHeaders\n$hashedPayload"
 
@@ -178,7 +186,13 @@ object HunyuanHelper {
         conn.doOutput = true
         headers.forEach { (k, v) -> conn.setRequestProperty(k, v) }
         OutputStreamWriter(conn.outputStream).use { it.write(payload) }
-        return conn.inputStream.bufferedReader().readText()
+        
+        return try {
+            conn.inputStream.bufferedReader().readText()
+        } catch (e: Exception) {
+            // 4xx/5xx 时从错误流读取响应体
+            conn.errorStream?.bufferedReader()?.readText() ?: throw e
+        }
     }
 
     private fun sha256Hex(s: String): String {

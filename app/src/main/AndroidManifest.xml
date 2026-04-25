@@ -67,6 +67,14 @@
             android:exported="true" />
 
         <activity
+            android:name=".Layout.EnjoyStudy.WordListeningActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Layout.EnjoyStudy.PhraseReadingActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".Layout.LoginRegister.CompleteInfo"
             android:exported="true" />
 
