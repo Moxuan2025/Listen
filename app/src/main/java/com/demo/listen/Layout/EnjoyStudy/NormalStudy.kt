@@ -79,7 +79,7 @@ class NormalStudy : AppCompatActivity() {
         viewModel.setNext("report")
         viewModel.changeIndex(0)
         viewModel.index.observe(this) { index ->
-            progressBar.progress = index
+            progressBar.progress = index + 1
             progressHint.text = "${index+1}/${itemNum}"
         }
     }

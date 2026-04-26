@@ -1,6 +1,7 @@
 package com.demo.listen.Layout.EnjoyStudy
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -81,7 +82,7 @@ class WordListeningActivity : AppCompatActivity() {
 
         val q = questions[index]
         tvProgress.text = "${index+1}/${questionNum}"
-        progressBar.progress = index
+        progressBar.progress = index + 1
 
         tvScore.text = "得分：$totalScore"
         tvHint.text = "听发音，选择正确的词汇"
@@ -101,7 +102,7 @@ class WordListeningActivity : AppCompatActivity() {
                 setBackgroundResource(R.drawable.bg_choice)
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._80sdp)
+                    resources.getDimensionPixelSize(R.dimen._40sdp)
                 ).apply {
                     setMargins(0, 16, 0, 16)
                 }
@@ -116,6 +117,7 @@ class WordListeningActivity : AppCompatActivity() {
 
     private fun playCurrentWord() {
         if (isPlaying) return
+        btnPlay.setBackgroundResource(R.drawable.ic_play_sound)
         val q = questions.getOrNull(currentIndex) ?: return
         isPlaying = true
         btnPlay.isEnabled = false
@@ -129,8 +131,10 @@ class WordListeningActivity : AppCompatActivity() {
                 tvHint.text = "请选择一个选项"
             }
         )
+        btnPlay.setBackgroundResource(R.drawable.ic_play_sound_gray)
     }
 
+    @SuppressLint("ResourceAsColor")
     private fun onOptionSelected(optionView: TextView, question: WordQuestion) {
         if (!canAnswer) {
             Toast.makeText(this, "请先听完整发音", Toast.LENGTH_SHORT).show()
@@ -150,7 +154,7 @@ class WordListeningActivity : AppCompatActivity() {
         for (i in 0 until optionsContainer.childCount) {
             val view = optionsContainer.getChildAt(i) as TextView
             if (view.tag == correct) {
-                view.setBackgroundResource(R.drawable.bg_choice_selected)
+                view.setBackgroundResource(R.drawable.bg_correct_green)
             } else if (view.tag == selected && selected != correct) {
                 view.setBackgroundColor(0xFFFF0000.toInt())
             }

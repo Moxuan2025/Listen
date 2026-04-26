@@ -1,31 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <ProgressBar
+        android:id="@+id/pr_progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_12sdp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="@dimen/_40sdp"
+        android:layout_marginRight="@dimen/_60sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:progressDrawable="@drawable/progress_bar_ns"
+        android:progress="0"/>
 
     <TextView
         android:id="@+id/tv_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="第 1/10 题"
-        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/pr_progress_bar"
+        app:layout_constraintBottom_toBottomOf="@id/pr_progress_bar"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textSize="@dimen/_14sdp"
         android:textColor="@color/black"
-        android:layout_marginBottom="16dp" />
+        android:gravity="center"
+        android:text="1/10"/>
+
+    <TextView
+        android:id="@+id/tv_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/pr_progress_bar"
+        android:textSize="@dimen/_12sdp"
+        android:textColor="@color/black"
+        android:text="ddd"
+        android:gravity="center"
+        android:visibility="invisible" />
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginBottom="16dp">
-
+        app:layout_constraintLeft_toLeftOf="@id/btn_submit"
+        app:layout_constraintRight_toRightOf="@id/btn_submit"
+        app:layout_constraintTop_toBottomOf="@id/tv_feedback"
+        app:layout_constraintBottom_toTopOf="@id/tv_question"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginBottom="@dimen/_8sdp">
         <TextView
             android:id="@+id/tv_passage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="@dimen/_18sdp"
             android:textColor="@color/black"
             android:lineSpacingExtra="4dp"
             android:padding="12dp"
@@ -34,48 +65,43 @@
 
     <TextView
         android:id="@+id/tv_question"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="@id/btn_submit"
+        app:layout_constraintRight_toRightOf="@id/btn_submit"
+        app:layout_constraintBottom_toTopOf="@id/et_answer"
+        android:layout_marginBottom="12dp"
+        android:textSize="@dimen/_14sdp"
         android:textColor="@color/black"
-        android:textStyle="bold"
-        android:layout_marginBottom="12dp" />
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/et_answer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_40sdp"
+        app:layout_constraintLeft_toLeftOf="@id/btn_submit"
+        app:layout_constraintRight_toRightOf="@id/btn_submit"
+        app:layout_constraintBottom_toTopOf="@id/btn_submit"
+        android:layout_marginBottom="@dimen/_4sdp"
         android:hint="请输入你的答案"
-        android:textSize="18sp"
-        android:padding="12dp"
-        android:background="@drawable/green_bg"
-        android:maxLines="2"
-        android:layout_marginBottom="16dp" />
+        android:textSize="@dimen/_14sdp"
+        android:textColor="@color/black"
+        android:paddingLeft="@dimen/_10sdp"
+        android:background="@drawable/bg_answer_input_green"
+        android:maxLines="2"/>
 
     <Button
         android:id="@+id/btn_submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_46sdp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:text="提交答案"
-        android:textSize="18sp"
-        android:backgroundTint="@color/bt_green"
-        android:layout_marginBottom="12dp" />
+        android:textSize="@dimen/_18sdp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/bt_green"/>
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:layout_marginBottom="12dp" />
-
-    <TextView
-        android:id="@+id/tv_feedback"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        android:gravity="center"
-        android:visibility="gone" />
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

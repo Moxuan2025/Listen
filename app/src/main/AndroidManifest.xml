@@ -16,16 +16,16 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".Layout.ReportPage"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Layout.EnjoyStudy.NormalStudy"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Layout.EnjoyStudy.PracticeList"
-            android:exported="false" /> <!-- android:usesCleartextTraffic="true" -->
+            android:exported="true" /> <!-- android:usesCleartextTraffic="true" -->
         <activity
             android:name=".Layout.EnjoyStudy.TonePractise"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Layout.Assessment.Assess"
             android:exported="true" />
@@ -37,7 +37,7 @@
             android:exported="true" />
         <activity
             android:name=".Layout.guardian.GuardianActivity"
-            android:exported="false"
+            android:exported="true"
             android:screenOrientation="fullSensor" />
         <activity
             android:name=".Layout.Assessment.AssessReport"
@@ -59,11 +59,11 @@
             android:exported="true" />
         <activity
             android:name=".Layout.EnjoyStudy.WordListeningActivity"
-            android:exported="false" />
+            android:exported="true" />
 
         <activity
             android:name=".Layout.EnjoyStudy.PhraseReadingActivity"
-            android:exported="false" />
+            android:exported="true" />
 
         <activity
             android:name=".Layout.LoginRegister.CompleteInfo"
