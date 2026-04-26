@@ -160,15 +160,24 @@ val expressionScore = if (vocabularyScores.isNotEmpty()) vocabularyScores.averag
 
     private fun generateMockQuestions(): List<AssessmentQuestion> {
         val list = mutableListOf<AssessmentQuestion>()
-        // 前5题：词语选择
-        val wordOptions = listOf("苹果", "香蕉", "橘子", "西瓜")
-        for (i in 0..4) {
+        
+        // 前5题：词语选择（全新多样化题目）
+        val wordQuestions = listOf(
+            Triple("小猫", listOf("小狗", "小猫", "小鸟", "小鱼"), "小猫"),
+            Triple("飞机", listOf("火车", "轮船", "飞机", "汽车"), "飞机"),
+            Triple("铅笔", listOf("橡皮", "尺子", "铅笔", "书本"), "铅笔"),
+            Triple("红色", listOf("蓝色", "绿色", "黄色", "红色"), "红色"),
+            Triple("妈妈", listOf("爸爸", "妈妈", "哥哥", "姐姐"), "妈妈")
+        )
+
+        for (i in wordQuestions.indices) {
+            val (content, options, answer) = wordQuestions[i]
             list.add(
                 AssessmentQuestion(
                     index = i, type = "word_choice",
-                    content = "请选出正确的词语：${wordOptions[i % wordOptions.size]}",
-                    options = wordOptions,
-                    correctAnswer = wordOptions[i % wordOptions.size],
+                    content = "请选出正确的词语：$content",
+                    options = options,
+                    correctAnswer = answer,
                     audioUrl = null
                 )
             )

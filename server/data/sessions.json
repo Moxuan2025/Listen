@@ -1543,5 +1543,70 @@
     "duration_seconds": null,
     "created_at": "2026-04-26T06:04:47.374Z",
     "updated_at": "2026-04-26T06:05:40.774Z"
+  },
+  {
+    "id": "a3454ce61e29499d816174c240dadc25",
+    "child_username": "9",
+    "level": 2,
+    "status": "finished",
+    "started_at": "2026-04-26T06:14:19.472Z",
+    "finished_at": "2026-04-26T06:15:33.191Z",
+    "summary": {
+      "status": "finished",
+      "finished_at": "2026-04-26T14:15:33.035Z",
+      "summary": {
+        "level": 2,
+        "level_score": 50,
+        "avg_read_score": 19.588,
+        "expression_score": 100,
+        "reading_score": 86,
+        "overall_score": 56.117599999999996,
+        "answers": {
+          "0": "词汇得分：100",
+          "1": "词汇得分：100",
+          "2": "词汇得分：100",
+          "3": "词汇得分：100",
+          "4": "词汇得分：100",
+          "5": "跟读得分：97.94",
+          "6": "跟读得分：0.00",
+          "7": "跟读得分：0.00",
+          "8": "跟读得分：0.00",
+          "9": "跟读得分：0.00",
+          "10": "阅读得分：80",
+          "11": "阅读得分：100",
+          "12": "阅读得分：90",
+          "13": "阅读得分：90",
+          "14": "阅读得分：70"
+        }
+      },
+      "child_username": "9"
+    },
+    "duration_seconds": null,
+    "created_at": "2026-04-26T06:14:19.472Z",
+    "updated_at": "2026-04-26T06:15:33.191Z"
+  },
+  {
+    "id": "c2c3f0e75bca469db5e9e4cd38fa1e7b",
+    "child_username": "moxuan",
+    "level": -1,
+    "status": "running",
+    "started_at": "2026-04-26T06:24:59.048Z",
+    "finished_at": null,
+    "summary": null,
+    "duration_seconds": null,
+    "created_at": "2026-04-26T06:24:59.048Z",
+    "updated_at": "2026-04-26T06:24:59.048Z"
+  },
+  {
+    "id": "b274b8e45ae543d78969a05e4ce5b361",
+    "child_username": "moxuan",
+    "level": 1,
+    "status": "running",
+    "started_at": "2026-04-26T06:26:21.025Z",
+    "finished_at": null,
+    "summary": null,
+    "duration_seconds": null,
+    "created_at": "2026-04-26T06:26:21.025Z",
+    "updated_at": "2026-04-26T06:26:21.025Z"
   }
 ]
