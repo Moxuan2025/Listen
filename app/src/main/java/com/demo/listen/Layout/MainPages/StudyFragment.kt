@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -124,7 +125,13 @@ class StudyFragment : Fragment() {
             parentFragmentManager.setFragmentResult("Study", result)
         }
         v.findViewById<Button>(R.id.btn_personal_assessment).setOnClickListener { // 评估
-            startActivity(Intent(requireContext(), DisabilityLevel::class.java))
+            // [核心修复] 获取当前登录的孩子用户名
+            val childUsername = com.demo.listen.net.SessionStore.name(requireContext())
+            Log.e("ASSESS_JUMP", "Jumping to assessment for: $childUsername")
+            
+            startActivity(Intent(requireContext(), DisabilityLevel::class.java).apply {
+                putExtra("child_username", childUsername)
+            })
         }
         v.findViewById<Button>(R.id.btn_speak_learn).setOnClickListener { // 情景对话
             val result = Bundle().apply {

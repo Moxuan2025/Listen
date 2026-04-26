@@ -19,7 +19,11 @@ class DisabilityLevel : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_disability_level)
 
-        initDisabilityList()
+        // [核心修复] 接收并保存 child_username，以便传递给下一级
+        val childUsername = intent.getStringExtra("child_username") ?: ""
+        android.util.Log.e("DISABILITY_LEVEL", "Received child_username: $childUsername")
+
+        initDisabilityList(childUsername)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -28,22 +32,22 @@ class DisabilityLevel : AppCompatActivity() {
         }
     }
 
-    private fun initDisabilityList() {
+    private fun initDisabilityList(childUsername: String) {
         val container = findViewById<LinearLayout>(R.id.disability_level_list)
 
         // 先清空原有内容（如果之前有测试数据）
         container.removeAllViews()
 
         // 添加“正常”选项，level = -1
-        container.addView(createLevelItem("正常", -1))
+        container.addView(createLevelItem("正常", -1, childUsername))
 
         val levels = listOf("一级(极重度)", "二级(重度)", "三级(中度)", "四级(轻度)")
         levels.forEachIndexed { index, level ->
-            container.addView(createLevelItem(level, index + 1))
+            container.addView(createLevelItem(level, index + 1, childUsername))
         }
     }
 
-    private fun createLevelItem(text: String, levelValue: Int): TextView {
+    private fun createLevelItem(text: String, levelValue: Int, childUsername: String): TextView {
         return TextView(this).apply {
             this.text = text
             textSize = 18f
@@ -69,6 +73,7 @@ class DisabilityLevel : AppCompatActivity() {
                 startActivity(Intent(this@DisabilityLevel,
                     AssessmentActivity::class.java).apply {
                     putExtra("level", levelValue)
+                    putExtra("child_username", childUsername) // [核心修复] 传递孩子用户名
                 })
             }
         }

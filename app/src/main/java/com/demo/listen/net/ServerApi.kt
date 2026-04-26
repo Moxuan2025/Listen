@@ -79,9 +79,10 @@ object ServerApi {
     // 开始评估会话
     suspend fun startAssessment(childUsername: String, level: Int): String {
         val body = JSONObject().apply {
-            put("child_username", childUsername)
+            put("child_username", childUsername) // [核心修复] 必须传递孩子用户名
             put("level", level)
         }
+        Log.e("START_ASSESS", "发送 start, childUsername=$childUsername, body=${body.toString()}")
         val resp = request("POST", "/api/v1/sessions/start", body)
         if (!resp.optBoolean("ok")) {
             error(resp.optString("message", "启动评估会话失败"))
@@ -98,6 +99,7 @@ object ServerApi {
         expressionScore: Double,
         readingScore: Double,
         overallScore: Double,
+        childUsername: String, // [新增] 显式传递孩子用户名
         answers: Map<Int, String>
     ): Boolean {
         val answersJson = JSONObject()
@@ -117,6 +119,7 @@ object ServerApi {
             put("status", "finished")
             put("finished_at", SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).format(Date()))
             put("summary", summary)
+            put("child_username", childUsername) // [核心修复] 确保后端收到
         }
 
         val resp = request("POST", "/api/v1/sessions/$sessionId/finish", body)

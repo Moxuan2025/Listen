@@ -58,6 +58,38 @@ function nowIso() {
   return new Date().toISOString();
 }
 
+// [新增] 更新孩子档案文件
+function updateChildProfile(childUsername, scores) {
+  const filePath = path.join(DATA_DIR, 'childfile', `${childUsername}.json`);
+  if (!fs.existsSync(filePath)) {
+    console.warn(`[Profile] 档案不存在，已跳过: ${filePath}`);
+    return;
+  }
+  try {
+    const raw = fs.readFileSync(filePath, 'utf8');
+    const profile = JSON.parse(raw);
+    
+    // 将本次分数追加到各维度数组中
+    profile.listening_scores = profile.listening_scores || [];
+    profile.expression_scores = profile.expression_scores || [];
+    profile.comprehension_scores = profile.comprehension_scores || [];
+    profile.overall_scores = profile.overall_scores || [];
+    
+    profile.listening_scores.push(scores.listeningScore);
+    profile.expression_scores.push(scores.expressionScore);
+    profile.comprehension_scores.push(scores.comprehensionScore);
+    profile.overall_scores.push(scores.overallScore);
+    
+    // 更新最近报告时间
+    profile.latest_report = nowIso();
+    
+    fs.writeFileSync(filePath, JSON.stringify(profile, null, 2), 'utf8');
+    console.log(`[Profile] 已更新 ${childUsername} 的评估档案`);
+  } catch (e) {
+    console.error(`[Profile] 更新档案失败: ${e.message}`);
+  }
+}
+
 function newId() {
   return randomUUID().replace(/-/g, "");
 }
@@ -790,11 +822,44 @@ app.post("/api/v1/sessions/start", (req, res) => {
 });
 app.get("/api/v1/sessions/:id", (req, res) => res.json(apiOk(sessionsService.get(req.params.id))));
 app.post("/api/v1/sessions/:id/finish", (req, res) => {
+  // 获取原会话
+  const session = sessionsService.get(req.params.id);
+  if (!session) apiFail("会话不存在", 404);
+
+  // 优先使用请求体中的 child_username，若没有则使用会话中的
+  const childUsername = req.body.child_username || session.child_username;
+  if (!childUsername) apiFail("缺少 child_username，无法保存评估结果", 400);
+
+  // 更新会话状态
   const updated = sessionsService.update(req.params.id, {
     status: "finished",
     finished_at: nowIso(),
-    ...req.body,
+    summary: req.body,          // 保存所有分数
+    duration_seconds: req.body.duration_seconds || null,
   });
+
+  // 提取分数
+  const scores = {
+    listeningScore: req.body.summary?.avg_read_score ?? 0,
+    expressionScore: req.body.summary?.expression_score ?? 0,
+    comprehensionScore: req.body.summary?.reading_score ?? 0,
+    overallScore: req.body.summary?.overall_score ?? 0,
+  };
+
+  // 写入孩子档案文件 (childfile/用户名.json)
+  updateChildProfile(childUsername, scores);
+
+  // 可选：同时写入 evaluations 表
+  evaluationsService.create({
+    child_username: childUsername,
+    session_id: req.params.id,
+    listening_score: scores.listeningScore,
+    expression_score: scores.expressionScore,
+    comprehension_score: scores.comprehensionScore,
+    overall_score: scores.overallScore,
+    date: nowIso(),
+  });
+
   res.json(apiOk(updated));
 });
 app.delete("/api/v1/sessions/:id", (req, res) => res.json(apiOk(sessionsService.delete(req.params.id))));

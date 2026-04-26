@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -34,7 +35,15 @@ class AssessmentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assessment)
 
+        // [核心修复] 接收孩子用户名，如果为空则打印严重警告
         childUsername = intent.getStringExtra("child_username") ?: ""
+        Log.e("ASSESS_INIT", "Received child_username from Intent: '$childUsername'")
+        
+        if (childUsername.isEmpty()) {
+            Log.e("ASSESS_INIT", "CRITICAL: child_username is EMPTY! Please check the calling Activity.")
+            // 临时调试：如果为空，可以尝试硬编码测试后端（正式环境请注释掉）
+            // childUsername = "moxuan" 
+        }
 
         val level = intent.getIntExtra("level", 1)
         assessmentLevel = level
@@ -50,12 +59,20 @@ class AssessmentActivity : AppCompatActivity() {
     }
 
     fun onLevelSelected(level: Int) {
+        // [调试] 确认 childUsername 是否有效
+        android.util.Log.e("ASSESS", "Starting assessment for child: '$childUsername'")
+        if (childUsername.isEmpty()) {
+            android.util.Log.e("ASSESS", "ERROR: childUsername is empty! Profile will not be updated.")
+        }
+
         // 启动一个真实的服务器会话
         GlobalScope.launch {
             try {
                 sessionId = ServerApi.startAssessment(childUsername, level)
+                android.util.Log.d("ASSESS", "Session started: $sessionId")
             } catch (e: Exception) {
                 sessionId = "fallback-${System.currentTimeMillis()}"
+                android.util.Log.e("ASSESS", "Failed to start session: ${e.message}")
             }
             val questions = generateMockQuestions()
             loadFragment(QuestionFragment.newInstance(questions, 0))
@@ -111,6 +128,7 @@ val expressionScore = if (vocabularyScores.isNotEmpty()) vocabularyScores.averag
         // 6. 上传到服务器
         GlobalScope.launch {
             try {
+                Log.e("FINISH", "准备上传, sessionId=$sessionId, child=$childUsername")
                 ServerApi.finishAssessment(
                     sessionId = sessionId ?: "unknown",
                     level = assessmentLevel,
@@ -119,11 +137,12 @@ val expressionScore = if (vocabularyScores.isNotEmpty()) vocabularyScores.averag
                     expressionScore = expressionScore,
                     readingScore = avgReadingScore,
                     overallScore = overall,
+                    childUsername = childUsername, // [新增] 传递孩子用户名
                     answers = answers
                 )
-                android.util.Log.d("Upload", "成绩上传成功")
+                Log.e("FINISH", "上传成功")
             } catch (e: Exception) {
-                android.util.Log.e("Upload", "上传失败", e)
+                Log.e("FINISH", "上传失败", e)
             }
         }
 
