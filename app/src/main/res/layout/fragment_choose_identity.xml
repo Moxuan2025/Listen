@@ -11,7 +11,7 @@
         android:layout_width="@dimen/_300sdp"
         android:layout_height="@dimen/_30sdp"
         android:gravity="center"
-        android:text="您是家长还是孩子？"
+        android:text="您是监护人还是孩子？"
         android:textColor="@color/black"
         android:textSize="@dimen/_18sdp"
         app:layout_constraintTop_toTopOf="parent"
@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:gravity="center_horizontal"
-                android:text="父母"
+                android:text="监护人"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_16sdp"
                 android:layout_weight="2" />

@@ -246,6 +246,7 @@ function createTokenForUser(userId) {
 
 function getTokenFromReq(req) {
   const auth = req.headers.authorization || "";
+  console.log(`DEBUG Server: Received Authorization Header: ${auth.substring(0, 15)}...`);
   if (auth.startsWith("Bearer ")) return auth.slice(7).trim();
   return req.query.token || req.body.token || "";
 }
@@ -260,9 +261,15 @@ function authMe(token) {
 }
 
 function getCurrentUser(token) {
+  console.log(`DEBUG Server: Looking up user for token: ${token ? token.substring(0, 10) + '...' : 'EMPTY'}`);
   const tokenRow = db.auth_tokens.findOne((t) => t.token === token);
-  if (!tokenRow) return null;
-  return db.users.get(tokenRow.user_id);
+  if (!tokenRow) {
+    console.log(`DEBUG Server: Token not found in database.`);
+    return null;
+  }
+  const user = db.users.get(tokenRow.user_id);
+  console.log(`DEBUG Server: Found user: ${user ? user.username : 'NULL'}`);
+  return user;
 }
 
 function registerUser({ username, password, name = "", role = "guardian", guardian_username = null, children_usernames = [] }) {
@@ -659,16 +666,31 @@ app.post("/api/v1/auth/logout", (req, res) => {
 // ---------- 孩子管理（基于用户名，无需额外 ID）----------
 // 获取当前用户可见的孩子列表
 app.get("/api/v1/children", (req, res) => {
+  console.log("DEBUG /children called");
   const token = getTokenFromReq(req);
   const currentUser = getCurrentUser(token);
   if (!currentUser) apiFail("未登录", 401);
   let childrenList = [];
   if (currentUser.role === "guardian") {
-    childrenList = getGuardianChildren(currentUser.username);
+    const usernames = getGuardianChildren(currentUser.username);
+    // 转换为包含详细信息的对象
+    childrenList = usernames.map(username => {
+      const child = findUserByUsername(username);
+      return {
+        username: username,
+        name: child ? (child.name || username) : username
+      };
+    });
   } else if (currentUser.role === "admin") {
-    childrenList = db.users.findByField("role", "child").map(c => c.username);
+    childrenList = db.users.findByField("role", "child").map(c => ({
+      username: c.username,
+      name: c.name || c.username
+    }));
   } else if (currentUser.role === "child") {
-    childrenList = [currentUser.username];
+    childrenList = [{ 
+      username: currentUser.username, 
+      name: currentUser.name || currentUser.username 
+    }];
   }
   res.json(apiOk(childrenList));
 });
@@ -860,6 +882,44 @@ app.get("/api/v1/sync/bootstrap", (req, res) => {
     reports: db.reports.list(),
     config: db.config,
   }));
+});
+
+// 获取孩子详细档案
+app.get("/api/v1/children/:username/profile", (req, res) => {
+  const token = getTokenFromReq(req);
+  const currentUser = getCurrentUser(token);
+  if (!currentUser) apiFail("未登录", 401);
+  
+  const childUsername = req.params.username;
+  // 权限检查：只有监护人、admin或孩子本人可查看
+  if (currentUser.role !== "admin" && 
+      currentUser.role !== "child" && 
+      !(currentUser.role === "guardian" && currentUser.children.includes(childUsername))) {
+    apiFail("无权查看该档案", 403);
+  }
+
+  try {
+    const profilePath = path.join(DATA_DIR, 'childfile', `${childUsername}.json`);
+    if (!fs.existsSync(profilePath)) {
+      // 如果档案不存在，返回一个默认空档案
+      return res.json(apiOk({
+        name: childUsername,
+        hearing_loss_level: "未知",
+        listening_scores: [],
+        expression_scores: [],
+        comprehension_scores: [],
+        overall_scores: [],
+        current_plan: null,
+        latest_report: null
+      }));
+    }
+    const raw = fs.readFileSync(profilePath, "utf8");
+    const profile = JSON.parse(raw);
+    res.json(apiOk(profile));
+  } catch (e) {
+    console.error("读取档案失败:", e);
+    res.status(500).json(apiFail("读取档案失败"));
+  }
 });
 
 // 全局错误处理

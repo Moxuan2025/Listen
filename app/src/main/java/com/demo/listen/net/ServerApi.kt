@@ -1,6 +1,7 @@
 package com.demo.listen.net
 
 import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -55,11 +56,24 @@ object SessionStore {
 // ========== 服务器 API ==========
 object ServerApi {
     private const val BASE_URL = "http://q6f969d4.natappfree.cc"
+    
+    // [全局 Context] 用于获取 Token
+    lateinit var appContext: Context
+        private set
+
+    fun init(context: Context) {
+        appContext = context.applicationContext
+    }
 
     data class AuthResult(
         val token: String,
         val userName: String?,
         val role: String?
+    )
+
+    data class ChildInfo(
+        val username: String,
+        val name: String
     )
 
     // 开始评估会话
@@ -163,6 +177,55 @@ object ServerApi {
         return resp.optJSONObject("data")?.optBoolean("exists", false) ?: false
     }
 
+    // 获取当前用户可见的孩子列表
+    suspend fun getChildren(): List<ChildInfo> {
+        Log.e("TRACE", "getChildren called")
+        val resp = request("GET", "/api/v1/children")
+        Log.e("TRACE", "getChildren response: ${resp.toString().take(100)}")
+        
+        if (!resp.optBoolean("ok")) {
+            error(resp.optString("message", "获取孩子列表失败"))
+        }
+        val data = resp.optJSONArray("data")
+        val children = mutableListOf<ChildInfo>()
+        if (data != null) {
+            for (i in 0 until data.length()) {
+                val obj = data.getJSONObject(i)
+                children.add(ChildInfo(
+                    username = obj.getString("username"),
+                    name = obj.optString("name", obj.getString("username"))
+                ))
+            }
+        }
+        return children
+    }
+
+    // 获取指定用户的详细信息（用于获取孩子的真实姓名）
+    suspend fun getUserInfo(username: String): JSONObject {
+        val path = "/api/v1/users/$username"
+        val resp = request("GET", path)
+        if (!resp.optBoolean("ok")) {
+            error(resp.optString("message", "获取用户信息失败"))
+        }
+        return resp.getJSONObject("data")
+    }
+
+    // 获取孩子档案信息
+    suspend fun getChildProfile(childUsername: String): JSONObject {
+        val path = "/api/v1/children/$childUsername/profile"
+        val resp = request("GET", path)
+        if (!resp.optBoolean("ok")) {
+            error(resp.optString("message", "获取档案失败"))
+        }
+        return resp.getJSONObject("data")
+    }
+
+    // 监护人关联孩子
+    suspend fun addChild(childUsername: String): JSONObject {
+        val body = JSONObject().put("childUsername", childUsername)
+        return request("POST", "/api/v1/children/add", body)
+    }
+
     // 登录
     suspend fun login(username: String, password: String): AuthResult {
         val body = JSONObject().apply {
@@ -213,16 +276,34 @@ object ServerApi {
     }
 
     // 通用 HTTP 请求
-    private suspend fun request(
+    internal suspend fun request(
         method: String,
         path: String,
         body: JSONObject? = null
     ): JSONObject = withContext(Dispatchers.IO) {
+        Log.e("TRACE", "request called: $method $path")
+        
         val conn = (URL(BASE_URL + path).openConnection() as HttpURLConnection).apply {
             requestMethod = method
             connectTimeout = 8000
             readTimeout = 8000
             setRequestProperty("Content-Type", "application/json; charset=utf-8")
+            
+            // [核心修复] 使用全局 appContext 获取 Token
+            if (::appContext.isInitialized) {
+                val token = SessionStore.token(appContext)
+                Log.e("AUTH", "Token length=${token.length}, value=[${token.take(10)}...]")
+                
+                if (token.isNotEmpty()) {
+                    setRequestProperty("Authorization", "Bearer $token")
+                    Log.e("HTTP", "Authorization Header set to Bearer ${token.take(10)}...")
+                } else {
+                    Log.e("AUTH", "WARNING: Token is EMPTY!")
+                }
+            } else {
+                Log.e("AUTH", "ERROR: appContext not initialized! Call ServerApi.init() first.")
+            }
+
             doInput = true
             if (body != null) doOutput = true
         }
@@ -233,7 +314,11 @@ object ServerApi {
             }
         }
 
+        // [步骤 3] 验证网络请求
+        Log.e("HTTP", "URL=${BASE_URL + path}")
         val code = conn.responseCode
+        Log.e("HTTP", "Response Code=$code")
+        
         val stream = if (code in 200..299) conn.inputStream else conn.errorStream
         val resp = stream?.bufferedReader()?.use { it.readText() }.orEmpty()
 
