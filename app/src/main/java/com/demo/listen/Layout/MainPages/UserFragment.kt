@@ -91,6 +91,7 @@ class UserFragment : Fragment() {
             tvName.text = "点击登录"
         } else {
             tvName.text = "$name ($role)"
+            requireView().findViewById<TextView>(R.id.tv_level).text = "Lv.1"
         }
     }
 

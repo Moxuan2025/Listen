@@ -35,7 +35,7 @@ class NormalStudy : AppCompatActivity() {
 
         mode = intent.getStringExtra("Mode") ?: ""
         pinyinList = intent.getStringArrayListExtra("PinYinList") ?: arrayListOf()
-        Toast.makeText(this, pinyinList.size.toString(), Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, pinyinList.size.toString(), Toast.LENGTH_SHORT).show()
 
         mapWidget()
         initPage()

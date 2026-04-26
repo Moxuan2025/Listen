@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:gravity="center"
-                android:background="@drawable/niya"
+                android:background="@drawable/parent"
                 android:layout_weight="8" />
             <TextView
                 android:id="@+id/lb_parent"
@@ -59,7 +59,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2" />
+            android:layout_weight="1" />
 
         <LinearLayout
             android:id="@+id/ll_child"
@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:gravity="center"
-                android:background="@drawable/niya"
+                android:background="@drawable/child"
                 android:layout_weight="8" />
             <TextView
                 android:id="@+id/lb_child"

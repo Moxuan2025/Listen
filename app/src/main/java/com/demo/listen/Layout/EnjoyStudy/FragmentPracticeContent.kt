@@ -57,7 +57,7 @@ class FragmentPracticeContent : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let { bundle ->
             syllable = bundle.getString("Syllable") ?: "<None>"
-            Toast.makeText(requireContext(), syllable, Toast.LENGTH_SHORT).show()
+//            Toast.makeText(requireContext(), syllable, Toast.LENGTH_SHORT).show()
         }
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)

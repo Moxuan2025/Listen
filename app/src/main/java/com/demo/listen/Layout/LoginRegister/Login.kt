@@ -31,7 +31,6 @@ class Login : AppCompatActivity() {
     }
 
 
-
     fun login(view: View) {
         val unameEt = findViewById<EditText>(R.id.uname)
         val passwdEt = findViewById<EditText>(R.id.passwd)

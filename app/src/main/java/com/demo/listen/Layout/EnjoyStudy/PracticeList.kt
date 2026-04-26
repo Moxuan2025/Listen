@@ -38,8 +38,8 @@ class PracticeList : AppCompatActivity() {
 
         syllable = intent.getStringExtra("Syllable") ?: "<None>"
         mode = intent.getStringExtra("mode") ?: "<None>"
-        Toast.makeText(this, syllable,
-            Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, syllable,
+//            Toast.LENGTH_SHORT).show()
 
 
         mapWidget()

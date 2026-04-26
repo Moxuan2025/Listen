@@ -147,7 +147,7 @@
         android:backgroundTint="@color/bt_green"
         android:text="GO >"
         android:textColor="@color/white"
-        android:textSize="@dimen/_36sdp"
+        android:textSize="@dimen/_30sdp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
