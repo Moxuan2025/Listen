@@ -106,14 +106,14 @@ class CompleteInfo : AppCompatActivity() {
                        // 孩子直接注册
                        submitRegister()
                    } else {
-                       // 家长进入选孩子页面
+                       // 监护人进入选孩子页面
                        showChildInputDialog()
 //                       loadFragment(infoChildFragment)
 //                       curPage = "infoChild"
                    }
                }
                "infoChild" -> {
-                   // 家长选完孩子后直接注册
+                   // 监护人选完孩子后直接注册
                    submitRegister()
                }
            }
@@ -165,7 +165,7 @@ class CompleteInfo : AppCompatActivity() {
                         children = emptyList()
                     )
                 } else {
-                    // 家长注册，必须带一个孩子
+                    // 监护人注册，必须带一个孩子
                     val selectedChildren = childChoices?.toList() ?: emptyList()
                     if (selectedChildren.isEmpty()) {
                         Toast.makeText(this@CompleteInfo, "请选择一个孩子", Toast.LENGTH_SHORT).show()
@@ -184,11 +184,21 @@ class CompleteInfo : AppCompatActivity() {
                 val finalRole = result.role ?: role
                 SessionStore.save(this@CompleteInfo, userName, finalRole, result.token)
 
-                startActivity(Intent(this@CompleteInfo, MainActivity::class.java).apply {
-                    putExtra("uname", userName)
-                    putExtra("token", result.token)
-                    putExtra("role", finalRole)
-                })
+                // 根据角色决定跳转目标
+                val intent = if (finalRole == "guardian") {
+                    Intent(this@CompleteInfo, com.demo.listen.Layout.guardian.GuardianActivity::class.java).apply {
+                        putExtra("uname", userName)
+                        putExtra("token", result.token)
+                    }
+                } else {
+                    Intent(this@CompleteInfo, MainActivity::class.java).apply {
+                        putExtra("uname", userName)
+                        putExtra("token", result.token)
+                        putExtra("role", finalRole)
+                    }
+                }
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
                 finish()
             } catch (e: Exception) {
                 Toast.makeText(this@CompleteInfo, e.message ?: "注册失败", Toast.LENGTH_SHORT).show()

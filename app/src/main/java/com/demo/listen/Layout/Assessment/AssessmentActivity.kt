@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -34,7 +35,15 @@ class AssessmentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assessment)
 
+        // [核心修复] 接收孩子用户名，如果为空则打印严重警告
         childUsername = intent.getStringExtra("child_username") ?: ""
+        Log.e("ASSESS_INIT", "Received child_username from Intent: '$childUsername'")
+        
+        if (childUsername.isEmpty()) {
+            Log.e("ASSESS_INIT", "CRITICAL: child_username is EMPTY! Please check the calling Activity.")
+            // 临时调试：如果为空，可以尝试硬编码测试后端（正式环境请注释掉）
+            // childUsername = "moxuan" 
+        }
 
         val level = intent.getIntExtra("level", 1)
         assessmentLevel = level
@@ -50,12 +59,20 @@ class AssessmentActivity : AppCompatActivity() {
     }
 
     fun onLevelSelected(level: Int) {
+        // [调试] 确认 childUsername 是否有效
+        android.util.Log.e("ASSESS", "Starting assessment for child: '$childUsername'")
+        if (childUsername.isEmpty()) {
+            android.util.Log.e("ASSESS", "ERROR: childUsername is empty! Profile will not be updated.")
+        }
+
         // 启动一个真实的服务器会话
         GlobalScope.launch {
             try {
                 sessionId = ServerApi.startAssessment(childUsername, level)
+                android.util.Log.d("ASSESS", "Session started: $sessionId")
             } catch (e: Exception) {
                 sessionId = "fallback-${System.currentTimeMillis()}"
+                android.util.Log.e("ASSESS", "Failed to start session: ${e.message}")
             }
             val questions = generateMockQuestions()
             loadFragment(QuestionFragment.newInstance(questions, 0))
@@ -111,6 +128,7 @@ val expressionScore = if (vocabularyScores.isNotEmpty()) vocabularyScores.averag
         // 6. 上传到服务器
         GlobalScope.launch {
             try {
+                Log.e("FINISH", "准备上传, sessionId=$sessionId, child=$childUsername")
                 ServerApi.finishAssessment(
                     sessionId = sessionId ?: "unknown",
                     level = assessmentLevel,
@@ -119,11 +137,12 @@ val expressionScore = if (vocabularyScores.isNotEmpty()) vocabularyScores.averag
                     expressionScore = expressionScore,
                     readingScore = avgReadingScore,
                     overallScore = overall,
+                    childUsername = childUsername, // [新增] 传递孩子用户名
                     answers = answers
                 )
-                android.util.Log.d("Upload", "成绩上传成功")
+                Log.e("FINISH", "上传成功")
             } catch (e: Exception) {
-                android.util.Log.e("Upload", "上传失败", e)
+                Log.e("FINISH", "上传失败", e)
             }
         }
 
@@ -141,15 +160,24 @@ val expressionScore = if (vocabularyScores.isNotEmpty()) vocabularyScores.averag
 
     private fun generateMockQuestions(): List<AssessmentQuestion> {
         val list = mutableListOf<AssessmentQuestion>()
-        // 前5题：词语选择
-        val wordOptions = listOf("苹果", "香蕉", "橘子", "西瓜")
-        for (i in 0..4) {
+        
+        // 前5题：词语选择（全新多样化题目）
+        val wordQuestions = listOf(
+            Triple("小猫", listOf("小狗", "小猫", "小鸟", "小鱼"), "小猫"),
+            Triple("飞机", listOf("火车", "轮船", "飞机", "汽车"), "飞机"),
+            Triple("铅笔", listOf("橡皮", "尺子", "铅笔", "书本"), "铅笔"),
+            Triple("红色", listOf("蓝色", "绿色", "黄色", "红色"), "红色"),
+            Triple("妈妈", listOf("爸爸", "妈妈", "哥哥", "姐姐"), "妈妈")
+        )
+
+        for (i in wordQuestions.indices) {
+            val (content, options, answer) = wordQuestions[i]
             list.add(
                 AssessmentQuestion(
                     index = i, type = "word_choice",
-                    content = "请选出正确的词语：${wordOptions[i % wordOptions.size]}",
-                    options = wordOptions,
-                    correctAnswer = wordOptions[i % wordOptions.size],
+                    content = "请选出正确的词语：$content",
+                    options = options,
+                    correctAnswer = answer,
                     audioUrl = null
                 )
             )

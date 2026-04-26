@@ -58,6 +58,38 @@ function nowIso() {
   return new Date().toISOString();
 }
 
+// [新增] 更新孩子档案文件
+function updateChildProfile(childUsername, scores) {
+  const filePath = path.join(DATA_DIR, 'childfile', `${childUsername}.json`);
+  if (!fs.existsSync(filePath)) {
+    console.warn(`[Profile] 档案不存在，已跳过: ${filePath}`);
+    return;
+  }
+  try {
+    const raw = fs.readFileSync(filePath, 'utf8');
+    const profile = JSON.parse(raw);
+    
+    // 将本次分数追加到各维度数组中
+    profile.listening_scores = profile.listening_scores || [];
+    profile.expression_scores = profile.expression_scores || [];
+    profile.comprehension_scores = profile.comprehension_scores || [];
+    profile.overall_scores = profile.overall_scores || [];
+    
+    profile.listening_scores.push(scores.listeningScore);
+    profile.expression_scores.push(scores.expressionScore);
+    profile.comprehension_scores.push(scores.comprehensionScore);
+    profile.overall_scores.push(scores.overallScore);
+    
+    // 更新最近报告时间
+    profile.latest_report = nowIso();
+    
+    fs.writeFileSync(filePath, JSON.stringify(profile, null, 2), 'utf8');
+    console.log(`[Profile] 已更新 ${childUsername} 的评估档案`);
+  } catch (e) {
+    console.error(`[Profile] 更新档案失败: ${e.message}`);
+  }
+}
+
 function newId() {
   return randomUUID().replace(/-/g, "");
 }
@@ -246,6 +278,7 @@ function createTokenForUser(userId) {
 
 function getTokenFromReq(req) {
   const auth = req.headers.authorization || "";
+  console.log(`DEBUG Server: Received Authorization Header: ${auth.substring(0, 15)}...`);
   if (auth.startsWith("Bearer ")) return auth.slice(7).trim();
   return req.query.token || req.body.token || "";
 }
@@ -260,9 +293,15 @@ function authMe(token) {
 }
 
 function getCurrentUser(token) {
+  console.log(`DEBUG Server: Looking up user for token: ${token ? token.substring(0, 10) + '...' : 'EMPTY'}`);
   const tokenRow = db.auth_tokens.findOne((t) => t.token === token);
-  if (!tokenRow) return null;
-  return db.users.get(tokenRow.user_id);
+  if (!tokenRow) {
+    console.log(`DEBUG Server: Token not found in database.`);
+    return null;
+  }
+  const user = db.users.get(tokenRow.user_id);
+  console.log(`DEBUG Server: Found user: ${user ? user.username : 'NULL'}`);
+  return user;
 }
 
 function registerUser({ username, password, name = "", role = "guardian", guardian_username = null, children_usernames = [] }) {
@@ -659,16 +698,31 @@ app.post("/api/v1/auth/logout", (req, res) => {
 // ---------- 孩子管理（基于用户名，无需额外 ID）----------
 // 获取当前用户可见的孩子列表
 app.get("/api/v1/children", (req, res) => {
+  console.log("DEBUG /children called");
   const token = getTokenFromReq(req);
   const currentUser = getCurrentUser(token);
   if (!currentUser) apiFail("未登录", 401);
   let childrenList = [];
   if (currentUser.role === "guardian") {
-    childrenList = getGuardianChildren(currentUser.username);
+    const usernames = getGuardianChildren(currentUser.username);
+    // 转换为包含详细信息的对象
+    childrenList = usernames.map(username => {
+      const child = findUserByUsername(username);
+      return {
+        username: username,
+        name: child ? (child.name || username) : username
+      };
+    });
   } else if (currentUser.role === "admin") {
-    childrenList = db.users.findByField("role", "child").map(c => c.username);
+    childrenList = db.users.findByField("role", "child").map(c => ({
+      username: c.username,
+      name: c.name || c.username
+    }));
   } else if (currentUser.role === "child") {
-    childrenList = [currentUser.username];
+    childrenList = [{ 
+      username: currentUser.username, 
+      name: currentUser.name || currentUser.username 
+    }];
   }
   res.json(apiOk(childrenList));
 });
@@ -768,11 +822,44 @@ app.post("/api/v1/sessions/start", (req, res) => {
 });
 app.get("/api/v1/sessions/:id", (req, res) => res.json(apiOk(sessionsService.get(req.params.id))));
 app.post("/api/v1/sessions/:id/finish", (req, res) => {
+  // 获取原会话
+  const session = sessionsService.get(req.params.id);
+  if (!session) apiFail("会话不存在", 404);
+
+  // 优先使用请求体中的 child_username，若没有则使用会话中的
+  const childUsername = req.body.child_username || session.child_username;
+  if (!childUsername) apiFail("缺少 child_username，无法保存评估结果", 400);
+
+  // 更新会话状态
   const updated = sessionsService.update(req.params.id, {
     status: "finished",
     finished_at: nowIso(),
-    ...req.body,
+    summary: req.body,          // 保存所有分数
+    duration_seconds: req.body.duration_seconds || null,
   });
+
+  // 提取分数
+  const scores = {
+    listeningScore: req.body.summary?.avg_read_score ?? 0,
+    expressionScore: req.body.summary?.expression_score ?? 0,
+    comprehensionScore: req.body.summary?.reading_score ?? 0,
+    overallScore: req.body.summary?.overall_score ?? 0,
+  };
+
+  // 写入孩子档案文件 (childfile/用户名.json)
+  updateChildProfile(childUsername, scores);
+
+  // 可选：同时写入 evaluations 表
+  evaluationsService.create({
+    child_username: childUsername,
+    session_id: req.params.id,
+    listening_score: scores.listeningScore,
+    expression_score: scores.expressionScore,
+    comprehension_score: scores.comprehensionScore,
+    overall_score: scores.overallScore,
+    date: nowIso(),
+  });
+
   res.json(apiOk(updated));
 });
 app.delete("/api/v1/sessions/:id", (req, res) => res.json(apiOk(sessionsService.delete(req.params.id))));
@@ -860,6 +947,44 @@ app.get("/api/v1/sync/bootstrap", (req, res) => {
     reports: db.reports.list(),
     config: db.config,
   }));
+});
+
+// 获取孩子详细档案
+app.get("/api/v1/children/:username/profile", (req, res) => {
+  const token = getTokenFromReq(req);
+  const currentUser = getCurrentUser(token);
+  if (!currentUser) apiFail("未登录", 401);
+  
+  const childUsername = req.params.username;
+  // 权限检查：只有监护人、admin或孩子本人可查看
+  if (currentUser.role !== "admin" && 
+      currentUser.role !== "child" && 
+      !(currentUser.role === "guardian" && currentUser.children.includes(childUsername))) {
+    apiFail("无权查看该档案", 403);
+  }
+
+  try {
+    const profilePath = path.join(DATA_DIR, 'childfile', `${childUsername}.json`);
+    if (!fs.existsSync(profilePath)) {
+      // 如果档案不存在，返回一个默认空档案
+      return res.json(apiOk({
+        name: childUsername,
+        hearing_loss_level: "未知",
+        listening_scores: [],
+        expression_scores: [],
+        comprehension_scores: [],
+        overall_scores: [],
+        current_plan: null,
+        latest_report: null
+      }));
+    }
+    const raw = fs.readFileSync(profilePath, "utf8");
+    const profile = JSON.parse(raw);
+    res.json(apiOk(profile));
+  } catch (e) {
+    console.error("读取档案失败:", e);
+    res.status(500).json(apiFail("读取档案失败"));
+  }
 });
 
 // 全局错误处理

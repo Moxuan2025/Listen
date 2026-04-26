@@ -19,6 +19,15 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="暂无关联孩子，请点击下方按钮添加"
+        android:visibility="gone"
+        android:gravity="center"
+        android:padding="16dp"/>
+
     <Button
         android:id="@+id/btn_add_child"
         android:layout_width="match_parent"
