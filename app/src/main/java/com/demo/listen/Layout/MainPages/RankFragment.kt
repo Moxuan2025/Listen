@@ -5,12 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.demo.listen.Layout.Adapter.RankAdapter
 import com.demo.listen.Layout.DataType.RankItem
 import com.demo.listen.R
+import org.w3c.dom.Text
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +31,9 @@ class RankFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RankAdapter
+    private lateinit var clockInDays: TextView
+    private lateinit var readModel: TextView
+    private lateinit var progressModel: TextView
     private val rankItems = mutableListOf<RankItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,20 +54,51 @@ class RankFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mapWidget()
         setupRecyclerView()
-        loadInitialData()
+        initPage()
+        handleClick()
+
+    }
+
+    private fun mapWidget() {
+        clockInDays = requireView().findViewById<TextView>(R.id.clock_in_days)
+        readModel = requireView().findViewById<TextView>(R.id.read_model)
+        progressModel = requireView().findViewById<TextView>(R.id.progress_model)
+    }
+
+    private fun initPage() {
+        // TODO: Get data from server
+        loadRankData(testClockInRank)   // test
+    }
+
+    private fun handleClick() {
+        clockInDays.setOnClickListener {
+            resetBackground()
+            clockInDays.setBackgroundResource(R.drawable.bg_frank_navi_green)
+            loadRankData(testClockInRank)
+        }
+
+        readModel.setOnClickListener {
+            resetBackground()
+            readModel.setBackgroundResource(R.drawable.bg_frank_navi_green)
+            loadRankData(testReadRank)
+        }
+        progressModel.setOnClickListener {
+            resetBackground()
+            progressModel.setBackgroundResource(R.drawable.bg_frank_navi_green)
+            loadRankData(testProgressRank)
+        }
+    }
+
+    private fun resetBackground() {
+        clockInDays.setBackgroundResource(R.drawable.bg_frank_navi_yellow)
+        readModel.setBackgroundResource(R.drawable.bg_frank_navi_yellow)
+        progressModel.setBackgroundResource(R.drawable.bg_frank_navi_yellow)
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RankFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             RankFragment().apply {
@@ -80,19 +116,31 @@ class RankFragment : Fragment() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@RankFragment.adapter
-            // 可选：添加分割线
+            // 添加分割线
             addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
         }
     }
-    private fun loadInitialData() {
-        // 模拟初始数据
-        val initialData = listOf(
-            RankItem(1, "###", R.drawable.avatar_default, 0),
-            RankItem(2, "###", R.drawable.avatar_default, 0),
-            RankItem(3, "###", R.drawable.avatar_default, 0),
-            RankItem(4, "###", R.drawable.avatar_default, 0)
-        )
-        adapter.updateItems(initialData)
+
+    val testClockInRank = listOf(
+        RankItem(1, "小七", R.drawable.avatar_default, 6),
+        RankItem(2, "六六", R.drawable.avatar_man2, 5),
+        RankItem(3, "可可", R.drawable.avatar_gril2, 3),
+        RankItem(4, "聪聪", R.drawable.avatar_girl1, 1)
+    )
+    val testReadRank = listOf(
+        RankItem(1, "六六", R.drawable.avatar_man2, 5),
+        RankItem(2, "小七", R.drawable.avatar_default, 6),
+        RankItem(3, "可可", R.drawable.avatar_gril2, 3),
+        RankItem(4, "聪聪", R.drawable.avatar_girl1, 1)
+    )
+    val testProgressRank = listOf(
+        RankItem(1, "可可", R.drawable.avatar_gril2, 3),
+        RankItem(2, "六六", R.drawable.avatar_man2, 5),
+        RankItem(3, "小七", R.drawable.avatar_default, 6),
+        RankItem(4, "聪聪", R.drawable.avatar_girl1, 1)
+    )
+    private fun loadRankData(data: List<RankItem>) {
+        adapter.updateItems(data)
     }
 
     private fun addNewRankItem() {
@@ -104,7 +152,6 @@ class RankFragment : Fragment() {
         )
         adapter.addItem(newItem)
 
-        // 滚动到新添加的位置
         recyclerView.smoothScrollToPosition(rankItems.size - 1)
     }
 
