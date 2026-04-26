@@ -7,6 +7,7 @@ import android.os.Looper
 
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,7 @@ import java.io.InputStreamReader
 
 class WordListeningActivity : AppCompatActivity() {
 
+    private lateinit var progressBar: ProgressBar
     private lateinit var tvProgress: TextView
     private lateinit var btnPlay: ImageButton
     private lateinit var optionsContainer: LinearLayout
@@ -40,6 +42,8 @@ class WordListeningActivity : AppCompatActivity() {
         btnPlay = findViewById(R.id.btn_play)
         optionsContainer = findViewById(R.id.options_container)
         tvScore = findViewById(R.id.tv_score)
+
+        progressBar = findViewById<ProgressBar>(R.id.wl_progress_bar)
         tvHint = findViewById(R.id.tv_hint)
 
         loadQuestions()
@@ -50,12 +54,16 @@ class WordListeningActivity : AppCompatActivity() {
         }
     }
 
+    private var questionNum =0
     private fun loadQuestions() {
         try {
             val inputStream = assets.open("word_listening.json")
             val reader = InputStreamReader(inputStream)
             val type = object : TypeToken<List<WordQuestion>>() {}.type
             questions = Gson().fromJson(reader, type)
+            questionNum = questions.size
+            progressBar.max = questionNum
+            tvProgress.text = "${1}/${questionNum}"
             inputStream.close()
         } catch (e: Exception) {
             Toast.makeText(this, "题目加载失败", Toast.LENGTH_SHORT).show()
@@ -64,19 +72,20 @@ class WordListeningActivity : AppCompatActivity() {
     }
 
     private fun showQuestion(index: Int) {
-        if (index >= questions.size) {
+        if (index >= questionNum) {
             // 结束
-            Toast.makeText(this, "完成！总分：$totalScore/${questions.size}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "完成！总分：$totalScore/${questionNum}", Toast.LENGTH_LONG).show()
             finish()
             return
         }
 
         val q = questions[index]
-        tvProgress.text = "第 ${index + 1}/${questions.size} 题"
+        tvProgress.text = "${index+1}/${questionNum}"
+        progressBar.progress = index
+
         tvScore.text = "得分：$totalScore"
         tvHint.text = "听发音，选择正确的词汇"
 
-        // 清空旧按钮
         optionsContainer.removeAllViews()
         canAnswer = false
 

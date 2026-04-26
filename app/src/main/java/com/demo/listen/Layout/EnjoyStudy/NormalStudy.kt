@@ -2,6 +2,7 @@ package com.demo.listen.Layout.EnjoyStudy
 
 import android.content.Context
 import android.os.Bundle
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -20,6 +21,9 @@ class NormalStudy : AppCompatActivity() {
 
     private val practiceContent = FragmentPracticeContent()
 
+    private lateinit var progressBar: ProgressBar
+    private lateinit var progressHint: TextView
+
     private lateinit var viewModel: SharePracticeData
     private lateinit var pinyinList: ArrayList<String>
     private var mode: String = ""
@@ -33,6 +37,7 @@ class NormalStudy : AppCompatActivity() {
         pinyinList = intent.getStringArrayListExtra("PinYinList") ?: arrayListOf()
         Toast.makeText(this, pinyinList.size.toString(), Toast.LENGTH_SHORT).show()
 
+        mapWidget()
         initPage()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -42,6 +47,13 @@ class NormalStudy : AppCompatActivity() {
         }
     }
 
+    private fun mapWidget() {
+        progressBar = findViewById<ProgressBar>(R.id.ns_progress_bar)
+        progressHint = findViewById<TextView>(R.id.ns_progress_hit)
+    }
+
+
+    private var itemNum = 0
     private fun initPage() {
         if (mode.isEmpty()) finish()
         loadFragment(practiceContent)
@@ -56,12 +68,19 @@ class NormalStudy : AppCompatActivity() {
             "test" -> title.text = "测试"
         }
 
-        viewModel.setWordPinYin(loadWordPinYinFromJson(this))
+        var wpy = loadWordPinYinFromJson(this)
+        itemNum = wpy.size
+        progressBar.max = itemNum
+        progressBar.progress = 0
+        progressHint.text = "1/${itemNum}"
+
+        viewModel.setWordPinYin(wpy)
         viewModel.setType("word")
         viewModel.setNext("report")
         viewModel.changeIndex(0)
-        viewModel.index.observe(this) {
-            // TODO: 更新进度条
+        viewModel.index.observe(this) { index ->
+            progressBar.progress = index
+            progressHint.text = "${index+1}/${itemNum}"
         }
     }
 
