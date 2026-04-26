@@ -66,6 +66,10 @@
             android:exported="true" />
 
         <activity
+            android:name=".Layout.EnjoyStudy.SceneChatActivity"
+            android:exported="true" />
+
+        <activity
             android:name=".Layout.LoginRegister.CompleteInfo"
             android:exported="true" />
         <activity

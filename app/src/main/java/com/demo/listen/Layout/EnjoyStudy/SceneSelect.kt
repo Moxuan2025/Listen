@@ -1,5 +1,6 @@
 package com.demo.listen.Layout.EnjoyStudy
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
@@ -80,15 +81,10 @@ class SceneSelect : AppCompatActivity() {
     }
 
     private fun onSceneSelected(scene: Scene) {
-        // 处理场景选择逻辑
-        // 例如：跳转到对应的学习界面
-         Toast.makeText(this, "选择了: ${scene.name}", Toast.LENGTH_SHORT).show()
-
-        // 可以在这里添加您的业务逻辑
-        // startActivity(Intent(this, SceneDetailActivity::class.java).apply {
-        //     putExtra("scene_id", scene.id)
-        //     putExtra("scene_name", scene.name)
-        // })
+        // 跳转到智能对话页面，并传递场景信息
+        val intent = Intent(this@SceneSelect, SceneChatActivity::class.java)
+        intent.putExtra("scene_name", scene.name)
+        startActivity(intent)
     }
 
     private val testLifeScenesList = listOf(
@@ -101,12 +97,12 @@ class SceneSelect : AppCompatActivity() {
     )
 
     private val testSchoolScenesList = listOf(
-        Scene(1, "购物", 5),
-        Scene(2, "日常游玩", 4),
-        Scene(3, "生活服务", 4),
-        Scene(4, "情绪表达", 3),
-        Scene(5, "居家", 2),
-        Scene(6, "兴趣爱好", 2)
+        Scene(1, "问路", 5),
+        Scene(2, "借书", 4),
+        Scene(3, "课堂交流", 4),
+        Scene(4, "校园活动", 3),
+        Scene(5, "同学互动", 2),
+        Scene(6, "体育运动", 2)
     )
 
 }

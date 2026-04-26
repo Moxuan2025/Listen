@@ -1292,5 +1292,41 @@
     "duration_seconds": null,
     "created_at": "2026-04-25T19:42:08.318Z",
     "updated_at": "2026-04-25T19:42:13.983Z"
+  },
+  {
+    "id": "597639e0378547e3bdb85bfa415dbafb",
+    "child_username": "",
+    "level": 4,
+    "status": "finished",
+    "started_at": "2026-04-26T03:56:40.001Z",
+    "finished_at": "2026-04-26T11:57:34.443Z",
+    "summary": {
+      "level": 4,
+      "level_score": 90,
+      "avg_read_score": 31.003333333333334,
+      "expression_score": 40,
+      "reading_score": 77,
+      "overall_score": 56.60066666666666,
+      "answers": {
+        "0": "词汇得分：0",
+        "1": "词汇得分：100",
+        "2": "词汇得分：100",
+        "3": "词汇得分：0",
+        "4": "词汇得分：0",
+        "5": "跟读得分：93.01",
+        "6": "跟读得分：0.00",
+        "7": "跟读得分：0.00",
+        "8": "跟读得分：评测失败: AudioRecord multi start",
+        "9": "跟读得分：评测失败: AudioRecord multi start",
+        "10": "阅读得分：80",
+        "11": "阅读得分：95",
+        "12": "阅读得分：90",
+        "13": "阅读得分：50",
+        "14": "阅读得分：70"
+      }
+    },
+    "duration_seconds": null,
+    "created_at": "2026-04-26T03:56:40.001Z",
+    "updated_at": "2026-04-26T03:57:34.881Z"
   }
 ]
