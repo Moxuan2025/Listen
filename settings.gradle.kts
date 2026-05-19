@@ -22,6 +22,10 @@ dependencyResolutionManagement {
         maven { url = uri("https://mirrors.tencent.com/repository/maven/tencent_public/") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/releases/") }
         maven { url = uri("https://jitpack.io") }
+        // 必须添加此段代码，指向 app/libs 目录
+        flatDir {
+            dirs(rootProject.projectDir.toString() + "/app/libs")
+        }
     }
 }
 

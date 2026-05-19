@@ -16,6 +16,7 @@ import kotlin.concurrent.thread
 
 object HunyuanHelper {
 
+    private const val TAG = "HunyuanHelper"
     private const val HOST      = "hunyuan.tencentcloudapi.com"
     private const val SERVICE   = "hunyuan"
     private const val REGION    = "ap-guangzhou"
@@ -97,6 +98,67 @@ object HunyuanHelper {
         
         latch.await()
         return result
+    }
+
+    /**
+     * 结构化消息聊天接口（防止 LLM 续写）
+     */
+    fun getChatResponse(
+        messages: List<Map<String, String>>,
+        systemPrompt: String,
+        context: Context,
+        onResult: (String) -> Unit
+    ) {
+        loadKeys(context)
+        if (SECRET_ID.isEmpty()) {
+            onResult("密钥配置错误")
+            return
+        }
+
+        thread {
+            try {
+                val messagesArray = org.json.JSONArray()
+                
+                // 如果有系统提示词，作为第一条 system 消息加入
+                if (systemPrompt.isNotEmpty()) {
+                    val sysMsg = org.json.JSONObject()
+                    sysMsg.put("Role", "system")
+                    sysMsg.put("Content", systemPrompt)
+                    messagesArray.put(sysMsg)
+                }
+
+                // 加入对话历史
+                for (msg in messages) {
+                    val msgObj = org.json.JSONObject()
+                    msgObj.put("Role", msg["role"] ?: "user")
+                    msgObj.put("Content", msg["content"] ?: "")
+                    messagesArray.put(msgObj)
+                }
+
+                val payloadJson = JSONObject().apply {
+                    put("Model", "hunyuan-lite")
+                    put("Messages", messagesArray)
+                }
+                val payload = payloadJson.toString()
+
+                val headers = sign(ACTION, payload)
+                val response = httpPost(payload, headers)
+
+                // 解析响应
+                val json = JSONObject(response)
+                val respObj = json.getJSONObject("Response")
+                if (respObj.has("Error")) {
+                    onResult("API错误: " + respObj.getJSONObject("Error").getString("Message"))
+                } else {
+                    val choices = respObj.getJSONArray("Choices")
+                    val message = choices.getJSONObject(0).getJSONObject("Message")
+                    onResult(message.getString("Content"))
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "AI 请求异常", e)
+                onResult("异常: ${e.message}")
+            }
+        }
     }
 
     /**

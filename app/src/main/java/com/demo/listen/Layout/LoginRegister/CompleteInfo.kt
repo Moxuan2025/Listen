@@ -2,6 +2,7 @@ package com.demo.listen.Layout.LoginRegister
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -30,7 +31,7 @@ class CompleteInfo : AppCompatActivity() {
     private lateinit var userPasswd: String
     private lateinit var userIdentity: String
     private var childChoices: Array<String>? = null
-   // private var parentChoices: Array<String>? = null
+    private var parentChoices: Array<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,6 +147,12 @@ class CompleteInfo : AppCompatActivity() {
             .show()
     }
     private fun submitRegister() {
+        Log.e("COMPLETE_INFO", "=== submitRegister 开始 ===")
+        Log.e("COMPLETE_INFO", "userIdentity: $userIdentity")
+        Log.e("COMPLETE_INFO", "userName: $userName")
+        Log.e("COMPLETE_INFO", "childChoices: ${childChoices?.joinToString(", ")}")
+        Log.e("COMPLETE_INFO", "parentChoices: ${parentChoices?.joinToString(", ")}")
+        
         lifecycleScope.launch {
             try {
                 val role = when (userIdentity) {
@@ -156,13 +163,15 @@ class CompleteInfo : AppCompatActivity() {
 
                 val result = if (userIdentity == "child") {
                     // 孩子注册，无监护人
+                    Log.e("COMPLETE_INFO", "执行孩子注册")
                     ServerApi.register(
                         username = userName,
                         password = userPasswd,
                         name = userName,
                         role = role,
                         guardian = null,
-                        children = emptyList()
+                        children = emptyList(),
+                        hearingLossLevel = null
                     )
                 } else {
                     // 监护人注册，必须带一个孩子
@@ -171,13 +180,20 @@ class CompleteInfo : AppCompatActivity() {
                         Toast.makeText(this@CompleteInfo, "请选择一个孩子", Toast.LENGTH_SHORT).show()
                         return@launch
                     }
+                    
+                    // 从 parentChoices 中提取听力障碍等级（第一个元素）
+                    val hearingLossLevel = parentChoices?.getOrNull(0)
+                    Log.e("COMPLETE_INFO", "提取的听力障碍等级: $hearingLossLevel")
+                    
+                    Log.e("COMPLETE_INFO", "执行监护人注册")
                     ServerApi.register(
                         username = userName,
                         password = userPasswd,
                         name = userName,
                         role = role,
                         guardian = null,
-                        children = selectedChildren
+                        children = selectedChildren,
+                        hearingLossLevel = hearingLossLevel
                     )
                 }
 
@@ -201,6 +217,8 @@ class CompleteInfo : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             } catch (e: Exception) {
+                Log.e("COMPLETE_INFO", "注册失败: ${e.message}")
+                e.printStackTrace()
                 Toast.makeText(this@CompleteInfo, e.message ?: "注册失败", Toast.LENGTH_SHORT).show()
             }
         }
@@ -264,9 +282,23 @@ class CompleteInfo : AppCompatActivity() {
     }
 }*/
 private fun handleFragmentResult() {
+    Log.e("COMPLETE_INFO", "=== handleFragmentResult 开始设置监听器 ===")
+    
     supportFragmentManager.setFragmentResultListener("identity", this) { _, bundle ->
         userIdentity = bundle.getString("choice") ?: "Null"
+        Log.e("COMPLETE_INFO", "收到 identity 结果: $userIdentity")
         Toast.makeText(this, userIdentity, Toast.LENGTH_SHORT).show()
+        switchPage(true)
+    }
+
+    supportFragmentManager.setFragmentResultListener("infoParent", this) { _, bundle ->
+        Log.e("COMPLETE_INFO", "=== 收到 infoParent FragmentResult ===")
+        parentChoices = bundle.getStringArray("choices")
+        Log.e("COMPLETE_INFO", "parentChoices 数量: ${parentChoices?.size}")
+        parentChoices?.forEachIndexed { index, s ->
+            Log.e("COMPLETE_INFO", "  parentChoices[$index]: $s")
+        }
+        Toast.makeText(this, "已收到家长信息", Toast.LENGTH_SHORT).show()
         switchPage(true)
     }
 
@@ -275,5 +307,5 @@ private fun handleFragmentResult() {
 //        Toast.makeText(this, "已选择孩子", Toast.LENGTH_SHORT).show()
 //        switchPage(true)
 //    }
-        }
+}
 }

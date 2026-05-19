@@ -55,7 +55,7 @@ object SessionStore {
 
 // ========== 服务器 API ==========
 object ServerApi {
-    private const val BASE_URL = "http://q6f969d4.natappfree.cc"
+    private const val BASE_URL = "http://bdfa6fa4.natappfree.cc"
     
     // [全局 Context] 用于获取 Token
     lateinit var appContext: Context
@@ -223,6 +223,22 @@ object ServerApi {
         return resp.getJSONObject("data")
     }
 
+    // 更新孩子听力障碍等级
+    suspend fun updateChildHearingLevel(
+        childUsername: String,
+        hearingLossLevel: String
+    ): Boolean {
+        Log.e("SERVER_API", "更新听力障碍等级: child=$childUsername, level=$hearingLossLevel")
+        val body = JSONObject().apply {
+            put("child_username", childUsername)
+            put("hearing_loss_level", hearingLossLevel)
+        }
+        
+        val resp = request("POST", "/api/v1/child/update-hearing-level", body)
+        Log.e("SERVER_API", "更新听力障碍等级响应: ${resp.toString()}")
+        return resp.optBoolean("ok")
+    }
+
     // 监护人关联孩子
     suspend fun addChild(childUsername: String): JSONObject {
         val body = JSONObject().put("childUsername", childUsername)
@@ -255,8 +271,12 @@ object ServerApi {
         name: String,
         role: String,
         guardian: String?,
-        children: List<String>
+        children: List<String>,
+        hearingLossLevel: String? = null
     ): AuthResult {
+        Log.e("SERVER_API", "=== register 方法被调用 ===")
+        Log.e("SERVER_API", "username: $username, role: $role, hearingLossLevel: $hearingLossLevel")
+        
         val body = JSONObject().apply {
             put("username", username)
             put("password", password)
@@ -264,8 +284,16 @@ object ServerApi {
             put("role", role)
             put("guardian", guardian ?: "")
             put("children", JSONArray(children))
+            if (hearingLossLevel != null) {
+                put("hearing_loss_level", hearingLossLevel)
+                Log.e("SERVER_API", "已将 hearing_loss_level 加入请求体: $hearingLossLevel")
+            }
         }
+        Log.e("SERVER_API", "请求体: ${body.toString()}")
+        
         val resp = request("POST", "/api/v1/auth/register", body)
+        Log.e("SERVER_API", "注册响应: ${resp.toString()}")
+        
         if (!resp.optBoolean("ok")) {
             error(resp.optString("message", "注册失败"))
         }

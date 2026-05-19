@@ -58,9 +58,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0") // 雷达图依赖
 
- 
+    // 腾讯云所有本地 AAR（TTS、SOE、ASR 等），一行搞定
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
-
 }
 
 

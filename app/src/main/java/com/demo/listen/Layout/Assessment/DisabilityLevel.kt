@@ -1,5 +1,6 @@
 package com.demo.listen.Layout.Assessment
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -7,11 +8,17 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.demo.listen.R
+import com.demo.listen.net.ServerApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DisabilityLevel : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,11 +77,54 @@ class DisabilityLevel : AppCompatActivity() {
             setBackgroundResource(R.drawable.green_bg)
 
             setOnClickListener {
-                startActivity(Intent(this@DisabilityLevel,
-                    AssessmentActivity::class.java).apply {
-                    putExtra("level", levelValue)
-                    putExtra("child_username", childUsername) // [核心修复] 传递孩子用户名
-                })
+                // 显示 loading 提示
+                val progressDialog = ProgressDialog(this@DisabilityLevel).apply {
+                    setMessage("正在保存听力等级...")
+                    setCancelable(false)
+                    show()
+                }
+                
+                // 将用户选择的等级映射为档案需要的字符串
+                val hearingLevelStr = when (levelValue) {
+                    1 -> "极重度"
+                    2 -> "重度"
+                    3 -> "中度"
+                    4 -> "轻度"
+                    else -> "无听力损失"
+                }
+                
+                // 异步调用更新 API
+                GlobalScope.launch(Dispatchers.IO) {
+                    try {
+                        val success = ServerApi.updateChildHearingLevel(childUsername, hearingLevelStr)
+                        withContext(Dispatchers.Main) {
+                            progressDialog.dismiss()
+                            if (success) {
+                                Toast.makeText(this@DisabilityLevel, "听力等级已保存", Toast.LENGTH_SHORT).show()
+                            } else {
+                                android.util.Log.e("DISABILITY_LEVEL", "更新听力等级失败")
+                                Toast.makeText(this@DisabilityLevel, "保存失败，仍可继续评估", Toast.LENGTH_SHORT).show()
+                            }
+                            // 无论更新是否成功，都继续跳转到评估页面
+                            startActivity(Intent(this@DisabilityLevel,
+                                AssessmentActivity::class.java).apply {
+                                putExtra("level", levelValue)
+                                putExtra("child_username", childUsername)
+                            })
+                        }
+                    } catch (e: Exception) {
+                        android.util.Log.e("DISABILITY_LEVEL", "更新异常", e)
+                        withContext(Dispatchers.Main) {
+                            progressDialog.dismiss()
+                            Toast.makeText(this@DisabilityLevel, "网络错误，继续评估", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this@DisabilityLevel,
+                                AssessmentActivity::class.java).apply {
+                                putExtra("level", levelValue)
+                                putExtra("child_username", childUsername)
+                            })
+                        }
+                    }
+                }
             }
         }
     }

@@ -304,7 +304,18 @@ function getCurrentUser(token) {
   return user;
 }
 
-function registerUser({ username, password, name = "", role = "guardian", guardian_username = null, children_usernames = [] }) {
+function registerUser({ username, password, name = "", role = "guardian", guardian_username = null, children_usernames = [], hearing_loss_level = null }) {
+  console.log("=== registerUser 函数被调用 ===");
+  console.log("参数:");
+  console.log("  username:", username);
+  console.log("  role:", role);
+  console.log("  guardian_username:", guardian_username);
+  console.log("  children_usernames:", children_usernames);
+  console.log("  hearing_loss_level:", hearing_loss_level);
+  console.log("  hearing_loss_level类型:", typeof hearing_loss_level);
+  console.log("  hearing_loss_level是否为null:", hearing_loss_level === null);
+  console.log("  hearing_loss_level是否为undefined:", hearing_loss_level === undefined);
+  
   if (!username) apiFail("用户名不能为空", 400);
   if (!password) apiFail("密码不能为空", 400);
   if (!["guardian", "child", "admin"].includes(role)) apiFail("角色必须是 guardian、child 或 admin", 400);
@@ -378,9 +389,13 @@ function registerUser({ username, password, name = "", role = "guardian", guardi
       const childDir = path.join(DATA_DIR, 'childfile');
       if (!fs.existsSync(childDir)) fs.mkdirSync(childDir, { recursive: true });
       const profilePath = path.join(childDir, `${username}.json`);
+      console.log(`准备创建孩子档案: ${profilePath}`);
+      console.log(`传入的 hearing_loss_level 值: ${hearing_loss_level}`);
+      console.log(`hearing_loss_level || "未知" 的结果: ${hearing_loss_level || "未知"}`);
+      
       const profile = {
         name: username,
-        hearing_loss_level: "未知",
+        hearing_loss_level: hearing_loss_level || "未知",
         listening_scores: [],
         expression_scores: [],
         comprehension_scores: [],
@@ -388,9 +403,16 @@ function registerUser({ username, password, name = "", role = "guardian", guardi
         current_plan: null,
         latest_report: null
       };
+      console.log("即将写入的档案内容:", JSON.stringify(profile, null, 2));
+      
       fs.writeFileSync(profilePath, JSON.stringify(profile, null, 2), 'utf8');
+      console.log(`[Profile] 孩子档案创建成功: ${profilePath}`);
+      
+      // 验证写入的内容
+      const verifyContent = fs.readFileSync(profilePath, 'utf8');
+      console.log(`验证写入的文件内容:`, verifyContent);
     } catch (e) {
-      console.error(`创建孩子档案失败: ${username}`, e);
+      console.error(`[Profile] 创建孩子档案失败: ${username}`, e);
     }
   }
 
@@ -648,14 +670,22 @@ app.post('/api/v1/soe/evaluate', async (req, res) => {
 });
 // 注册
 app.post("/api/v1/auth/register", (req, res) => {
-  const { username, password, role, guardian, children } = req.body;
+  console.log("=== 收到注册请求 ===");
+  console.log("请求体:", JSON.stringify(req.body, null, 2));
+  
+  const { username, password, role, guardian, children, hearing_loss_level } = req.body;
+  console.log("hearing_loss_level:", hearing_loss_level);
+  
   const result = registerUser({
     username: (username || "").trim(),
     password: password || "",
     role: role || "guardian",
     guardian_username: guardian ? guardian.trim() : null,
     children_usernames: children || [],
+    hearing_loss_level: hearing_loss_level || null,
   });
+  
+  console.log("注册结果:", JSON.stringify(result, null, 2));
   res.json(apiOk(result, "注册成功"));
 });
 
@@ -984,6 +1014,30 @@ app.get("/api/v1/children/:username/profile", (req, res) => {
   } catch (e) {
     console.error("读取档案失败:", e);
     res.status(500).json(apiFail("读取档案失败"));
+  }
+});
+
+// 更新孩子档案的听力障碍等级
+app.post("/api/v1/child/update-hearing-level", (req, res) => {
+  const { child_username, hearing_loss_level } = req.body;
+  if (!child_username) {
+    return res.json(apiFail("缺少 child_username", 400));
+  }
+  
+  const profilePath = path.join(DATA_DIR, 'childfile', `${child_username}.json`);
+  if (!fs.existsSync(profilePath)) {
+    return res.json(apiFail("孩子档案不存在", 404));
+  }
+  
+  try {
+    const profile = JSON.parse(fs.readFileSync(profilePath, 'utf8'));
+    profile.hearing_loss_level = hearing_loss_level || "未知";
+    fs.writeFileSync(profilePath, JSON.stringify(profile, null, 2), 'utf8');
+    console.log(`[Profile] 更新 hearing_loss_level 成功: ${child_username} -> ${hearing_loss_level}`);
+    res.json(apiOk({ hearing_loss_level: profile.hearing_loss_level }, "更新成功"));
+  } catch (e) {
+    console.error("更新档案失败", e);
+    res.json(apiFail("更新档案失败", 500));
   }
 });
 

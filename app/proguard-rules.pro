@@ -19,3 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# 腾讯云 ASR SDK 混淆规则
+-keep public class com.tencent.cloud.qcloudasrsdk.** { *; }

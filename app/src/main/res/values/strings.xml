@@ -11,6 +11,14 @@
         <item>男</item>
         <item>女</item>
     </string-array>
+    <string-array name="sa_hearing_loss_level">
+        <item>无听力损失</item>
+        <item>轻度（26-40 dBHL）</item>
+        <item>中度（41-60 dBHL）</item>
+        <item>重度（61-80 dBHL）</item>
+        <item>极重度（≥81 dBHL）</item>
+        <item>未知</item>
+    </string-array>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

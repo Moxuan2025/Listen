@@ -44,34 +44,61 @@
         android:padding="8dp"
         android:clipToPadding="false" />
 
-    <!-- 底部输入框 -->
+    <!-- 底部控制区 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:padding="8dp"
         android:background="#FFFFFF"
         android:elevation="4dp">
 
-        <EditText
-            android:id="@+id/et_input"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="输入消息..."
-            android:textSize="16sp"
-            android:padding="12dp"
-            android:background="@drawable/bg_chat_ai"
-            android:maxLines="4"
-            android:inputType="textMultiLine" />
+            android:text="准备就绪"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:gravity="center"
+            android:paddingBottom="8dp" />
 
         <Button
-            android:id="@+id/btn_send"
-            android:layout_width="wrap_content"
+            android:id="@+id/btn_record"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="发送"
-            android:layout_marginStart="8dp"
-            android:paddingHorizontal="16dp" />
+            android:text="开始说话"
+            android:textSize="16sp"
+            android:paddingVertical="12dp"
+            android:backgroundTint="#2196F3" />
+
+        <!-- 隐藏文字输入控件，保留作为备用或调试 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/et_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="输入消息..."
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:background="@drawable/bg_chat_ai"
+                android:maxLines="4"
+                android:inputType="textMultiLine" />
+
+            <Button
+                android:id="@+id/btn_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="发送"
+                android:layout_marginStart="8dp"
+                android:paddingHorizontal="16dp" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

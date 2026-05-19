@@ -1,0 +1,18 @@
+{
+  "name": "lin",
+  "hearing_loss_level": "未知",
+  "listening_scores": [
+    53.03000000000001
+  ],
+  "expression_scores": [
+    80
+  ],
+  "comprehension_scores": [
+    16
+  ],
+  "overall_scores": [
+    59.806000000000004
+  ],
+  "current_plan": null,
+  "latest_report": "2026-05-06T11:20:54.912Z"
+}

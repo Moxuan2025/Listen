@@ -1,0 +1,22 @@
+{
+  "name": "wang1",
+  "hearing_loss_level": "未知",
+  "listening_scores": [
+    37.878,
+    19.15
+  ],
+  "expression_scores": [
+    100,
+    80
+  ],
+  "comprehension_scores": [
+    85,
+    77
+  ],
+  "overall_scores": [
+    74.57560000000001,
+    65.23
+  ],
+  "current_plan": null,
+  "latest_report": "2026-04-26T11:43:15.622Z"
+}

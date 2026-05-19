@@ -1,22 +1,42 @@
 {
   "name": "moxuan",
-  "hearing_loss_level": "未知",
+  "hearing_loss_level": "极重度",
   "listening_scores": [
+    0,
+    0,
+    0,
+    85.734,
+    48.845,
     0,
     0
   ],
   "expression_scores": [
     0,
-    20
+    20,
+    20,
+    100,
+    20,
+    0,
+    60
   ],
   "comprehension_scores": [
     0,
-    61
+    61,
+    0,
+    87,
+    58,
+    44,
+    65
   ],
   "overall_scores": [
     0,
-    23.700000000000003
+    23.700000000000003,
+    11.5,
+    69.5468,
+    55.369,
+    38.8,
+    55
   ],
   "current_plan": null,
-  "latest_report": "2026-04-26T06:05:40.775Z"
+  "latest_report": "2026-05-19T07:28:39.188Z"
 }

@@ -1,0 +1,79 @@
+Listen 项目部署说明文档
+========================
+
+1. 项目简介
+-----------
+Listen 是一个基于 Android 和 Node.js 的语音训练与评估系统。
+- Android 客户端：提供用户登录、语音合成、口语评测、学习进度追踪等功能。
+- Node.js 服务端：处理用户认证、数据存储、腾讯云服务（TTS/口语评测）代理等。
+
+2. 环境要求
+-----------
+### 2.1 Android 客户端
+- JDK 11 或更高版本
+- Android Studio (推荐最新稳定版)
+- Gradle (由 Android Studio 自动管理)
+- Android SDK API Level 36 (Target), Min SDK 24
+
+### 2.2 Node.js 服务端
+- Node.js (推荐 v16 或更高版本)
+- npm (随 Node.js 安装)
+
+3. 服务端部署 (server/)
+-----------------------
+### 3.1 安装依赖
+进入 server 目录：
+cd server
+
+安装 Node.js 依赖包：
+npm install
+
+### 3.2 配置环境变量
+在 server 目录下创建 .env 文件，填入腾讯云 API 密钥：
+TENCENT_SECRET_ID=你的腾讯云 SecretId
+TENCENT_SECRET_KEY=你的腾讯云 SecretKey
+PORT=8000
+
+### 3.3 启动服务
+运行以下命令启动后端服务：
+npm start
+或者使用提供的脚本：
+sh run.sh (Linux/Mac)
+run.bat (Windows)
+
+服务默认运行在 http://localhost:8000
+
+4. Android 客户端部署 (app/)
+----------------------------
+### 4.1 配置 API 地址
+在 app/src/main/java/com/demo/listen/net/ServerApi.kt 中，修改 BASE_URL 为实际的服务端地址：
+private const val BASE_URL = "http://你的服务器IP:8000"
+
+注意：如果使用模拟器且服务端在本地，可使用 10.0.2.2 代替 localhost。
+
+### 4.2 配置腾讯云密钥 (可选)
+如果客户端直接调用腾讯云服务，需在 app/src/main/assets/ 下配置 tencent_tts.properties。
+目前主要通过服务端代理调用，此步骤视具体实现而定。
+
+### 4.3 编译与运行
+1. 使用 Android Studio 打开项目根目录 (Listen)。
+2. 等待 Gradle 同步完成。
+3. 连接 Android 设备或启动模拟器。
+4. 点击 Run 按钮编译并安装应用。
+
+5. 数据库与存储
+---------------
+- 服务端数据存储在 server/data/ 目录下的 JSON 文件中（如 users.json, sessions.json 等）。
+- 音频文件存储在 server/data/audio/ 目录下。
+- 首次启动服务端时会自动创建这些文件和目录。
+
+6. 常见问题
+-----------
+- 端口占用：确保 8000 端口未被其他程序占用。
+- 网络连接：确保 Android 设备能访问到服务端 IP 地址。
+- 权限问题：Android 6.0+ 需要在应用中动态申请录音和存储权限。
+
+7. 维护与更新
+-------------
+- 服务端：修改代码后重启 Node.js 进程即可。
+- 客户端：修改代码后重新编译安装 APK。
